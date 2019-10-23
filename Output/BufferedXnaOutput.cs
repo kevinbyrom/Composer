@@ -14,12 +14,14 @@ namespace Composer.Output
         private DynamicSoundEffectInstance instance;
         private List<Sample> samples;
         private byte[] xnaBuffer;
+        private int maxSamples;
 
 
         public BufferedXnaOutput(DynamicSoundEffectInstance instance, int maxSamples = DefaultMaxSamples)
         {
             this.instance = instance;
             this.samples = new List<Sample>();
+            this.maxSamples = maxSamples;
             this.xnaBuffer = new byte[NumChannels * maxSamples * BytesPerSample];
         }
 
@@ -29,17 +31,16 @@ namespace Composer.Output
             
             // Store the sample in the buffer
 
-            //this.samples.Add(sample);
+            this.samples.Add(sample);
             
             
             // If we have filled the buffer, flush it to the XNA instance 
 
-            //while (this.in)
-            //if (this.count == maxSamples)
-            //{
-              //  Flush();
-                //this.count = 0;
-            //}
+            if (this.samples.Count == maxSamples)
+            {
+                Flush();
+                this.samples.Clear();
+            }
         }
 
 
@@ -52,9 +53,9 @@ namespace Composer.Output
 
         private void ConvertToXnaBuffer()
         {
-            /*int pos = 0;
+            int pos = 0;
 
-            for (int i = 0; i < this.count; i++)
+            for (int i = 0; i < this.samples.Count; i++)
             {
                 Sample sample = this.samples[i];
 
@@ -79,7 +80,7 @@ namespace Composer.Output
                     this.xnaBuffer[pos++] = (byte)shortRight;
                     this.xnaBuffer[pos++] = (byte)(shortRight >> 8);
                 }
-            }*/
+            }
         }
 
         private void Flush()

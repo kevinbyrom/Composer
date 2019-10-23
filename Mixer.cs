@@ -30,7 +30,10 @@ namespace Composer
         public void Write(IEnumerable<Sample> samples)
         {
             if (samples.Count() == 0)
-                return;
+            {
+                this.target.Write(Sample.Zero);
+                return;        
+            }
 
             Sample mixed = new Sample();
 

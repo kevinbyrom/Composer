@@ -12,7 +12,7 @@ namespace Composer
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private const int SampleRate = 44100;
-        //private DynamicSoundEffectInstance instance;
+        private DynamicSoundEffectInstance instance;
         private VoiceGroup voices;
         private Synth synth;
         private ISampleTarget output;
@@ -33,8 +33,8 @@ namespace Composer
 
             // Setup the output
 
-            var instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Stereo);
-            instance.Play();
+            this.instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Stereo);
+            this.instance.Play();
 
             var xnaOutput = new BufferedXnaOutput(instance);
             this.output = new Mixer(xnaOutput);
@@ -64,8 +64,14 @@ namespace Composer
             if (Keyboard.GetState().IsKeyDown(Keys.F)) { this.synth.NoteOn(5); } else { this.synth.NoteOff(5); }
             if (Keyboard.GetState().IsKeyDown(Keys.G)) { this.synth.NoteOn(7); } else { this.synth.NoteOff(7); }
 
-            voices.Update();
-            this.output.Write(voices.Samples);
+            while (this.instance.PendingBufferCount < 2)
+            {
+                for (int i = 0; i < 3000; i++)
+                {
+                    voices.Update();
+                    this.output.Write(voices.Samples);
+                }
+            }
             
             base.Update(gameTime);
         }
