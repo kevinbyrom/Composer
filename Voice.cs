@@ -34,7 +34,9 @@ namespace Composer
         private ISignal signal;
         private double frequency;
         private double amplitude;
-        private IDuration duration;
+        private double duration;
+
+        private IEffect effect;
 
         private double currTime;
         private VoiceState currState;
@@ -43,12 +45,13 @@ namespace Composer
         private double peakAmp;
 
 
-        public Voice(ISignal signal, double freq, double amp, IDuration duration)
+        public Voice(ISignal signal, double freq, double amp, double duration, IEffect effect = null)
         {
             this.signal = signal;
             this.frequency = freq;
             this.amplitude = amp;
             this.duration = duration;
+            this.effect = effect;
 
             this.currTime = 0;
             ChangeState(VoiceState.Attack);
@@ -64,15 +67,6 @@ namespace Composer
                 return;
             }
 
-            // Check for cancellation (time or manual based)
-
-            if (this.duration.IsDone && this.currState != VoiceState.Release)
-            {
-                ChangeState(VoiceState.Release);
-                this.peakAmp = this.currAmp;
-            }
-
-            // Progress the envelope
 
             // Adjust amplitude based on envelope
 
@@ -98,10 +92,14 @@ namespace Composer
             this.stateTime += timeDelta; 
 
 
-            // Get current signal value
+            // Check for cancellation (time or manual based)
 
-            float val = (float)this.signal.GetValue(currTime, this.frequency, this.currAmp);
+            if (this.duration != -1 && this.currTime >= this.duration)
+            {
+                Release();
+            }
 
+            // Check for state changes
 
             switch (this.currState)
             {
@@ -121,7 +119,20 @@ namespace Composer
                     break;
             }
 
-            this.CurrSample = new Sample(val, val);
+
+            // Get current signal value
+
+            float val = (float)this.signal.GetValue(currTime, this.frequency, this.currAmp);
+
+
+            // Apply effects
+
+            Sample sample = new Sample(val, val);
+
+            if (this.effect != null)
+                sample = this.effect.Apply(sample);
+
+            this.CurrSample = sample;
         }
 
 
@@ -131,6 +142,13 @@ namespace Composer
             Debug.WriteLine("Curr Amp = " + this.currAmp.ToString());
             this.currState = newState;
             this.stateTime = 0;
+        }
+
+
+        public void Release()
+        {
+            this.peakAmp = this.currAmp;
+            ChangeState(VoiceState.Release);
         }
     }
 }

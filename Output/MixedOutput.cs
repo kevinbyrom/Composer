@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace Composer
+namespace Composer.Output
 {
     /*public struct MixerInput
     {
@@ -13,12 +13,12 @@ namespace Composer
     }*/
 
 
-    public class Mixer : ISampleTarget
+    public class MixedOutput : ISampleTarget
     {
         private ISampleTarget target;
         private IEnumerable<ISampleSource> sources;
 
-        public Mixer(ISampleTarget target)
+        public MixedOutput(ISampleTarget target)
         {
             this.target = target;
         }

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Composer.Signals;
+using Composer.Effects;
 
 
 namespace Composer
@@ -18,6 +19,12 @@ namespace Composer
         }
 
 
+        public void PlayNote(int note, double duration)
+        {
+            
+        }
+
+
         public void NoteOn(int note)
         {
 
@@ -29,12 +36,9 @@ namespace Composer
 
             // Find a free voice to use
 
-            //var duration = new ManualDuration();
-            var duration = new TimedDuration(44000);
+            Voice voice = new Voice(new SineWaveSignal(), NoteToFrequency(note), 1, -1, new FuzzEffect(0.001f));
 
-            Voice voice = new Voice(new SineWaveSignal(), NoteToFrequency(note), 1, duration);
-
-            this.noteRegistry[note] = duration.Set;
+            this.noteRegistry[note] = () => { voice.Release(); };
 
             this.voices.Add(voice);
         }

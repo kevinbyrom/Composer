@@ -40,7 +40,7 @@ namespace Composer
             this.instance.Play();
 
             var xnaOutput = new BufferedXnaOutput(instance);
-            this.output = new Mixer(xnaOutput);
+            this.output = new MixedOutput(xnaOutput);
 
 
             // Setup the synth
