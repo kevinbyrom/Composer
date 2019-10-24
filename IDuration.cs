@@ -22,4 +22,31 @@ namespace Composer
 
         }
     }
+
+    public class TimedDuration : IDuration 
+    {
+        int currFrames;
+        int maxFrames;
+
+        public bool IsDone { get; private set;  }
+
+        public TimedDuration(int maxFrames)
+        {
+            this.currFrames = 0;
+            this.maxFrames = maxFrames;
+        }
+        public void Set()
+        {
+            this.IsDone = true;
+        }
+
+        public void Update()
+        {
+            this.currFrames++;
+            if (this.currFrames == this.maxFrames)                
+            {
+                IsDone = true;
+            }
+        }
+    }
 }

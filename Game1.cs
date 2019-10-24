@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
@@ -12,11 +13,13 @@ namespace Composer
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         private const int SampleRate = 44100;
+        private const double TimePerFrame = (double)1 / SampleRate;
+        private const int SamplesPerBuffer = 44100;
         private DynamicSoundEffectInstance instance;
         private VoiceGroup voices;
         private Synth synth;
         private ISampleTarget output;
-
+        private double time = 0;
 
         public Game1()
         {
@@ -54,7 +57,7 @@ namespace Composer
         }
 
         protected override void Update(GameTime gameTime)
-        {
+        {            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -64,15 +67,15 @@ namespace Composer
             if (Keyboard.GetState().IsKeyDown(Keys.F)) { this.synth.NoteOn(5); } else { this.synth.NoteOff(5); }
             if (Keyboard.GetState().IsKeyDown(Keys.G)) { this.synth.NoteOn(7); } else { this.synth.NoteOff(7); }
 
-            while (this.instance.PendingBufferCount < 2)
+            int numSamples = (int)(gameTime.ElapsedGameTime.TotalSeconds * SampleRate);
+
+            for (int i = 0; i < numSamples; i++)
             {
-                for (int i = 0; i < 3000; i++)
-                {
-                    voices.Update();
-                    this.output.Write(voices.Samples);
-                }
+                voices.Update(TimePerFrame);
+                this.output.Write(voices.Samples);
+                this.time += TimePerFrame;
             }
-            
+
             base.Update(gameTime);
         }
 
@@ -84,64 +87,5 @@ namespace Composer
 
             base.Draw(gameTime);
         }
-
-
-        /*private static void ConvertBuffer(float[,] from, byte[] to)
-        {
-            const int bytesPerSample = 2;
-            int channels = from.GetLength(0);
-            int samplesPerBuffer = from.GetLength(1);
-
-            // Make sure the buffer sizes are correct
-            System.Diagnostics.Debug.Assert(to.Length == samplesPerBuffer * channels * bytesPerSample, "Buffer sizes are mismatched.");
-
-            for (int i = 0; i < samplesPerBuffer; i++)
-            {
-                for (int c = 0; c < channels; c++)
-                {
-                    // First clamp the value to the [-1.0..1.0] range
-                    float floatSample = MathHelper.Clamp(from[c,i], -1.0f, 1.0f);
-
-                    // Convert it to the 16 bit [short.MinValue..short.MaxValue] range
-                    short shortSample = (short)(floatSample >= 0.0f ? floatSample * short.MaxValue : floatSample * short.MinValue * -1);
-
-                    // Calculate the right index based on the PCM format of interleaved samples per channel [L-R-L-R]
-                    int index = i * channels * bytesPerSample + c * bytesPerSample;
-
-                    // Store the 16 bit sample as two consecutive 8 bit values in the buffer with regard to endian-ness
-                    if (!BitConverter.IsLittleEndian)
-                    {
-                        to[index] = (byte)(shortSample >> 8);
-                        to[index + 1] = (byte)shortSample;
-                    }
-                    else
-                    {
-                        to[index] = (byte)shortSample;
-                        to[index + 1] = (byte)(shortSample >> 8);
-                    }
-                }
-            }
-        }*/
-
-
-        /*private void FillWorkingBuffer()
-        {
-            for (int i = 0; i < SamplesPerBuffer; i++)
-            {
-                // Here is where you sample your wave function
-
-                var val = this.synth.NextSample();
-
-                this.workingBuffer[0, i] = val.Left;
-                this.workingBuffer[1, i] = val.Right;
-            }
-        }*/
-
-        /*private void SubmitBuffer()
-        {
-            FillWorkingBuffer();
-            ConvertBuffer(this.workingBuffer, this.xnaBuffer);
-            this.instance.SubmitBuffer(this.xnaBuffer);
-        }*/
     }
 }

@@ -31,14 +31,14 @@ namespace Composer
             this.voices = new List<Voice>();
         }
 
-        public void Update()
+        public void Update(double timeDelta)
         {
 
             // Update the active voices
 
             foreach (var voice in this.voices)
             {
-                voice.Update();
+                voice.Update(timeDelta);
             }
 
 

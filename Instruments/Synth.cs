@@ -29,9 +29,10 @@ namespace Composer
 
             // Find a free voice to use
 
-            var duration = new ManualDuration();
+            //var duration = new ManualDuration();
+            var duration = new TimedDuration(44000);
 
-            Voice voice = new Voice(new SawtoothWaveSignal(), NoteToFrequency(note), 1, duration);
+            Voice voice = new Voice(new SineWaveSignal(), NoteToFrequency(note), 1, duration);
 
             this.noteRegistry[note] = duration.Set;
 

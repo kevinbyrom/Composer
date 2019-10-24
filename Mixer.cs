@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,12 +36,27 @@ namespace Composer
                 return;        
             }
 
-            Sample mixed = new Sample();
+            
+            // Add all the samples
 
+            float left = 0; 
+            float right = 0;
+        
             foreach (var sample in samples)
             {
-                mixed += sample;
+                left += sample.Left;
+                right += sample.Right;
             }
+
+
+            // Take the average of all the samples
+
+            Sample mixed = new Sample();
+
+            mixed.Left = left / (float)samples.Count();
+            mixed.Right = right / (float)samples.Count();
+
+            //Console.WriteLine($"MixedSample Left = {mixed.Left}, Right = {mixed.Right}");
 
             this.target.Write(mixed);
         }

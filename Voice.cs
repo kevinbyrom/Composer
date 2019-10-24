@@ -36,7 +36,7 @@ namespace Composer
         private double amplitude;
         private IDuration duration;
 
-        private int currTime;
+        private double currTime;
         private VoiceState currState;
         private double stateTime;
         private double currAmp;
@@ -55,8 +55,9 @@ namespace Composer
         }
 
 
-        public void Update()
+        public void Update(double timeDelta)
         {
+            
             if (!this.IsActive)
             {
                 this.CurrSample = Sample.Zero;
@@ -91,15 +92,16 @@ namespace Composer
             }
 
 
-            // Get current signal value
-
-            float val = (float)this.signal.GetValue(this.currTime, this.frequency, this.currAmp);
-
-
             // Advance time and check for state machine changes
 
-            this.currTime++;
-            this.stateTime++; 
+            this.currTime += timeDelta;
+            this.stateTime += timeDelta; 
+
+
+            // Get current signal value
+
+            float val = (float)this.signal.GetValue(currTime, this.frequency, this.currAmp);
+
 
             switch (this.currState)
             {
