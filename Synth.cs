@@ -16,6 +16,7 @@ namespace Composer
 
         public Synth(VoiceGroup voices)
         {
+            this.Oscillator = new SineWaveSignal();
             this.voices = voices;
             this.noteRegistry = new Dictionary<int, Action>();
         }
@@ -38,7 +39,10 @@ namespace Composer
 
             // Find a free voice to use
 
-            Voice voice = new Voice(this.Oscillator, NoteToFrequency(note), 1, -1);
+            Func<double, double> freqFunc = (time) => { return this.Oscillator.GetValue(time, NoteToFrequency(note)); };
+            Func<double, double> ampFunc = (time) => { return 1; };
+            
+            Voice voice = new Voice(freqFunc, ampFunc, -1);
 
             this.noteRegistry[note] = () => { voice.Release(); };
 

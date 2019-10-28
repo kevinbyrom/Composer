@@ -31,12 +31,13 @@ namespace Composer
 
         public Sample CurrSample { get; private set; }
        
-        private ISignalSource signal;
-        private double frequency;
-        private double amplitude;
+        private Func<double, double> freqFunc;
+
+        private Func<double, double> ampFunc;
+
         private double duration;
 
-        private IEffect effect;
+        private Func<Sample, Sample> effectFunc;
 
         private double currTime;
         private VoiceState currState;
@@ -44,14 +45,14 @@ namespace Composer
         private double currAmp;
         private double peakAmp;
 
+        
 
-        public Voice(ISignalSource signal, double freq, double amp, double duration, IEffect effect = null)
+        public Voice(Func<double, double> freqFunc, Func<double, double> ampFunc, double duration, Func<Sample, Sample> effectFunc = null)
         {
-            this.signal = signal;
-            this.frequency = freq;
-            this.amplitude = amp;
+            this.freqFunc = freqFunc;
+            this.ampFunc = ampFunc;
             this.duration = duration;
-            this.effect = effect;
+            this.effectFunc = effectFunc;
 
             this.currTime = 0;
             ChangeState(VoiceState.Attack);
@@ -68,6 +69,12 @@ namespace Composer
             }
 
 
+            // Advance time and check for state machine changes
+
+            this.currTime += timeDelta;
+            this.stateTime += timeDelta; 
+
+
             // Adjust amplitude based on envelope
 
             switch (this.currState)
@@ -77,19 +84,13 @@ namespace Composer
                     break;
 
                 case VoiceState.Decay:
-                    this.currAmp = MathUtil.Lerp(1, this.amplitude, (float)(Math.Min(this.stateTime, DecayTime) / DecayTime));
+                    this.currAmp = MathUtil.Lerp(1, this.ampFunc(this.currTime), (float)(Math.Min(this.stateTime, DecayTime) / DecayTime));
                     break;
 
                 case VoiceState.Release:
                     this.currAmp = MathUtil.Lerp(this.peakAmp, 0, (float)(Math.Min(this.stateTime, ReleaseTime) / ReleaseTime));
                     break;
             }
-
-
-            // Advance time and check for state machine changes
-
-            this.currTime += timeDelta;
-            this.stateTime += timeDelta; 
 
 
             // Check for cancellation (time or manual based)
@@ -122,15 +123,15 @@ namespace Composer
 
             // Get current signal value
 
-            float val = (float)this.signal.GetValue(currTime, this.frequency) * (float)this.currAmp;
+            float val = (float)this.freqFunc(currTime) * (float)this.currAmp;
 
 
             // Apply effects
 
             Sample sample = new Sample(val, val);
 
-            if (this.effect != null)
-                sample = this.effect.Apply(sample);
+            if (this.effectFunc != null)
+                sample = this.effectFunc(sample);
 
             this.CurrSample = sample;
         }

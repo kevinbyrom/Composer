@@ -6,6 +6,6 @@ namespace Composer
 {
     public interface ISignalSource
     {
-        double GetValue(double time, double freq;
+        double GetValue(double time, double freq);
     }
 }

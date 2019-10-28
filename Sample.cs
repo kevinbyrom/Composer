@@ -4,7 +4,7 @@ namespace Composer
 {
     public struct Sample
     {
-        static public Sample Zero => new Sample(0f, 0f);
+        static public Sample Zero => new Sample(0, 0);
         public float Left;
         public float Right;
 
