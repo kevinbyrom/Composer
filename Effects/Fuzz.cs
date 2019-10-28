@@ -2,7 +2,7 @@ using System;
 
 namespace Composer.Effects
 {
-    public class FuzzEffect : IEffect
+    public class FuzzEffect : ISampleTransform
     {
         float maxFuzz;
         Random rnd = new Random();
@@ -12,7 +12,7 @@ namespace Composer.Effects
             this.maxFuzz = maxFuzz;
         }
 
-        public Sample Apply(Sample sample)
+        public Sample Transform(Sample sample)
         {
             float fuzz = (float)rnd.NextDouble() * maxFuzz;
 

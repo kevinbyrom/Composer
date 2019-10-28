@@ -2,16 +2,16 @@ using System;
 
 namespace Composer.Effects
 {
-    public class LowPassFilterEffect : IEffect
+    public class LowPassFilter : ISampleTransform
     {
         float min;
 
-        public LowPassFilterEffect(float min)
+        public LowPassFilter(float min)
         {
             this.min = min;
         }
 
-        public Sample Apply(Sample sample)
+        public Sample Transform(Sample sample)
         {
             sample.Left = Math.Max(sample.Left, min);
             sample.Right = Math.Max(sample.Right, min);

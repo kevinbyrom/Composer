@@ -8,6 +8,8 @@ namespace Composer
 {
     public class Synth 
     {
+        public ISignalSource Oscillator { get; set; }
+
         private VoiceGroup voices;
         private readonly Dictionary<int, Action> noteRegistry;
 
@@ -36,7 +38,7 @@ namespace Composer
 
             // Find a free voice to use
 
-            Voice voice = new Voice(new SineWaveSignal(), NoteToFrequency(note), 1, -1, new FuzzEffect(0.001f));
+            Voice voice = new Voice(this.Oscillator, NoteToFrequency(note), 1, -1);
 
             this.noteRegistry[note] = () => { voice.Release(); };
 

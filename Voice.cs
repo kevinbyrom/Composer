@@ -31,7 +31,7 @@ namespace Composer
 
         public Sample CurrSample { get; private set; }
        
-        private ISignal signal;
+        private ISignalSource signal;
         private double frequency;
         private double amplitude;
         private double duration;
@@ -45,7 +45,7 @@ namespace Composer
         private double peakAmp;
 
 
-        public Voice(ISignal signal, double freq, double amp, double duration, IEffect effect = null)
+        public Voice(ISignalSource signal, double freq, double amp, double duration, IEffect effect = null)
         {
             this.signal = signal;
             this.frequency = freq;
@@ -122,7 +122,7 @@ namespace Composer
 
             // Get current signal value
 
-            float val = (float)this.signal.GetValue(currTime, this.frequency, this.currAmp);
+            float val = (float)this.signal.GetValue(currTime, this.frequency) * (float)this.currAmp;
 
 
             // Apply effects
