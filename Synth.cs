@@ -12,6 +12,7 @@ namespace Composer
         public List<ISampleTransform> Amplifiers { get; set; }
         public List<ISampleTransform> PostEffects { get; set; }
 
+        public VoiceGroup Voices { get; private set; }
         private VoiceGroup voices;
         private readonly Dictionary<int, Action> noteRegistry;
 
@@ -19,7 +20,7 @@ namespace Composer
         public Synth(VoiceGroup voices)
         {
             //this.Oscillator = new SineWaveOscillator();
-            this.voices = voices;
+            this.Voices = voices;
             this.noteRegistry = new Dictionary<int, Action>();
         }
 
@@ -62,7 +63,7 @@ namespace Composer
             // Create a new voice 
 
             Voice voice = new Voice(sampleFunc, duration);
-            this.voices.Add(voice);
+            this.Voices.Add(voice);
 
 
             // Track the note so we can release it later

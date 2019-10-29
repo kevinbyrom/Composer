@@ -37,8 +37,6 @@ namespace Composer
         private Func<SampleTime, Sample> ampFunc;
 
         private Func<SampleTime, Sample, Sample> effectFunc;
-        
-        private ISampleTarget target;
 
         private double duration;
         
@@ -49,19 +47,18 @@ namespace Composer
 
         
         
-        public Voice(Func<SampleTime, Sample> signalFunc, Func<SampleTime, Sample> ampFunc, Func<SampleTime, Sample, Sample> effectFunc, double duration, ISampleTarget target)
+        public Voice(Func<SampleTime, Sample> signalFunc, Func<SampleTime, Sample> ampFunc, Func<SampleTime, Sample, Sample> effectFunc, double duration)
         {
             this.signalFunc = signalFunc;
             this.ampFunc = ampFunc;
             this.duration = duration;
             this.effectFunc = effectFunc;
-            this.target = target;
 
             ChangeState(VoiceState.Attack);
         }
 
 
-        public void WriteNext(SampleTime time)
+        public void WriteNext(SampleTime time, ISampleTarget target)
         {
             
             if (!this.IsActive)
@@ -131,7 +128,7 @@ namespace Composer
 
             //this.CurrSample = sample;
 
-            this.target.Write(sample);
+            target.Write(sample);
         }
 
 

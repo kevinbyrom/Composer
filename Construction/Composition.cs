@@ -24,14 +24,21 @@ namespace Composer.Construction
 
         public void Perform(ISampleTarget target)
         {            
+            SampleTime time = new SampleTime();
+
             // While there are commands, execute them and render the synth voices to the target
 
             foreach (var cmd in commands)
             {
                 cmd.Execute(this.Synth);
 
-                // Update voices until done, rendering to target
+                // Write all voices to the target
 
+                while (this.Synth.Voices.HasActive)
+                {
+                    this.Synth.Voices.WriteNext(time, target);
+                    time.IncrementFrame();
+                }
             }
         }
     }

@@ -9,6 +9,14 @@ namespace Composer
     {
         private readonly List<Voice> voices;
 
+        public bool HasActive 
+        { 
+            get 
+            {
+                return true;
+            }
+        }
+
         public IEnumerable<Voice> Voices
         {
             get
@@ -30,14 +38,14 @@ namespace Composer
             this.voices = new List<Voice>();
         }
 
-        public void Update(SampleTime time)
+        public void WriteNext(SampleTime time, ISampleTarget target)
         {
 
             // Update the active voices
 
             foreach (var voice in this.voices)
             {
-                voice.Update(time);
+                voice.WriteNext(time, target);
             }
 
 
