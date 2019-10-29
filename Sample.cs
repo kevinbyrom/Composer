@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+
 
 namespace Composer
 {
@@ -99,5 +101,21 @@ namespace Composer
 
         #endregion
 
+    }
+
+    public interface ISampleSource 
+    {
+        Sample CurrSample { get; }
+    }
+
+    public interface ISampleTarget
+    {
+        void Write(Sample sample);
+        void Write(IEnumerable<Sample> samples);
+    }
+
+    public interface ISampleTransform
+    {
+        Sample Transform(SampleTime time, Sample sample);
     }
 }
