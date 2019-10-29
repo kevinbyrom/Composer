@@ -9,7 +9,7 @@ namespace Composer.Effects
         {
         }
 
-        public Sample Transform(Sample sample)
+        public Sample Transform(SampleTime time, Sample sample)
         {
             throw new NotImplementedException();
         }

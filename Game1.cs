@@ -19,7 +19,7 @@ namespace Composer
         private VoiceGroup voices;
         private Synth synth;
         private ISampleTarget output;
-        private double time = 0;
+        private SampleTime time;
 
         public Game1()
         {
@@ -47,6 +47,8 @@ namespace Composer
 
             this.voices = new VoiceGroup();
             this.synth = new Synth(this.voices);
+            this.time = new SampleTime(SampleRate);
+
         }
 
         protected override void LoadContent()
@@ -61,19 +63,21 @@ namespace Composer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.A)) { this.synth.NoteOn(0); } else { this.synth.NoteOff(0); }
-            if (Keyboard.GetState().IsKeyDown(Keys.S)) { this.synth.NoteOn(2); } else { this.synth.NoteOff(2); }
-            if (Keyboard.GetState().IsKeyDown(Keys.D)) { this.synth.NoteOn(4); } else { this.synth.NoteOff(4); }
-            if (Keyboard.GetState().IsKeyDown(Keys.F)) { this.synth.NoteOn(5); } else { this.synth.NoteOff(5); }
-            if (Keyboard.GetState().IsKeyDown(Keys.G)) { this.synth.NoteOn(7); } else { this.synth.NoteOff(7); }
+            if (Keyboard.GetState().IsKeyDown(Keys.A)) { this.synth.PlayNote(0); } else { this.synth.NoteOff(0); }
+            if (Keyboard.GetState().IsKeyDown(Keys.S)) { this.synth.PlayNote(2); } else { this.synth.NoteOff(2); }
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) { this.synth.PlayNote(4); } else { this.synth.NoteOff(4); }
+            if (Keyboard.GetState().IsKeyDown(Keys.F)) { this.synth.PlayNote(5); } else { this.synth.NoteOff(5); }
+            if (Keyboard.GetState().IsKeyDown(Keys.G)) { this.synth.PlayNote(7); } else { this.synth.NoteOff(7); }
 
-            int numSamples = (int)(gameTime.ElapsedGameTime.TotalSeconds * SampleRate);
+            int numSamples = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.time.Rate);
 
             for (int i = 0; i < numSamples; i++)
             {
-                voices.Update(TimePerFrame);
+                this.time.Current += TimePerFrame;
+                this.time.Elapsed = TimePerFrame;
+
+                voices.Update(this.time);
                 this.output.Write(voices.Samples);
-                this.time += TimePerFrame;
             }
 
             base.Update(gameTime);

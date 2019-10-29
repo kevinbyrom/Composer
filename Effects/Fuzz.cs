@@ -4,17 +4,17 @@ namespace Composer.Effects
 {
     public class FuzzEffect : ISampleTransform
     {
-        float maxFuzz;
+        public double MaxFuzz { get; private set; }
         Random rnd = new Random();
 
-        public FuzzEffect(float maxFuzz)
+        public FuzzEffect(double maxFuzz)
         {
-            this.maxFuzz = maxFuzz;
+            this.MaxFuzz = maxFuzz;
         }
 
-        public Sample Transform(Sample sample)
+        public Sample Transform(SampleTime time, Sample sample)
         {
-            float fuzz = (float)rnd.NextDouble() * maxFuzz;
+            double fuzz = rnd.NextDouble() * this.MaxFuzz;
 
             sample.Left += fuzz;
             sample.Right += fuzz;

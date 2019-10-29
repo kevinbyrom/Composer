@@ -5,10 +5,10 @@ namespace Composer
     public struct Sample
     {
         static public Sample Zero => new Sample(0, 0);
-        public float Left;
-        public float Right;
+        public double Left;
+        public double Right;
 
-        public float BoundedLeft 
+        public double BoundedLeft 
         {
             get
             {
@@ -16,13 +16,13 @@ namespace Composer
             }
             set
             {
-                float val = value;
+                double val = value;
                 val = Math.Min(1, val);
                 val = Math.Max(-1, val);
                 this.Left = val;
             }
         }
-        public float BoundedRight
+        public double BoundedRight
         {
             get
             {
@@ -30,14 +30,18 @@ namespace Composer
             }
             set
             {
-                float val = value;
+                double val = value;
                 val = Math.Min(1, val);
                 val = Math.Max(-1, val);
                 this.Right = val;
             }
         }
 
-        public Sample(float left, float right)
+        public Sample(double val) : this(val, val)
+        {
+        }
+
+        public Sample(double left, double right)
         {
             this.Left = left;
             this.Right = right;
@@ -58,7 +62,7 @@ namespace Composer
             return new Sample() { BoundedLeft = a.Left + b.Left, BoundedRight = a.Right + b.Right };
         }
 
-        public static Sample operator +(Sample a, float b)
+        public static Sample operator +(Sample a, double b)
         {
             return new Sample() { BoundedLeft = a.Left + b, BoundedRight = a.Right + b };
         }
@@ -68,7 +72,7 @@ namespace Composer
             return new Sample() { BoundedLeft = a.Left - b.Left, BoundedRight = a.Right - b.Right };
         }
 
-        public static Sample operator -(Sample a, float b)
+        public static Sample operator -(Sample a, double b)
         {
             return new Sample() { BoundedLeft = a.Left - b, BoundedRight = a.Right - b };
         }
@@ -78,7 +82,7 @@ namespace Composer
             return new Sample() { BoundedLeft = a.Left * b.Left, BoundedRight = a.Right * b.Right };
         }
 
-        public static Sample operator *(Sample a, float b)
+        public static Sample operator *(Sample a, double b)
         {
             return new Sample() { BoundedLeft = a.Left * b, BoundedRight = a.Right * b };
         }
@@ -88,7 +92,7 @@ namespace Composer
             return new Sample() { BoundedLeft = a.Left / b.Left, BoundedRight = a.Right / b.Right };
         }
 
-        public static Sample operator /(Sample a, float b)
+        public static Sample operator /(Sample a, double b)
         {
             return new Sample() { BoundedLeft = a.Left / b, BoundedRight = a.Right / b };
         }

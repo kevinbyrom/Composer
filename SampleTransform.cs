@@ -4,6 +4,6 @@ namespace Composer
 {
     public interface ISampleTransform
     {
-        Sample Transform(Sample sample);
+        Sample Transform(SampleTime time, Sample sample);
     }
 }

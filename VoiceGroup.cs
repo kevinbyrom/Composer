@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Composer.Signals;
 
 
 namespace Composer
@@ -31,14 +30,14 @@ namespace Composer
             this.voices = new List<Voice>();
         }
 
-        public void Update(double timeDelta)
+        public void Update(SampleTime time)
         {
 
             // Update the active voices
 
             foreach (var voice in this.voices)
             {
-                voice.Update(timeDelta);
+                voice.Update(time);
             }
 
 

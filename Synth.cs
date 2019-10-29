@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Composer.Signals;
+using Composer.Oscillators;
 using Composer.Effects;
 
 
@@ -8,7 +8,9 @@ namespace Composer
 {
     public class Synth 
     {
-        public ISignalSource Oscillator { get; set; }
+        public List<ISampleTransform> Filters { get; set; }
+        public List<ISampleTransform> Amplifiers { get; set; }
+        public List<ISampleTransform> PostEffects { get; set; }
 
         private VoiceGroup voices;
         private readonly Dictionary<int, Action> noteRegistry;
@@ -16,37 +18,58 @@ namespace Composer
 
         public Synth(VoiceGroup voices)
         {
-            this.Oscillator = new SineWaveSignal();
+            //this.Oscillator = new SineWaveOscillator();
             this.voices = voices;
             this.noteRegistry = new Dictionary<int, Action>();
         }
 
 
-        public void PlayNote(int note, double duration)
-        {
-            
-        }
 
-
-        public void NoteOn(int note)
+        public Voice PlayNote(int note, double duration = -1)
         {
 
             // Only play the note if not already playing
 
             if (this.noteRegistry.ContainsKey(note))
-                return;
+                return null;
 
 
-            // Find a free voice to use
+            // Construct the signal function
 
-            Func<double, double> freqFunc = (time) => { return this.Oscillator.GetValue(time, NoteToFrequency(note)); };
-            Func<double, double> ampFunc = (time) => { return 1; };
+            Func<SampleTime, Sample> sampleFunc = (time) =>
+            {
+                var osc = new SineWaveOscillator(NoteToFrequency(note));
+                
+                // Get initial signal from oscillator
+
+                Sample sample = osc.GetValue(time.Current);
+
+                // Apply transform functions
+
+                this.Filters.ForEach((transform) => { sample = transform.Transform(time, sample); });
+                this.Amplifiers.ForEach((transform) => { sample = transform.Transform(time, sample); });
+                this.PostEffects.ForEach((transform) => { sample = transform.Transform(time, sample); });
+                
+                return sample;
+            };
+
+            // Set up the sample functions (construct with mods)
+
+            //Func<SampleTime, Sample> signalFunc = (time) => { return this.Oscillator.GetValue(time.Current, NoteToFrequency(note)); };
+            //Func<SampleTime, Sample> ampFunc = (time) => { return new Sample(1); };
             
-            Voice voice = new Voice(freqFunc, ampFunc, -1);
+            
+            // Create a new voice 
+
+            Voice voice = new Voice(sampleFunc, duration);
+            this.voices.Add(voice);
+
+
+            // Track the note so we can release it later
 
             this.noteRegistry[note] = () => { voice.Release(); };
 
-            this.voices.Add(voice);
+            return voice;
         }
 
 

@@ -4,17 +4,17 @@ namespace Composer.Effects
 {
     public class LowPassFilter : ISampleTransform
     {
-        float min;
+        public double Min { get; private set; }
 
         public LowPassFilter(float min)
         {
-            this.min = min;
+            this.Min = min;
         }
 
-        public Sample Transform(Sample sample)
+        public Sample Transform(SampleTime time, Sample sample)
         {
-            sample.Left = Math.Max(sample.Left, min);
-            sample.Right = Math.Max(sample.Right, min);
+            sample.Left = Math.Max(sample.Left, this.Min);
+            sample.Right = Math.Max(sample.Right, this.Min);
 
             return sample;
         }

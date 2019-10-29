@@ -1,11 +1,11 @@
-using System;
+﻿using System;
 
 
 namespace Composer.Effects
 {
-    public class DelayEffect : ISampleTransform
+    public class PhaserEffect : ISampleTransform
     {
-        public DelayEffect()
+        public PhaserEffect()
         {
         }
 

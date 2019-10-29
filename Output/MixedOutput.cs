@@ -37,24 +37,28 @@ namespace Composer.Output
             }
 
             
-            // Add all the samples
+            // Combine the samples and take an average
+            // This code will likely need to be changed as 
+            // I am hearing an audible shift when dead voices drop off
 
-            float left = 0; 
-            float right = 0;
-        
+            double left = 0;
+            double right = 0;
+            int numSamples = 0;
+
             foreach (var sample in samples)
             {
                 left += sample.Left;
                 right += sample.Right;
+
+                if (sample.Left != 0 && sample.Right != 0)
+                    numSamples++;
             }
-
-
-            // Take the average of all the samples
 
             Sample mixed = new Sample();
 
-            mixed.Left = left / (float)samples.Count();
-            mixed.Right = right / (float)samples.Count();
+            mixed.Left = left / (float)numSamples;
+            mixed.Right = right / (float)numSamples;
+
 
             //Console.WriteLine($"MixedSample Left = {mixed.Left}, Right = {mixed.Right}");
 
