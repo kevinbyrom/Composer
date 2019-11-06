@@ -23,11 +23,21 @@ namespace Composer.Construction
         }
 
         public void Perform(ISampleTarget target)
-        {            
+        {
+            SampleTime time = new SampleTime(this.SampleRate);
+
+
             // While there are commands, execute them and render the synth voices to the target
 
             foreach (var cmd in commands)
             {
+                
+                // Delay until the time of the command
+                
+                //if (cmd.ExecuteTime.Current > time.Current)
+                  //  this.Synth.
+                // Execute the command
+
                 cmd.Execute(this.Synth);
 
                 // Update voices until done, rendering to target

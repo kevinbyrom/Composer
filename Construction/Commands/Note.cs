@@ -5,11 +5,15 @@ namespace Composer.Construction.Commands
 {
     public class NoteCommand : ICommand
     {
+        public SampleTime ExecuteTime { get; private set; }
         public int Note;
         public double Duration;
 
-        public NoteCommand(int note)
+        public NoteCommand(SampleTime time, int note, double duration)
         {
+            this.ExecuteTime = time;
+            this.Note = note;
+            this.Duration = duration;
         }
 
         public void Execute(Synth synth)
