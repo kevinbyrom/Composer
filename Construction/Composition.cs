@@ -30,6 +30,13 @@ namespace Composer.Construction
 
             foreach (var cmd in commands)
             {
+                
+                // Delay until the time of the command
+                
+                //if (cmd.ExecuteTime.Current > time.Current)
+                  //  this.Synth.
+                // Execute the command
+
                 cmd.Execute(this.Synth);
 
                 // Write all voices to the target
