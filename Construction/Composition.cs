@@ -30,23 +30,28 @@ namespace Composer.Construction
 
             foreach (var cmd in commands)
             {
-                
-                // Delay until the time of the command
-                
-                //if (cmd.ExecuteTime.Current > time.Current)
-                  //  this.Synth.
-                // Execute the command
-
-                cmd.Execute(this.Synth);
-
-                // Write all voices to the target
-
-                while (this.Synth.Voices.HasActive)
-                {
-                    this.Synth.Voices.WriteNext(time, target);
-                    time.IncrementFrame();
-                }
             }
+        }
+
+        public void WriteNext(SampleTime time, ISampleTarget target)
+        {
+
+            // Get and execute each command since last update
+
+            foreach (var cmd in CommandsSince(time))
+            {
+                cmd.Execute(this.Synth);
+            }
+
+            // Update synth voices
+
+            this.Synth.Voices.WriteNext(time, target);
+        }
+
+
+        private IEnumerable<ICommand> CommandsSince(SampleTime time)
+        {
+            throw new NotImplementedException();
         }
     }
 }
