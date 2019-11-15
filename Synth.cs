@@ -8,19 +8,22 @@ namespace Composer
 {
     public class Synth 
     {
+        public ISampleTarget Target { get; private set; }
         public List<ISampleTransform> Filters { get; set; }
         public List<ISampleTransform> Amplifiers { get; set; }
         public List<ISampleTransform> PostEffects { get; set; }
-
         public VoiceGroup Voices { get; private set; }
-        private VoiceGroup voices;
+
         private readonly Dictionary<int, Action> noteRegistry;
 
 
-        public Synth(VoiceGroup voices)
+        public Synth(ISampleTarget target)
         {
-            //this.Oscillator = new SineWaveOscillator();
-            this.Voices = voices;
+            this.Target = target;
+            this.Filters = new List<ISampleTransform>();
+            this.Amplifiers = new List<ISampleTransform>();
+            this.PostEffects = new List<ISampleTransform>();
+            this.Voices = new VoiceGroup();
             this.noteRegistry = new Dictionary<int, Action>();
         }
 
@@ -62,7 +65,7 @@ namespace Composer
             
             // Create a new voice 
 
-            Voice voice = new Voice(sampleFunc, duration);
+            Voice voice = new Voice(sampleFunc, duration, this.Target);
             this.Voices.Add(voice);
 
 
@@ -83,6 +86,12 @@ namespace Composer
             }
         }
         
+
+
+        public void Update(SampleTime time)
+        {
+            this.Voices.Update(time);
+        }
 
 
         private float NoteToFrequency(int note)

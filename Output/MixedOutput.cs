@@ -16,8 +16,7 @@ namespace Composer.Output
     public class MixedOutput : ISampleTarget
     {
         private ISampleTarget target;
-        private IEnumerable<ISampleSource> sources;
-
+        
         public MixedOutput(ISampleTarget target)
         {
             this.target = target;

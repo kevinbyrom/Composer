@@ -38,14 +38,14 @@ namespace Composer
             this.voices = new List<Voice>();
         }
 
-        public void WriteNext(SampleTime time, ISampleTarget target)
-        {
 
+        public void Update(SampleTime time)
+        {
             // Update the active voices
 
             foreach (var voice in this.voices)
             {
-                voice.WriteNext(time, target);
+                voice.Update(time);
             }
 
 

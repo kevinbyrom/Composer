@@ -33,7 +33,7 @@ namespace Composer.Construction
             }
         }
 
-        public void WriteNext(SampleTime time, ISampleTarget target)
+        public void Update(SampleTime time)
         {
 
             // Get and execute each command since last update
@@ -45,7 +45,7 @@ namespace Composer.Construction
 
             // Update synth voices
 
-            this.Synth.Voices.WriteNext(time, target);
+            this.Synth.Update(time);
         }
 
 

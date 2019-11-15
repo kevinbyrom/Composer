@@ -16,7 +16,6 @@ namespace Composer
         private const double TimePerFrame = (double)1 / SampleRate;
         private const int SamplesPerBuffer = 44100;
         private DynamicSoundEffectInstance instance;
-        private VoiceGroup voices;
         private Synth synth;
         private ISampleTarget output;
         private SampleTime time;
@@ -45,8 +44,7 @@ namespace Composer
 
             // Setup the synth
 
-            this.voices = new VoiceGroup();
-            this.synth = new Synth(this.voices);
+            this.synth = new Synth(this.output);
             this.time = new SampleTime(SampleRate);
 
         }
@@ -76,8 +74,7 @@ namespace Composer
                 this.time.Current += TimePerFrame;
                 this.time.Elapsed = TimePerFrame;
 
-                voices.Update(this.time);
-                this.output.Write(voices.Samples);
+                this.synth.Update(this.time);
             }
 
             base.Update(gameTime);
