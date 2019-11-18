@@ -34,12 +34,6 @@ namespace Composer
        
         private Func<SampleTime, Sample> signalFunc;
 
-        //private Func<SampleTime, Sample, Sample> filterFunc;
-
-        //private Func<SampleTime, Sample> ampFunc;
-
-        //private Func<SampleTime, Sample, Sample> effectFunc;
-
         private double duration;
         
         private VoiceState currState;
@@ -69,13 +63,12 @@ namespace Composer
 
             // Advance time and check for state machine changes
 
-            //this.currTime = time.Current;
             this.stateTime += time.Elapsed; 
 
 
             // Adjust amplitude based on envelope
 
-            /*switch (this.currState)
+            switch (this.currState)
             {
                 case VoiceState.Attack:
                     this.currAmp = MathUtil.Lerp(0, 1, (float)(Math.Min(this.stateTime, AttackTime) / AttackTime));
@@ -88,19 +81,19 @@ namespace Composer
                 case VoiceState.Release:
                     this.currAmp = MathUtil.Lerp(this.peakAmp, 0, (float)(Math.Min(this.stateTime, ReleaseTime) / ReleaseTime));
                     break;
-            }*/
+            }
 
 
             // Check for cancellation (time or manual based)
 
-            //if (this.duration != -1 && this.time.Current >= this.duration)
-            //{
-              //  Release();
-            //}
+            if (this.duration != -1 && this.time.Current >= this.duration)
+            {
+                Release();
+            }
 
             // Check for state changes
 
-            /*switch (this.currState)
+            switch (this.currState)
             {
                 case VoiceState.Attack:
                     if (this.stateTime >= AttackTime)
@@ -118,7 +111,7 @@ namespace Composer
                     break;
             }
 
-    */
+    
             // Get current signal value
 
             Sample sample = this.signalFunc(time);
