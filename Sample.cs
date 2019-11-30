@@ -106,12 +106,14 @@ namespace Composer
     public interface ISampleSource 
     {
         Sample CurrSample { get; }
+
+        Sample GetValue(double time);
     }
 
     public interface ISampleTarget
     {
-        void Write(Sample sample);
-        void Write(IEnumerable<Sample> samples);
+        void Write(SampleTime time, Sample sample);
+        void Write(SampleTime time, IEnumerable<Sample> samples);
     }
 
     public interface ISampleTransform

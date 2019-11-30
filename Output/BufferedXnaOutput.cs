@@ -26,7 +26,7 @@ namespace Composer.Output
         }
 
 
-        public void Write(Sample sample)
+        public void Write(SampleTime time, Sample sample)
         {
             
             // Store the sample in the buffer
@@ -44,10 +44,10 @@ namespace Composer.Output
         }
 
 
-        public void Write(IEnumerable<Sample> samples)
+        public void Write(SampleTime time, IEnumerable<Sample> samples)
         {
             foreach (var sample in samples)
-                Write(sample);
+                Write(time, sample);
         }
 
 

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using Composer.Utilities;
 
@@ -7,11 +8,9 @@ namespace Composer
 {
     public enum VoiceState
     {
-        Attack,
-        Decay,
-        Sustain,
-        Release,
-        Finished
+        Playing,
+        Releasing,
+        Released
     }
 
     public class Voice 
@@ -24,112 +23,88 @@ namespace Composer
         {
             get
             {
-                return this.currState != VoiceState.Finished;
+                return this.currState != VoiceState.Released;
             }
         }
 
+        public ISampleSource Source { get; private set; }
+
+        public IEnumerable<ISampleTransform> Transforms { get; set; }
+
         public ISampleTarget Target { get; private set; }
-
-        public Sample CurrSample { get; private set; }
        
-        private Func<SampleTime, Sample> signalFunc;
+        public double Duration { get; private set; }
 
-        private double duration;
-        
-        private VoiceState currState;
-        private double stateTime;
-        private double currAmp;
-        private double peakAmp;
-
-        
-        
-        public Voice(Func<SampleTime, Sample> signalFunc, double duration, ISampleTarget target)
+        public Sample CurrSample
         {
-            this.Target = target;
-            this.signalFunc = signalFunc;
+            get
+            {
+                return this.currSample;
+            }
+        }
+        private Sample currSample;
 
-            ChangeState(VoiceState.Attack);
+        private VoiceState currState;
+        
+
+        public Voice(ISampleSource source, IEnumerable<ISampleTransform> transforms, ISampleTarget target, double duration)
+        {
+            this.Source = source;
+            this.Transforms = transforms;
+            this.Target = target;
+            this.Duration = duration;
+
+            ChangeState(VoiceState.Playing);
         }
 
 
         public void Update(SampleTime time)
         {
+
             if (!this.IsActive)
             {
-                this.CurrSample = Sample.Zero;
+                //this.currSample = Sample.Zero;
+                this.Target.Write(time, Sample.Zero);
                 return;
             }
 
 
-            // Advance time and check for state machine changes
+            // Get the start signal
 
-            this.stateTime += time.Elapsed; 
-
-
-            // Adjust amplitude based on envelope
-
-            switch (this.currState)
-            {
-                case VoiceState.Attack:
-                    this.currAmp = MathUtil.Lerp(0, 1, (float)(Math.Min(this.stateTime, AttackTime) / AttackTime));
-                    break;
-
-                case VoiceState.Decay:
-                    this.currAmp = MathUtil.Lerp(1, this.ampFunc(this.currTime), (float)(Math.Min(this.stateTime, DecayTime) / DecayTime));
-                    break;
-
-                case VoiceState.Release:
-                    this.currAmp = MathUtil.Lerp(this.peakAmp, 0, (float)(Math.Min(this.stateTime, ReleaseTime) / ReleaseTime));
-                    break;
-            }
+            var sample = this.Source.GetValue(time.Current);
 
 
-            // Check for cancellation (time or manual based)
+            // Run signal through transforms
+            
+            foreach (var transform in this.Transforms)
+                sample = transform.Transform(time, sample);
 
-            if (this.duration != -1 && this.time.Current >= this.duration)
-            {
-                Release();
-            }
 
-            // Check for state changes
+            // Output to target
 
-            switch (this.currState)
-            {
-                case VoiceState.Attack:
-                    if (this.stateTime >= AttackTime)
-                        ChangeState(VoiceState.Decay);
-                    break;
+            this.Target.Write(time, sample);
 
-                case VoiceState.Decay:
-                    if (this.stateTime >= DecayTime)
-                        ChangeState(VoiceState.Sustain);
-                    break;
 
-                case VoiceState.Release:
-                    if (this.stateTime >= ReleaseTime)
-                        ChangeState(VoiceState.Finished);
-                    break;
-            }
+            
 
     
             // Get current signal value
 
-            Sample sample = this.signalFunc(time);
+            //Sample sample = this.signalFunc(time);
 
             //Sample val = (float)this.signalFunc(currTime) * (float)this.currAmp;
 
             //this.CurrSample = sample;
 
-            this.Target.Write(sample);
+            //this.Target.Write(sample);*/
+
         }
 
 
         void ChangeState(VoiceState newState)
         {
             Debug.WriteLine("New state = " + newState.ToString());
-            Debug.WriteLine("Curr Amp = " + this.currAmp.ToString());
             this.currState = newState;
-            this.stateTime = 0;
         }
 
 

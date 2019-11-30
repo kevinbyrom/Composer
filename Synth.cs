@@ -90,6 +90,10 @@ namespace Composer
 
         public void Update(SampleTime time)
         {
+            // Update the voices
+            // Mix the voices and send through global modifiers
+            // Send modified sample to target
+
             this.Voices.Update(time);
         }
 

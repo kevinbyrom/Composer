@@ -22,16 +22,16 @@ namespace Composer.Output
             this.target = target;
         }
 
-        public void Write(Sample sample)
+        public void Write(SampleTime time, Sample sample)
         {
-            this.target.Write(sample);
+            this.target.Write(time, sample);
         }
 
-        public void Write(IEnumerable<Sample> samples)
+        public void Write(SampleTime time, IEnumerable<Sample> samples)
         {
             if (samples.Count() == 0)
             {
-                this.target.Write(Sample.Zero);
+                this.target.Write(time, Sample.Zero);
                 return;        
             }
 
@@ -61,7 +61,7 @@ namespace Composer.Output
 
             //Console.WriteLine($"MixedSample Left = {mixed.Left}, Right = {mixed.Right}");
 
-            this.target.Write(mixed);
+            this.target.Write(time, mixed);
         }
     }
 }
