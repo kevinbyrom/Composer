@@ -4,6 +4,7 @@ namespace Composer.Effects
 {
     public class LowPassFilter : ISampleTransform
     {
+        public bool CanClose { get { return true; }}
         public double Min { get; private set; }
 
         public LowPassFilter(float min)
@@ -17,6 +18,10 @@ namespace Composer.Effects
             sample.Right = Math.Max(sample.Right, this.Min);
 
             return sample;
+        }
+
+        public void Release()
+        {
         }
     }
 }

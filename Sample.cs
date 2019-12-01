@@ -105,7 +105,7 @@ namespace Composer
 
     public interface ISampleSource 
     {
-        Sample CurrSample { get; }
+        //Sample CurrSample { get; }
 
         Sample GetValue(double time);
     }
@@ -118,6 +118,8 @@ namespace Composer
 
     public interface ISampleTransform
     {
+        bool CanClose { get; }
         Sample Transform(SampleTime time, Sample sample);
+        void Release();
     }
 }

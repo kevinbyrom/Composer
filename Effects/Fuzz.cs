@@ -4,6 +4,7 @@ namespace Composer.Effects
 {
     public class FuzzEffect : ISampleTransform
     {
+        public bool CanClose { get { return true; }}
         public double MaxFuzz { get; private set; }
         Random rnd = new Random();
 
@@ -20,6 +21,10 @@ namespace Composer.Effects
             sample.Right += fuzz;
 
             return sample;
+        }
+
+        public void Release()
+        {
         }
     }
 }

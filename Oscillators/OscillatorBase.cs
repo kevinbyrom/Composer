@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Composer.Oscillators
 {
-    public abstract class OscillatorBase
+    public abstract class OscillatorBase : ISampleSource
     {
         public double Frequency { get; protected set; }
 

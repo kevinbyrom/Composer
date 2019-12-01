@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Composer.Oscillators;
 using Composer.Effects;
+using Composer.Modifiers;
 
 
 namespace Composer
@@ -20,9 +21,14 @@ namespace Composer
         public Synth(ISampleTarget target)
         {
             this.Target = target;
+
             this.Filters = new List<ISampleTransform>();
+
             this.Amplifiers = new List<ISampleTransform>();
+            this.Amplifiers.Add(new AmpEnvelopeModifier());
+
             this.PostEffects = new List<ISampleTransform>();
+
             this.Voices = new VoiceGroup();
             this.noteRegistry = new Dictionary<int, Action>();
         }
@@ -38,34 +44,10 @@ namespace Composer
                 return null;
 
 
-            // Construct the signal function
+            // Create the new voice
 
-            Func<SampleTime, Sample> sampleFunc = (time) =>
-            {
-                var osc = new SineWaveOscillator(NoteToFrequency(note));
-                
-                // Get initial signal from oscillator
+            var voice = SpawnVoice(note, duration);
 
-                Sample sample = osc.GetValue(time.Current);
-
-                // Apply transform functions
-
-                this.Filters.ForEach((transform) => { sample = transform.Transform(time, sample); });
-                this.Amplifiers.ForEach((transform) => { sample = transform.Transform(time, sample); });
-                this.PostEffects.ForEach((transform) => { sample = transform.Transform(time, sample); });
-                
-                return sample;
-            };
-
-            // Set up the sample functions (construct with mods)
-
-            //Func<SampleTime, Sample> signalFunc = (time) => { return this.Oscillator.GetValue(time.Current, NoteToFrequency(note)); };
-            //Func<SampleTime, Sample> ampFunc = (time) => { return new Sample(1); };
-            
-            
-            // Create a new voice 
-
-            Voice voice = new Voice(sampleFunc, duration, this.Target);
             this.Voices.Add(voice);
 
 
@@ -90,13 +72,39 @@ namespace Composer
 
         public void Update(SampleTime time)
         {
+            
             // Update the voices
+            
+            this.Voices.Update(time);
+
             // Mix the voices and send through global modifiers
             // Send modified sample to target
 
-            this.Voices.Update(time);
+            
         }
 
+
+        private Voice SpawnVoice(int note, double duration)
+        {
+
+            // Setup the oscillator
+
+            var osc = new SineWaveOscillator(NoteToFrequency(note));
+                
+
+            // Setup the transforms
+
+            var transforms = new List<ISampleTransform>();
+
+            transforms.Add(new AmpEnvelopeModifier());
+
+
+            // Create the voice
+
+            Voice voice = new Voice(osc, transforms, this.Target, duration);
+
+            return voice;
+        }
 
         private float NoteToFrequency(int note)
         {
