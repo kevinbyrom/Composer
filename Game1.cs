@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using Composer.Output;
+using System.Diagnostics;
 
 
 namespace Composer
@@ -46,7 +47,6 @@ namespace Composer
 
             this.synth = new Synth(this.output);
             this.time = new SampleTime(SampleRate);
-
         }
 
         protected override void LoadContent()
@@ -76,6 +76,8 @@ namespace Composer
 
                 this.synth.Update(this.time);
             }
+
+            Trace.Flush();
 
             base.Update(gameTime);
         }

@@ -106,7 +106,7 @@ namespace Composer
 
         void ChangeState(VoiceState newState)
         {
-            Debug.WriteLine("New voice state = " + newState.ToString());
+            //Trace.WriteLine("New voice state = " + newState.ToString());
             this.currState = newState;
             this.stateTime = 0;
         }

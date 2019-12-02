@@ -52,6 +52,7 @@ namespace Composer.Modifiers
         {
             this.Envelope = AmpEnvelopeModifier.BasicConfig();
             ChangeState(EnvelopeState.Attack);
+            this.targetTime = this.Envelope.Attack.Time;
             this.peakAmp = 0;
         }
 
@@ -59,6 +60,7 @@ namespace Composer.Modifiers
         {
             this.Envelope = envelope;
             ChangeState(EnvelopeState.Attack);
+            this.targetTime = this.Envelope.Attack.Time;
             this.peakAmp = 0;
         }
 
@@ -83,6 +85,10 @@ namespace Composer.Modifiers
                 case EnvelopeState.Decay:
                     currAmp = CalculateAmp(this.Envelope.Attack.Target, this.Envelope.Decay.Target, this.Envelope.Decay.Time);
                     break;
+                
+                case EnvelopeState.Sustain:
+                    currAmp = this.Envelope.Sustain.Target;
+                    break;
 
                 case EnvelopeState.Release:
                     currAmp = CalculateAmp(this.peakAmp, 0, this.Envelope.Release.Time);
@@ -94,7 +100,7 @@ namespace Composer.Modifiers
                 this.peakAmp = currAmp;
             }
 
-            Debug.WriteLine($"CurrAmp = {currAmp}");
+            //Trace.WriteLine($"CurrAmp = {currAmp}");
 
             // Check for state changes
 
@@ -108,7 +114,7 @@ namespace Composer.Modifiers
 
         public void Release()
         {
-            if (this.currState == EnvelopeState.Attack || this.currState == EnvelopeState.Decay)
+            if (this.currState != EnvelopeState.Release || this.currState != EnvelopeState.Released)
             {
                 ChangeState(EnvelopeState.Release);
                 this.targetTime = this.Envelope.Release.Time;
@@ -119,7 +125,7 @@ namespace Composer.Modifiers
         {
             var timePct = TimePercent(this.stateTime, targetTime);
 
-            Debug.WriteLine($"TimePct = {timePct}, StateTime = {this.stateTime}");
+            //Trace.WriteLine($"TimePct = {timePct}, StateTime = {this.stateTime}");
 
             return MathUtil.Lerp(minVal, maxVal, timePct); 
         }
@@ -132,7 +138,7 @@ namespace Composer.Modifiers
 
         private void ChangeState(EnvelopeState newState)
         {
-            Debug.WriteLine("New envelope state = " + newState.ToString());
+            //Trace.WriteLine("New envelope state = " + newState.ToString());
             this.currState = newState;
             this.stateTime = 0;
         }
@@ -177,7 +183,7 @@ namespace Composer.Modifiers
 
             config.Decay.Target = 0.75;
             config.Decay.Time = 0.25;
-            ;
+            
             config.Sustain.Target = 0.75;
             config.Sustain.Time = -1;
 
