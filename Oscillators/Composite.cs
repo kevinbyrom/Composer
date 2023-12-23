@@ -12,6 +12,11 @@ namespace Composer.Oscillators
         {
         }
 
+        public CompositeOscillator(Func<double> freq) : base(freq)
+        {
+        }
+
+
         public override Sample GetValue(double time)
         {
             throw new NotImplementedException();

@@ -42,7 +42,7 @@ namespace Composer
             var mixer = new Mixer();
             //mixer.Sources.Add(new SineWaveOscillator(43200));
             mixer.Sources.Add(new SineWaveOscillator(NoteToFrequency(0)));
-            mixer.Sources.Add(new SawtoothWaveOscillator(NoteToFrequency(2)));
+            //mixer.Sources.Add(new SawtoothWaveOscillator(NoteToFrequency(2)));
             this.source = mixer;
 
             this.instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Stereo);

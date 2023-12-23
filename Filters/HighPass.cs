@@ -2,20 +2,33 @@ using System;
 
 namespace Composer.Effects
 {
-    public class HighPassFilter : ISampleTransform
+    public class HighPassFilter : ISampleSource
     {
         public bool CanClose { get { return true; }}
-        public double Max { get; private set; }
+        public Func<double> Max { get; set; }
 
-        public HighPassFilter(float max)
+        public HighPassFilter(double max)
+        {
+            this.Max = () => { return max; };
+        }
+
+        public HighPassFilter(Func<double> max)
         {
             this.Max = max;
         }
 
         public Sample Transform(SampleTime time, Sample sample)
         {
-            sample.Left = Math.Min(sample.Left, this.Max);
-            sample.Right = Math.Min(sample.Right, this.Max);
+            sample.Left = Math.Min(sample.Left, this.Max());
+            sample.Right = Math.Min(sample.Right, this.Max());
+
+            return sample;
+        }
+
+        public Sample GetValue(SampleTime time)
+        {
+            sample.Left = Math.Min(sample.Left, this.Max());
+            sample.Right = Math.Min(sample.Right, this.Max());
 
             return sample;
         }

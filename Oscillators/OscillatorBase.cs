@@ -6,10 +6,14 @@ namespace Composer.Oscillators
 {
     public abstract class OscillatorBase : ISampleSource
     {
-        public double Frequency { get; protected set; }
+        public Func<double> Frequency { get; protected set; }
 
         
-        public OscillatorBase(double freq)
+        public OscillatorBase(double freqVal)
+        {
+            this.Frequency = () => { return freqVal; };
+        }
+        public OscillatorBase(Func<double> freq)
         {
             this.Frequency = freq;
         }

@@ -10,9 +10,14 @@ namespace Composer.Oscillators
         {
         }
 
+        public SineWaveOscillator(Func<double> freq) : base(freq)
+        {
+        }
+
+
         public override Sample GetValue(double time)
         {
-            return new Sample(Math.Sin(this.Frequency * time * 2 * Math.PI));
+            return new Sample(Math.Sin(this.Frequency() * time * 2 * Math.PI));
         }
     }
 }

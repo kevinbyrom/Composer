@@ -83,7 +83,7 @@ namespace Composer
                 sample = transform.Transform(time, sample);
 
                 if (!transform.CanClose)
-                canClose = false;
+                    canClose = false;
             }
 
             // Check for state changes

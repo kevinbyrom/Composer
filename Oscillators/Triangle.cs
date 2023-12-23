@@ -10,9 +10,13 @@ namespace Composer.Oscillators
         {
         }
 
+        public TriangleWaveOscillator(Func<double> freq) : base(freq)
+        {
+        }
+
         public override Sample GetValue(double time)
         {
-            return new Sample(Math.Abs(2 * (time * this.Frequency - Math.Floor(time * this.Frequency + 0.5))) * 2 - 1);
+            return new Sample(Math.Abs(2 * (time * this.Frequency() - Math.Floor(time * this.Frequency() + 0.5))) * 2 - 1);
         }
     }
 }

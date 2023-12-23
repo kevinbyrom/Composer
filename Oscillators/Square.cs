@@ -11,9 +11,13 @@ namespace Composer.Oscillators
         {
         }
 
+        public SquareWaveOscillator(Func<double> freq) : base(freq)
+        {
+        }
+
         public override Sample GetValue(double time)
         {
-            return new Sample(Math.Sin(this.Frequency * time * 2 * Math.PI) >= 0 ? 1 : -1);
+            return new Sample(Math.Sin(this.Frequency() * time * 2 * Math.PI) >= 0 ? 1 : -1);
         }
     }
 }

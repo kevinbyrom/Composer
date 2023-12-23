@@ -12,9 +12,14 @@ namespace Composer.Oscillators
         {
         }
 
+        public PulseOscillator(Func<double> freq) : base(freq)
+        {
+        }
+
+
         public override Sample GetValue(double time)
         {
-            double period = 1.0 / this.Frequency;
+            double period = 1.0 / this.Frequency();
             double timeModulusPeriod = time - Math.Floor(time / period) * period;
             double phase = timeModulusPeriod / period;
 

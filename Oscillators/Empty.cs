@@ -10,6 +10,10 @@ namespace Composer.Oscillators
         { 
         }
 
+        public EmptyOscillator(Func<double> freq) : base(freq)
+        {
+        }
+
         public override Sample GetValue(double time)
         {
             return Sample.Zero;
