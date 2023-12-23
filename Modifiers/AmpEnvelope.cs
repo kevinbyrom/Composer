@@ -5,66 +5,96 @@ using Composer.Utilities;
 
 namespace Composer.Modifiers
 {
-    public enum EnvelopeState
+    /*public enum EnvelopeState
     {
         Attack,
         Decay,
         Sustain,
         Release,
         Released
-    }
+    }*/
 
 
-    public struct EnvelopeSetting
+    public struct EnvelopeBlock : ISampleSource
     {
-        public double Time;
-        public double Target;
+        public Func<double> StartTime;
+        public Func<double> EndTime;
+        public Func<double> Level1;
+        public Func<double> Level2;
+        public Func<double, double, double, double> Lerp;
+        
+        public Sample GetValue(double time)
+        {
+            var sample = Sample.Zero;
+
+            var pct = time - StartTime() / EndTime() - StartTime();
+
+            sample += Lerp(pct, Level1(), Level2());
+
+            return sample;
+        }
+
+        public bool TimeInBlock(double time) 
+        {
+            return time >= StartTime() && time < EndTime();
+        }
+
     }   
 
 
-    public struct EnvelopeConfig
+    public struct Envelopes
     {
-        public EnvelopeSetting Attack;
-        public EnvelopeSetting Decay;
-        public EnvelopeSetting Sustain;
-        public EnvelopeSetting Release;
+        public EnvelopeBlock Attack;
+        public EnvelopeBlock Decay;
+        public EnvelopeBlock Sustain;
+        public EnvelopeBlock Release;
     }
 
 
-    public class AmpEnvelopeModifier : ISampleTransform
+    public class EnvelopeModifier : ISampleSource
     {
-        public bool CanClose
+        public ISampleSource InputSource;
+
+
+        /*public bool CanClose
         {
             get
             {
                 return this.currState == EnvelopeState.Released;
             }
-        }
+        }*/
 
-        public EnvelopeConfig Envelope;
-        private EnvelopeState currState;
-        private double stateTime;
-        private double targetTime;
+        public Envelopes Envelopes;
 
-        private double peakAmp;
 
-        public AmpEnvelopeModifier()
+        public EnvelopeModifier()
         {
-            this.Envelope = AmpEnvelopeModifier.BasicConfig();
-            ChangeState(EnvelopeState.Attack);
-            this.targetTime = this.Envelope.Attack.Time;
-            this.peakAmp = 0;
+            this.Envelopes = EnvelopeModifier.BasicConfig();
         }
 
-        public AmpEnvelopeModifier(EnvelopeConfig envelope)
+        public EnvelopeModifier(EnvelopeConfig envelopes)
         {
-            this.Envelope = envelope;
-            ChangeState(EnvelopeState.Attack);
-            this.targetTime = this.Envelope.Attack.Time;
-            this.peakAmp = 0;
+            this.Envelopes = envelopes;
         }
 
-        public Sample Transform(SampleTime time, Sample sample)
+        public Sample GetValue(double time)
+        {
+            var input = this.InputSource.GetValue(time);
+
+            var sample = Sample.Zero;
+
+            if (Envelopes.Attack.TimeInBlock(time))
+                sample = Envelopes.Attack.GetValue(time);
+            else if (Envelopes.Decay.TimeInBlock(time))
+                sample = Envelopes.Decay.GetValue(time);
+            else if (Envelopes.Sustain.TimeInBlock(time))
+                sample = Envelopes.Sustain.GetValue(time);
+            else
+                sample = Envelopes.Release.GetValue(time);
+
+            return input * sample;
+        }
+        /*public Sample Transform(SampleTime time, Sample sample)
         {
             double currAmp = 0;
 
@@ -172,7 +202,7 @@ namespace Composer.Modifiers
                     break;
 
             }
-        }
+        }*/
 
         public static EnvelopeConfig BasicConfig()
         {

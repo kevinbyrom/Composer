@@ -2,21 +2,26 @@ using System;
 
 namespace Composer.Effects
 {
-    public class FuzzEffect : ISampleTransform
+    public class FuzzEffect : EffectBase
     {
-        public bool CanClose { get { return true; }}
-        public double MaxFuzz { get; private set; }
+        public Func<double> Max { get; set; }
         Random rnd = new Random();
 
         public FuzzEffect(double maxFuzz)
         {
-            this.MaxFuzz = maxFuzz;
+            this.Max = () => { return maxFuzz; };
         }
 
-        public Sample Transform(SampleTime time, Sample sample)
+        public FuzzEffect(Func<double> maxFuzz)
         {
-            double fuzz = rnd.NextDouble() * this.MaxFuzz;
+            this.Max = maxFuzz;
+        }
 
+        public Sample GetValue(SampleTime time)
+        {
+            double fuzz = rnd.NextDouble() * this.Max();
+
+            var sample = InputSource.GetValue(time);
             sample.Left += fuzz;
             sample.Right += fuzz;
 
