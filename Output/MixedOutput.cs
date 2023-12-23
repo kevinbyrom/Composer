@@ -63,5 +63,10 @@ namespace Composer.Output
 
             this.target.Write(time, mixed);
         }
+
+        public void Flush()
+        {
+
+        }
     }
 }

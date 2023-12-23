@@ -105,8 +105,6 @@ namespace Composer
 
     public interface ISampleSource 
     {
-        //Sample CurrSample { get; }
-
         Sample GetValue(double time);
     }
 
@@ -114,6 +112,7 @@ namespace Composer
     {
         void Write(SampleTime time, Sample sample);
         void Write(SampleTime time, IEnumerable<Sample> samples);
+        void Flush();
     }
 
     public interface ISampleTransform

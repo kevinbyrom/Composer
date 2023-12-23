@@ -38,8 +38,7 @@ namespace Composer.Output
 
             if (this.samples.Count == maxSamples)
             {
-                Flush();
-                this.samples.Clear();
+                Flush(); 
             }
         }
 
@@ -83,10 +82,11 @@ namespace Composer.Output
             }
         }
 
-        private void Flush()
+        public void Flush()
         {
             ConvertToXnaBuffer();
             this.instance.SubmitBuffer(this.xnaBuffer);
+            this.samples.Clear();
         }
     }
 }
