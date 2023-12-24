@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Composer.Oscillators;
 using Composer.Utilities;
 
 
@@ -8,53 +9,34 @@ namespace Composer
 {
     public enum VoiceState
     {
+        Stopped,
         Playing,
-        Releasing,
-        Released
+        Releasing
     }
 
-    public class Voice 
-    {
-        private const double AttackTime = 0.1;
-        private const double DecayTime = 0.1;
-        private const double ReleaseTime = 1;
+    public class Voice : ISampleSource
+    {        
+        //public IOscillator Oscillator { get; set; }
+        //public ISampleSource Effect { get; set; }
 
         public bool IsActive { get; private set; }
 
-        public ISampleSource Source { get; private set; }
+        public ISampleSource Source { get; set; }
+        
+        public VoiceState CurrState { get; private set; }
 
-        public IEnumerable<ISampleTransform> Transforms { get; set; }
-
-        public ISampleTarget Target { get; private set; }
-       
-        public double Duration { get; private set; }
-
-        public Sample CurrSample
-        {
-            get
-            {
-                return this.currSample;
-            }
-        }
-        private Sample currSample;
-
-        private VoiceState currState;
         private double stateTime;
 
 
-        public Voice(ISampleSource source, IEnumerable<ISampleTransform> transforms, ISampleTarget target, double duration)
+        public Voice(ISampleSource source)
         {
             this.Source = source;
-            this.Transforms = transforms;
-            this.Target = target;
-            this.Duration = duration;
-            this.IsActive = true;
-
-            ChangeState(VoiceState.Playing);
+            //Oscillator = oscillator;
+            ChangeState(VoiceState.Stopped);
         }
 
 
-        public void Update(SampleTime time)
+        /*public void Update(SampleTime time)
         {
 
             if (!this.IsActive)
@@ -101,18 +83,48 @@ namespace Composer
             // Output to target
 
             this.Target.Write(time, sample);
+        }*/
+
+
+        public void On()
+        {
+            ChangeState(VoiceState.Playing);
         }
 
 
+        public void Off()
+        {
+            ChangeState(VoiceState.Stopped);
+        }
+
+
+        public Sample GetValue(double time)
+        {
+            Sample sample = Sample.Zero;
+
+
+            // Get the oscillator value
+
+            if (CurrState == VoiceState.Playing)
+            {
+                sample = Source.GetValue(time - stateTime);
+            }
+
+
+            // Apply the envelope
+            // Apply the effects
+
+            return sample;
+        }
+
         void ChangeState(VoiceState newState)
         {
-            //Trace.WriteLine("New voice state = " + newState.ToString());
-            this.currState = newState;
+            this.CurrState = newState;
             this.stateTime = 0;
         }
 
 
-        public void Release()
+        /*public void Release()
         {
             if (this.currState == VoiceState.Playing)
             {
@@ -121,6 +133,6 @@ namespace Composer
                 foreach (var transform in this.Transforms)
                     transform.Release();
             }    
-        }
+        }*/
     }
 }

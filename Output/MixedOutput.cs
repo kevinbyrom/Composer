@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -16,7 +16,7 @@ namespace Composer.Output
     public class MixedOutput : ISampleTarget
     {
         private ISampleTarget target;
-        
+
         public MixedOutput(ISampleTarget target)
         {
             this.target = target;
@@ -32,10 +32,10 @@ namespace Composer.Output
             if (samples.Count() == 0)
             {
                 this.target.Write(time, Sample.Zero);
-                return;        
+                return;
             }
 
-            
+
             // Combine the samples and take an average
             // This code will likely need to be changed as 
             // I am hearing an audible shift when dead voices drop off

@@ -57,6 +57,12 @@ namespace Composer
             return false;
         }
 
+        public override string ToString()
+        {
+            return String.Format($"{Left:0.00} : {Right:0.00}");
+        }
+
+
         #region Operator Overloads
 
         public static Sample operator+ (Sample a, Sample b)

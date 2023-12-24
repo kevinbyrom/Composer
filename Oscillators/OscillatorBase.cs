@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Composer.Oscillators
 {
-    public abstract class OscillatorBase : ISampleSource
+    public abstract class OscillatorBase : IOscillator
     {
-        public Func<double> Frequency { get; protected set; }
+        public Func<double> Frequency { get; set; }
 
         
         public OscillatorBase(double freqVal)

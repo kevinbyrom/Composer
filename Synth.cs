@@ -1,3 +1,4 @@
+/*
 using System;
 using System.Collections.Generic;
 using Composer.Oscillators;
@@ -112,3 +113,4 @@ namespace Composer
         }
     }
 }
+*/

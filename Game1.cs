@@ -7,6 +7,8 @@ using Composer.Output;
 using System.Diagnostics;
 
 using Composer.Oscillators;
+using Composer.Effects;
+using System.IO;
 
 namespace Composer
 {
@@ -18,10 +20,12 @@ namespace Composer
         private const double TimePerFrame = (double)1 / SampleRate;
         private const int SamplesPerBuffer = 44100;
         private DynamicSoundEffectInstance instance;
-        private Synth synth;
         private SampleTime time;
+        private Voice[] voices;
         private ISampleSource source;
         private ISampleTarget output;
+        private bool debugMode = false;
+        private StreamWriter debugFile;
 
 
         public Game1()
@@ -37,13 +41,21 @@ namespace Composer
 
             base.Initialize();
 
-            // Setup the output
+
+            // Setup the voices and mixer
+
+            voices = new Voice[3];
+            voices[0] = new Voice(new SineWaveOscillator(Notes.C4));
+            voices[1] = new Voice(new SineWaveOscillator(Notes.E4));
+            voices[2] = new Voice(new SineWaveOscillator(Notes.G4));
 
             var mixer = new Mixer();
-            //mixer.Sources.Add(new SineWaveOscillator(43200));
-            mixer.Sources.Add(new SineWaveOscillator(NoteToFrequency(0)));
-            //mixer.Sources.Add(new SawtoothWaveOscillator(NoteToFrequency(2)));
+            mixer.Sources.Add(voices[0]);
+            mixer.Sources.Add(voices[1]);
+            mixer.Sources.Add(voices[2]);
             this.source = mixer;
+
+            // Setup the output
 
             this.instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Stereo);
             this.instance.Play();
@@ -51,11 +63,10 @@ namespace Composer
             var xnaOutput = new BufferedXnaOutput(instance);
             this.output = new MixedOutput(xnaOutput);
 
-
-            // Setup the synth
-            
-            this.synth = new Synth(this.output);
             this.time = new SampleTime(SampleRate);
+
+            if (debugMode) 
+                this.debugFile = new StreamWriter("d://temp//output.txt", true);
         }
 
         protected override void LoadContent()
@@ -72,13 +83,7 @@ namespace Composer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            /*if (Keyboard.GetState().IsKeyDown(Keys.A)) { this.synth.PlayNote(0); } else { this.synth.NoteOff(0); }
-            if (Keyboard.GetState().IsKeyDown(Keys.S)) { this.synth.PlayNote(2); } else { this.synth.NoteOff(2); }
-            if (Keyboard.GetState().IsKeyDown(Keys.D)) { this.synth.PlayNote(4); } else { this.synth.NoteOff(4); }
-            if (Keyboard.GetState().IsKeyDown(Keys.F)) { this.synth.PlayNote(5); } else { this.synth.NoteOff(5); }
-            if (Keyboard.GetState().IsKeyDown(Keys.G)) { this.synth.PlayNote(7); } else { this.synth.NoteOff(7); }*/
-
-
+            
             // Get the number of samples which have elapsed since last update
 
             int numSamples = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.time.Rate);
@@ -91,16 +96,23 @@ namespace Composer
                 this.time.Current += TimePerFrame;
                 this.time.Elapsed = TimePerFrame;
 
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
-                    sample = this.source.GetValue(this.time.Current);
-                else
-                    sample = Sample.Zero;
-                                
+                sample = this.source.GetValue(this.time.Current);
+
                 this.output.Write(this.time, sample);
-                //this.synth.Update(this.time);
+
+                if (debugMode)
+                    if (voices[0].CurrState == VoiceState.Playing || voices[1].CurrState == VoiceState.Playing)
+                        debugFile.WriteLine(sample.ToString());
             }
 
             this.output.Flush();
+
+
+            // Check for new notes that were pressed
+
+            if (Keyboard.GetState().IsKeyDown(Keys.A)) { voices[0].On(); } else { voices[0].Off(); }
+            if (Keyboard.GetState().IsKeyDown(Keys.S)) { voices[1].On(); } else { voices[1].Off(); }
+            if (Keyboard.GetState().IsKeyDown(Keys.D)) { voices[2].On(); } else { voices[2].Off(); }
 
 
             base.Update(gameTime);
