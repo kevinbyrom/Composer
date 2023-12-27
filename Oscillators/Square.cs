@@ -15,9 +15,9 @@ namespace Composer.Oscillators
         {
         }
 
-        public override Sample GetValue(double time)
+        public override Signal GetValue(double time)
         {
-            return new Sample(Math.Sin(this.Frequency() * time * 2 * Math.PI) >= 0 ? 1 : -1);
+            return new Signal(Math.Sin(this.Frequency() * time * 2 * Math.PI) >= 0 ? 1 : -1);
         }
     }
 }

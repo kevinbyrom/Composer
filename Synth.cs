@@ -10,25 +10,25 @@ namespace Composer
 {
     public class Synth 
     {
-        public ISampleTarget Target { get; private set; }
-        public List<ISampleTransform> Filters { get; set; }
-        public List<ISampleTransform> Amplifiers { get; set; }
-        public List<ISampleTransform> PostEffects { get; set; }
+        public ISignalTarget Target { get; private set; }
+        public List<ISignalTransform> Filters { get; set; }
+        public List<ISignalTransform> Amplifiers { get; set; }
+        public List<ISignalTransform> PostEffects { get; set; }
         public VoiceGroup Voices { get; private set; }
 
         private readonly Dictionary<int, Action> noteRegistry;
 
 
-        public Synth(ISampleTarget target)
+        public Synth(ISignalTarget target)
         {
             this.Target = target;
 
-            this.Filters = new List<ISampleTransform>();
+            this.Filters = new List<ISignalTransform>();
 
-            this.Amplifiers = new List<ISampleTransform>();
+            this.Amplifiers = new List<ISignalTransform>();
             this.Amplifiers.Add(new AmpEnvelopeModifier());
 
-            this.PostEffects = new List<ISampleTransform>();
+            this.PostEffects = new List<ISignalTransform>();
 
             this.Voices = new VoiceGroup();
             this.noteRegistry = new Dictionary<int, Action>();
@@ -95,7 +95,7 @@ namespace Composer
 
             // Setup the transforms
 
-            var transforms = new List<ISampleTransform>();
+            var transforms = new List<ISignalTransform>();
 
             transforms.Add(new AmpEnvelopeModifier());
 

@@ -14,9 +14,9 @@ namespace Composer.Oscillators
         {
         }
 
-        public override Sample GetValue(double time)
+        public override Signal GetValue(double time)
         {
-            return Sample.Zero;
+            return Signal.Zero;
         }
     }
 }

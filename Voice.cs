@@ -14,21 +14,21 @@ namespace Composer
         Releasing
     }
 
-    public class Voice : ISampleSource
+    public class Voice : ISignalSource
     {        
         //public IOscillator Oscillator { get; set; }
-        //public ISampleSource Effect { get; set; }
+        //public ISignalSource Effect { get; set; }
 
         public bool IsActive { get; private set; }
 
-        public ISampleSource Source { get; set; }
+        public ISignalSource Source { get; set; }
         
         public VoiceState CurrState { get; private set; }
 
         private double stateTime;
 
 
-        public Voice(ISampleSource source)
+        public Voice(ISignalSource source)
         {
             this.Source = source;
             //Oscillator = oscillator;
@@ -98,9 +98,9 @@ namespace Composer
         }
 
 
-        public Sample GetValue(double time)
+        public Signal GetValue(double time)
         {
-            Sample sample = Sample.Zero;
+            Signal sample = Signal.Zero;
 
 
             // Get the oscillator value

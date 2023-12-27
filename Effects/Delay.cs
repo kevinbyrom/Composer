@@ -3,7 +3,7 @@ using System;
 
 namespace Composer.Effects
 {
-    public class DelayEffect : ISampleTransform
+    public class DelayEffect : ISignalTransform
     {
         public bool CanClose { get { return true; }}
 
@@ -11,7 +11,7 @@ namespace Composer.Effects
         {
         }
 
-        public Sample Transform(SampleTime time, Sample sample)
+        public Signal Transform(SampleTime time, Signal sample)
         {
             throw new NotImplementedException();
         }

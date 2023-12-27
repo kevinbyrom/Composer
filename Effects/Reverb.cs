@@ -3,7 +3,7 @@
 
 namespace Composer.Effects
 {
-    public class ReverbEffect : ISampleTransform
+    public class ReverbEffect : ISignalTransform
     {
         public bool CanClose { get { return true; }}
         public ReverbEffect()

@@ -22,7 +22,7 @@ namespace Composer.Construction
             this.commands.Add(cmd);
         }
 
-        public void Perform(ISampleTarget target)
+        public void Perform(ISignalTarget target)
         {            
             SampleTime time = new SampleTime();
 

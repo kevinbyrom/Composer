@@ -3,7 +3,7 @@
 
 namespace Composer.Effects
 {
-    public class PhaserEffect : ISampleTransform
+    public class PhaserEffect : ISignalTransform
     {
         public bool CanClose { get { return true; }}
         public PhaserEffect()

@@ -13,11 +13,11 @@ namespace Composer.Oscillators
         {
         }
 
-        public override Sample GetValue(double time)
+        public override Signal GetValue(double time)
         {
             var rndVal = Rng.NextDouble() - Rng.NextDouble();
 
-            return new Sample(rndVal);
+            return new Signal(rndVal);
         }
     }
 }

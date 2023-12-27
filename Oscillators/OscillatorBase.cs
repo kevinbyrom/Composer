@@ -18,6 +18,6 @@ namespace Composer.Oscillators
             this.Frequency = freq;
         }
 
-        public abstract Sample GetValue(double time);
+        public abstract Signal GetValue(double time);
     }
 }

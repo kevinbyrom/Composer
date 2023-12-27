@@ -7,60 +7,54 @@ namespace Composer.Output
 {
     /*public struct MixerInput
     {
-        public ISampleSource Source;
+        public ISignalSource Source;
         public float LeftBalance;
         public float RightBalance;
     }*/
 
 
-    public class MixedOutput : ISampleTarget
+    public class MixedOutput : ISignalTarget
     {
-        private ISampleTarget target;
+        private ISignalTarget target;
 
-        public MixedOutput(ISampleTarget target)
+        public MixedOutput(ISignalTarget target)
         {
             this.target = target;
         }
 
-        public void Write(SampleTime time, Sample sample)
+        public void Write(SampleTime time, Signal sample)
         {
             this.target.Write(time, sample);
         }
 
-        public void Write(SampleTime time, IEnumerable<Sample> samples)
+        public void Write(SampleTime time, IEnumerable<Signal> signals)
         {
-            if (samples.Count() == 0)
+            if (signals.Count() == 0)
             {
-                this.target.Write(time, Sample.Zero);
+                this.target.Write(time, Signal.Zero);
                 return;
             }
 
 
-            // Combine the samples and take an average
+            // Combine the signals and take an average
             // This code will likely need to be changed as 
             // I am hearing an audible shift when dead voices drop off
 
-            double left = 0;
-            double right = 0;
-            int numSamples = 0;
+            double val = 0.0;
+            int numSignals = 0;
 
-            foreach (var sample in samples)
+            foreach (var s in signals)
             {
-                left += sample.Left;
-                right += sample.Right;
-
-                if (sample.Left != 0 && sample.Right != 0)
-                    numSamples++;
+                val += s.Value;
+                
+                if (s.Value != 0)
+                    numSignals++;
             }
 
-            Sample mixed = new Sample();
+            Signal mixed = new Signal();
 
-            mixed.Left = left / (float)numSamples;
-            mixed.Right = right / (float)numSamples;
-
-
-            //Console.WriteLine($"MixedSample Left = {mixed.Left}, Right = {mixed.Right}");
-
+            mixed.Value = val / (double)numSignals;
+            
             this.target.Write(time, mixed);
         }
 

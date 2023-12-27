@@ -3,7 +3,7 @@
 
 namespace Composer.Oscillators
 {
-    public interface IOscillator : ISampleSource
+    public interface IOscillator : ISignalSource
     { 
         Func<double> Frequency { get; set; }
     }

@@ -5,48 +5,47 @@ using Microsoft.Xna.Framework.Audio;
 
 namespace Composer.Output
 {
-    public class BufferedXnaOutput : ISampleTarget
+    public class BufferedXnaOutput : ISignalTarget
     {
         const int NumChannels = 2;
-        const int BytesPerSample = 2;
-        const int DefaultMaxSamples = 3000;
+        const int BytesPerSignal = 2;
+        const int DefaultMaxSignals = 3000;
 
         private DynamicSoundEffectInstance instance;
-        private List<Sample> samples;
+        private List<Signal> signals;
+        private int maxSignals;
         private byte[] xnaBuffer;
-        private int maxSamples;
 
-
-        public BufferedXnaOutput(DynamicSoundEffectInstance instance, int maxSamples = DefaultMaxSamples)
+        public BufferedXnaOutput(DynamicSoundEffectInstance instance, int maxSignals = DefaultMaxSignals)
         {
             this.instance = instance;
-            this.samples = new List<Sample>();
-            this.maxSamples = maxSamples;
-            this.xnaBuffer = new byte[NumChannels * maxSamples * BytesPerSample];
+            this.signals = new List<Signal>();
+            this.maxSignals = maxSignals;
+            this.xnaBuffer = new byte[NumChannels * maxSignals * BytesPerSignal];
         }
 
 
-        public void Write(SampleTime time, Sample sample)
+        public void Write(SampleTime time, Signal signal)
         {
             
-            // Store the sample in the buffer
+            // Store the signal in the buffer
 
-            this.samples.Add(sample);
+            this.signals.Add(signal);
             
             
             // If we have filled the buffer, flush it to the XNA instance 
 
-            if (this.samples.Count == maxSamples)
+            if (this.signals.Count == maxSignals)
             {
                 Flush(); 
             }
         }
 
 
-        public void Write(SampleTime time, IEnumerable<Sample> samples)
+        public void Write(SampleTime time, IEnumerable<Signal> signals)
         {
-            foreach (var sample in samples)
-                Write(time, sample);
+            foreach (var signal in signals)
+                Write(time, signal);
         }
 
 
@@ -54,14 +53,14 @@ namespace Composer.Output
         {
             int pos = 0;
 
-            for (int i = 0; i < this.samples.Count; i++)
+            for (int i = 0; i < this.signals.Count; i++)
             {
-                Sample sample = this.samples[i];
+                Signal s = this.signals[i];
 
                 // Get short values for left & right
                 
-                short shortLeft = (short)(sample.Left >= 0.0f ? sample.Left * short.MaxValue : sample.Left * short.MinValue * -1);
-                short shortRight = (short)(sample.Right >= 0.0f ? sample.Right * short.MaxValue : sample.Right * short.MinValue * -1);
+                short shortLeft = (short)(s.Value >= 0.0f ? s.Value * short.MaxValue : s.Value * short.MinValue * -1);
+                short shortRight = (short)(s.Value >= 0.0f ? s.Value * short.MaxValue : s.Value * short.MinValue * -1);
 
                 // Store as 16 bit sample
                 
@@ -86,7 +85,7 @@ namespace Composer.Output
         {
             ConvertToXnaBuffer();
             this.instance.SubmitBuffer(this.xnaBuffer);
-            this.samples.Clear();
+            this.signals.Clear();
         }
     }
 }

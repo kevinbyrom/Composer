@@ -22,8 +22,8 @@ namespace Composer
         private DynamicSoundEffectInstance instance;
         private SampleTime time;
         private Voice[] voices;
-        private ISampleSource source;
-        private ISampleTarget output;
+        private ISignalSource source;
+        private ISignalTarget output;
         private bool debugMode = false;
         private StreamWriter debugFile;
 
@@ -78,7 +78,7 @@ namespace Composer
 
         protected override void Update(GameTime gameTime)
         {
-            Sample sample = Sample.Zero;
+            Signal signal = Signal.Zero;
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
@@ -96,13 +96,13 @@ namespace Composer
                 this.time.Current += TimePerFrame;
                 this.time.Elapsed = TimePerFrame;
 
-                sample = this.source.GetValue(this.time.Current);
+                signal = this.source.GetValue(this.time.Current);
 
-                this.output.Write(this.time, sample);
+                this.output.Write(this.time, signal);
 
                 if (debugMode)
                     if (voices[0].CurrState == VoiceState.Playing || voices[1].CurrState == VoiceState.Playing)
-                        debugFile.WriteLine(sample.ToString());
+                        debugFile.WriteLine(signal.ToString());
             }
 
             this.output.Flush();

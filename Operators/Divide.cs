@@ -7,22 +7,22 @@ using System.Threading.Tasks;
 
 namespace Composer.Operators
 {
-    public class DivideOperator : ISampleSource
+    public class DivideOperator : ISignalSource
     {
-        public ISampleSource Operand1 { get; set; }
-        public ISampleSource Operand2 { get; set; }
+        public ISignalSource Operand1 { get; set; }
+        public ISignalSource Operand2 { get; set; }
 
         public DivideOperator()
         {
         }
 
-        public DivideOperator(ISampleSource oper1, ISampleSource oper2)
+        public DivideOperator(ISignalSource oper1, ISignalSource oper2)
         {
             this.Operand1 = oper1;
             this.Operand2 = oper2;
         }
 
-        public Sample GetValue(double time)
+        public Signal GetValue(double time)
         {
             return Operand1.GetValue(time) / Operand2.GetValue(time);
         }
@@ -30,7 +30,7 @@ namespace Composer.Operators
 
     public static class DivideOperatorExtensions
     {
-        public static ISampleSource Divide(this ISampleSource source, ISampleSource target)
+        public static ISignalSource Divide(this ISignalSource source, ISignalSource target)
         {
             return new DivideOperator(source, target);
         }

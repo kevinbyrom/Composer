@@ -17,16 +17,16 @@ namespace Composer.Oscillators
         }
 
 
-        public override Sample GetValue(double time)
+        public override Signal GetValue(double time)
         {
             double period = 1.0 / this.Frequency();
             double timeModulusPeriod = time - Math.Floor(time / period) * period;
             double phase = timeModulusPeriod / period;
 
             if (phase <= DutyCycle)
-                return new Sample(1);
+                return Signal.Max;
             else
-                return new Sample(-1);
+                return Signal.Min; 
         }
     }
 }

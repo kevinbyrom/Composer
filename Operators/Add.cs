@@ -5,24 +5,25 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Composer.Operators
 {
-    public class AddOperator : ISampleSource
+    public class AddOperator : ISignalSource
     {
-        public ISampleSource Operand1 { get; set; }
-        public ISampleSource Operand2 { get; set; }
+        public ISignalSource Operand1 { get; set; }
+        public ISignalSource Operand2 { get; set; }
 
         public AddOperator() 
         { 
         }
 
-        public AddOperator(ISampleSource oper1, ISampleSource oper2)
+        public AddOperator(ISignalSource oper1, ISignalSource oper2)
         {
             this.Operand1 = oper1;
             this.Operand2 = oper2;
         }
 
-        public Sample GetValue(double time) 
+        public Signal GetValue(double time) 
         {
             return Operand1.GetValue(time) + Operand2.GetValue(time);
         }   
@@ -30,7 +31,7 @@ namespace Composer.Operators
 
     public static class AddOperatorExtensions
     {
-        public static ISampleSource Add(this ISampleSource source, ISampleSource target)
+        public static ISignalSource Add(this ISignalSource source, ISignalSource target)
         {
             return new AddOperator(source, target);
         }

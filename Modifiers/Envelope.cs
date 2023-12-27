@@ -5,7 +5,7 @@ using Composer.Utilities;
 
 namespace Composer.Modifiers
 {
-    public struct EnvelopeStage : ISampleSource
+    public struct EnvelopeStage : ISignalSource
     {
         public Func<double> StartTime;
         public Func<double> EndTime;
@@ -41,9 +41,9 @@ namespace Composer.Modifiers
     }
 
 
-    public class EnvelopeModifier : ISampleSource
+    public class EnvelopeModifier : ISignalSource
     {
-        public ISampleSource InputSource;
+        public ISignalSource InputSource;
         public EnvelopeSettings Settings;
 
 

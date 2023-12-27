@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace Composer.Effects
 {
-    public abstract class EffectBase : ISampleSource
+    public abstract class EffectBase : ISignalSource
     {
-        public ISampleSource Source { get; set; }
+        public ISignalSource Source { get; set; }
 
-        public EffectBase(ISampleSource source) 
+        public EffectBase(ISignalSource source) 
         { 
             this.Source = source; 
         }
 
-        public abstract Sample GetValue(double time);
+        public abstract Signal GetValue(double time);
     }
 }

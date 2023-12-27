@@ -3,44 +3,43 @@ using System;
 
 namespace Composer.Effects
 {
-    public class HighPassFilter : ISampleSource
+    public class HighPassFilter : ISignalSource
     {
-        public ISampleSource Source { get; set; }
+        public ISignalSource Source { get; set; }
         public Func<double> Max { get; set; }
 
 
-        public HighPassFilter(ISampleSource source, double max)
+        public HighPassFilter(ISignalSource source, double max)
         {
             this.Source = source;
             this.Max = () => { return max; };
         }
 
-        public HighPassFilter(ISampleSource source, Func<double> max)
+        public HighPassFilter(ISignalSource source, Func<double> max)
         {
             this.Source = source;
             this.Max = max;
         }
 
 
-        public Sample GetValue(double time)
+        public Signal GetValue(double time)
         {
-            var sample = Source.GetValue(time);
+            var signal = Source.GetValue(time);
 
-            sample.Left = Math.Min(sample.Left, this.Max());
-            sample.Right = Math.Min(sample.Right, this.Max());
-
-            return sample;
+            signal.Value = Math.Min(signal.Value, this.Max());
+            
+            return signal;
         }
     }
 
     public static class HighPassFilterExtensions
     {
-        public static ISampleSource HighPass(this ISampleSource source, double max)
+        public static ISignalSource HighPass(this ISignalSource source, double max)
         {
             return new HighPassFilter(source, max);
         }
 
-        public static ISampleSource HighPass(this ISampleSource source, Func<double> max)
+        public static ISignalSource HighPass(this ISignalSource source, Func<double> max)
         {
             return new HighPassFilter(source, max);
         }

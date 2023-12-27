@@ -17,7 +17,7 @@ namespace Composer.Oscillators
         }
 
 
-        public override Sample GetValue(double time)
+        public override Signal GetValue(double time)
         {
             throw new NotImplementedException();
             //return Signals.Select(s => s.GetValue(time, freq)).Sum();
