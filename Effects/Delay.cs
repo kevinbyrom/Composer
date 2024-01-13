@@ -11,7 +11,7 @@ namespace Composer.Effects
         {
         }
 
-        public Signal Transform(SampleTime time, Signal sample)
+        public Signal Transform(double time, Signal sample)
         {
             throw new NotImplementedException();
         }

@@ -6,39 +6,24 @@ using Composer.Utilities;
 
 namespace Composer
 {
-    public class Mixer : ISignalSource
+    public static class SignalMixer 
     {
-        public List<ISignalSource> Sources { get; set; }
-
-        public Mixer()
+        public static Signal Mix(IEnumerable<Signal> signals)
         {
-            this.Sources = new List<ISignalSource>();
-        }
-
-        public Mixer(IEnumerable<ISignalSource> sources) : this()
-        {
-            this.Sources.AddRange(sources);
-        }
-
-        public Signal GetValue(double time)
-        {
-            
             double val = 0;
-            int numSources = 0;
+            int numActive = 0;
 
-            foreach (var source in this.Sources)
+            foreach (var s in signals)
             {
-                var s = source.GetValue(time);
-
                 val += s.Value;
-                
+
                 if (s.Value != 0)
-                    numSources++;
+                    numActive++;
             }
 
             Signal mixed = new Signal();
 
-            mixed.Value = val / (double)numSources;
+            mixed.Value = val / (double)numActive;
 
             return mixed;
         }

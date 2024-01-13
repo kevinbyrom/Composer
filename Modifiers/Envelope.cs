@@ -1,32 +1,21 @@
-/*using System;
+using System;
 using System.Diagnostics;
 using Composer.Utilities;
 
 
 namespace Composer.Modifiers
 {
-    public struct EnvelopeStage : ISignalSource
+    public struct EnvelopeStage
     {
         public Func<double> StartTime;
         public Func<double> EndTime;
-        public Func<double> Level1;
-        public Func<double> Level2;
+        public Func<double> StartLevel;
+        public Func<double> EndLevel;
         public Func<double, double, double, double> Lerp;
-        
-        public Sample GetValue(double time)
-        {
-            var sample = Sample.Zero;
-
-            var pct = time - StartTime() / EndTime() - StartTime();
-
-            sample += Lerp(pct, Level1(), Level2());
-
-            return sample;
-        }
 
         public bool TimeInBlock(double time) 
         {
-            return time >= StartTime() && time < EndTime();
+            return EndTime() == -1 || time >= StartTime() && time < EndTime();
         }
 
     }   
@@ -46,56 +35,40 @@ namespace Composer.Modifiers
         public ISignalSource InputSource;
         public EnvelopeSettings Settings;
 
-
-        public EnvelopeModifier()
-        {
-            this.Settings = EnvelopeModifier.BasicSettings();
-        }
-
         public EnvelopeModifier(EnvelopeSettings settings)
         {
             this.Settings = settings;
         }
 
-        public Sample GetValue(double time)
+        public Signal GetValue(double time)
         {
-            var input = this.InputSource.GetValue(time);
+     
+            // Determine what stage we are in (assuming that time is relative to the voice start time)
 
-            var sample = Sample.Zero;
+            EnvelopeStage stage;
 
             if (Settings.Attack.TimeInBlock(time))
-                sample = Settings.Attack.GetValue(time);
-
+                stage = Settings.Attack;
             else if (Settings.Decay.TimeInBlock(time))
-                sample = Settings.Decay.GetValue(time);
-
-            else if (Settings.Sustain.TimeInBlock(time))
-                sample = Settings.Sustain.GetValue(time);
-
+                stage = Settings.Decay;
+            else if (Settings.Sustain.TimeInBlock(time))  // SustainTime should be set to -1 if pedal held
+                stage = Settings.Sustain;
             else
-                sample = Settings.Release.GetValue(time);
+                stage = Settings.Release;
 
-            return input * sample;
-        }
 
-        public static EnvelopeSettings BasicSettings()
-        {
-            var settings = new EnvelopeSettings();
+            // Get the value based on where we are in the stage
 
-            settings.Attack.Target = 1;
-            settings.Attack.Time = 0.5;
+            var signal = Signal.Zero;
 
-            settings.Decay.Target = 0.75;
-            settings.Decay.Time = 0.25;
+            var pct = time - stage.StartTime() / stage.EndTime() - stage.StartTime();
 
-            settings.Sustain.Target = 0.75;
-            settings.Sustain.Time = -1;
+            signal += MathUtil.Lerp(stage.StartLevel(), stage.EndLevel(), pct);
 
-            settings.Release.Target = 0;
-            settings.Release.Time = 1;
 
-            return settings;
+            // Mix the input with the current signal
+
+            return this.InputSource.GetValue(time) * signal;
         }
     }
 }
-*/

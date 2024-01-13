@@ -1,116 +1,108 @@
-/*
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
 using Composer.Oscillators;
 using Composer.Effects;
 using Composer.Modifiers;
+using Composer.Utilities;
 
 
 namespace Composer
 {
     public class Synth 
     {
-        public ISignalTarget Target { get; private set; }
-        public List<ISignalTransform> Filters { get; set; }
-        public List<ISignalTransform> Amplifiers { get; set; }
-        public List<ISignalTransform> PostEffects { get; set; }
-        public VoiceGroup Voices { get; private set; }
+        public ISignalTarget Output { get; private set; }
 
-        private readonly Dictionary<int, Action> noteRegistry;
+        //public IOscillator Oscillator { get; set; }
+        //public ISignalTarget Target { get; private set; }
+        //public List<ISignalTransform> Filters { get; set; }
+        //public List<ISignalTransform> Amplifiers { get; set; }
+        //public List<ISignalTransform> PostEffects { get; set; }
+        //public VoiceGroup Voices { get; private set; }
+
+        public int SampleRate { get; private set; }
+        public double TimePerFrame { get; private set; }
+
+        private Dictionary<int, Voice> keyVoices;
+        private double currTime = 0.0;
 
 
-        public Synth(ISignalTarget target)
+        public Synth(int sampleRate, ISignalTarget output)
         {
-            this.Target = target;
-
-            this.Filters = new List<ISignalTransform>();
-
-            this.Amplifiers = new List<ISignalTransform>();
-            this.Amplifiers.Add(new AmpEnvelopeModifier());
-
-            this.PostEffects = new List<ISignalTransform>();
-
-            this.Voices = new VoiceGroup();
-            this.noteRegistry = new Dictionary<int, Action>();
+            this.SampleRate = sampleRate;
+            this.Output = output;
+            this.TimePerFrame = 1.0 / (double)sampleRate;
+            this.keyVoices = new Dictionary<int, Voice>();
         }
 
 
-
-        public Voice PlayNote(int note, double duration = -1)
+        public void SetupKey(int key, double freq)
         {
+            var voice = new Voice(new SineWaveOscillator(freq));
 
-            // Only play the note if not already playing
-
-            if (this.noteRegistry.ContainsKey(note))
-                return null;
-
-
-            // Create the new voice
-
-            var voice = SpawnVoice(note, duration);
-
-            this.Voices.Add(voice);
-
-
-            // Track the note so we can release it later
-
-            this.noteRegistry[note] = () => { voice.Release(); };
-
-            return voice;
+            this.keyVoices.Add(key, voice);
         }
 
 
-        public void NoteOff(int note)
+        public void KeyOn(int key)
         {
-            if (this.noteRegistry.ContainsKey(note))
+
+            // Get the voice associated with the key
+
+            var voice = this.keyVoices[key];
+
+
+            // Turn the voice on
+
+            voice.On();
+
+        }
+
+
+        public void KeyOff(int key)
+        {
+            
+            // Get the voice associated with they key
+
+            var voice = this.keyVoices[key];
+
+
+            // Turn the voice off
+
+            voice.Off();
+
+        }
+
+
+        public void Update(GameTime gameTime)
+        {
+
+            // Determine how many samples have elapsed since last time
+
+            int numSamples = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.SampleRate);
+
+
+            // Get each voice signal for the sample and push to the output
+
+            for (int s = 0; s < numSamples; s++)
             {
-                this.noteRegistry[note]();
-                this.noteRegistry.Remove(note);
-            }
-        }
-        
+                var voices = this.keyVoices.Values;
 
+                var signals = new Signal[voices.Count];
 
-        public void Update(SampleTime time)
-        {
-            
-            // Update the voices
-            
-            this.Voices.Update(time);
+                int i = 0;
 
-            // Mix the voices and send through global modifiers
-            // Send modified sample to target
+                foreach (var voice in this.keyVoices.Values)
+                {
+                    voice.Update(this.currTime);
+                    signals[i++] = voice.CurrSignal;
+                }
 
-            
-        }
-
-
-        private Voice SpawnVoice(int note, double duration)
-        {
-
-            // Setup the oscillator
-
-            var osc = new SineWaveOscillator(NoteToFrequency(note));
+                this.Output.Write(this.currTime, SignalMixer.Mix(signals));
                 
 
-            // Setup the transforms
-
-            var transforms = new List<ISignalTransform>();
-
-            transforms.Add(new AmpEnvelopeModifier());
-
-
-            // Create the voice
-
-            Voice voice = new Voice(osc, transforms, this.Target, duration);
-
-            return voice;
-        }
-
-        private float NoteToFrequency(int note)
-        {
-            return (float)(440.0 * Math.Pow(2, (note - 9) / 12.0f));
+                this.currTime += this.TimePerFrame;
+            }
         }
     }
 }
-*/

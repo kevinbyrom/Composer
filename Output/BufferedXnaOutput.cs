@@ -25,7 +25,7 @@ namespace Composer.Output
         }
 
 
-        public void Write(SampleTime time, Signal signal)
+        public void Write(double time, Signal signal)
         {
             
             // Store the signal in the buffer
@@ -42,7 +42,7 @@ namespace Composer.Output
         }
 
 
-        public void Write(SampleTime time, IEnumerable<Signal> signals)
+        public void Write(double time, IEnumerable<Signal> signals)
         {
             foreach (var signal in signals)
                 Write(time, signal);

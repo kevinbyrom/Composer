@@ -22,12 +22,12 @@ namespace Composer.Output
             this.target = target;
         }
 
-        public void Write(SampleTime time, Signal sample)
+        public void Write(double time, Signal sample)
         {
             this.target.Write(time, sample);
         }
 
-        public void Write(SampleTime time, IEnumerable<Signal> signals)
+        public void Write(double time, IEnumerable<Signal> signals)
         {
             if (signals.Count() == 0)
             {

@@ -10,24 +10,26 @@ namespace Composer
         static public Signal Max => new Signal(1.0);
         static public Signal Min => new Signal(-1.0);
 
-        public double Value { get; set; }
-        public double BoundedValue 
+        private double val;
+
+        public double Value
         {
             get
             {
-                return this.Value;
+                return val;
             }
             set
             {
-                double val = value;
-                val = Math.Min(1, val);
-                this.Value = val;
+                double v = value;
+                v = Math.Min(1.0, v);
+                v = Math.Max(-1.0, v);
+                val = v;
             }
         }
 
-        public Signal(double val)
+        public Signal(double v)
         {
-            this.Value = val;
+            this.val = v;
         }
 
         public override bool Equals(object obj)
@@ -48,42 +50,42 @@ namespace Composer
 
         public static Signal operator+ (Signal a, Signal b)
         {
-            return new Signal() { BoundedValue = a.Value + b.Value };
+            return new Signal() { Value = a.Value + b.Value };
         }
 
         public static Signal operator +(Signal a, double b)
         {
-            return new Signal() { BoundedValue = a.Value + b };
+            return new Signal() { Value = a.Value + b };
         }
         
         public static Signal operator -(Signal a, Signal b)
         {
-            return new Signal() { BoundedValue = a.Value - b.Value };
+            return new Signal() { Value = a.Value - b.Value };
         }
 
         public static Signal operator -(Signal a, double b)
         {
-            return new Signal() { BoundedValue = a.Value - b };
+            return new Signal() { Value = a.Value - b };
         }
 
         public static Signal operator *(Signal a, Signal b)
         {
-            return new Signal() { BoundedValue = a.Value * b.Value };
+            return new Signal() { Value = a.Value * b.Value };
         }
 
         public static Signal operator *(Signal a, double b)
         {
-            return new Signal() { BoundedValue = a.Value * b };
+            return new Signal() { Value = a.Value * b };
         }
 
         public static Signal operator /(Signal a, Signal b)
         {
-            return new Signal() { BoundedValue = a.Value / b.Value };
+            return new Signal() { Value = a.Value / b.Value };
         }
 
         public static Signal operator /(Signal a, double b)
         {
-            return new Signal() { BoundedValue = a.Value / b };
+            return new Signal() { Value = a.Value / b };
         }
 
         #endregion
@@ -97,15 +99,15 @@ namespace Composer
 
     public interface ISignalTarget
     {
-        void Write(SampleTime time, Signal signal);
-        void Write(SampleTime time, IEnumerable<Signal> signals);
+        void Write(double time, Signal signal);
+        void Write(double time, IEnumerable<Signal> signals);
         void Flush();
     }
 
     public interface ISignalTransform
     {
         bool CanClose { get; }
-        Signal Transform(SampleTime time, Signal signal);
+        Signal Transform(double time, Signal signal);
         void Release();
     }
 }
