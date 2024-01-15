@@ -38,7 +38,7 @@ namespace Composer
 
         public void SetupKey(int key, double freq)
         {
-            var voice = new Voice(new SineWaveOscillator(freq));
+            var voice = new Voice(new SineWaveOscillator(freq).Envelope());
 
             this.keyVoices.Add(key, voice);
         }
