@@ -21,7 +21,7 @@ namespace Composer
         //public VoiceGroup Voices { get; private set; }
 
         public int SampleRate { get; private set; }
-        public double TimePerFrame { get; private set; }
+        public double TimePerTick { get; private set; }
 
         private Dictionary<int, Voice> keyVoices;
         private double currTime = 0.0;
@@ -31,7 +31,7 @@ namespace Composer
         {
             this.SampleRate = sampleRate;
             this.Output = output;
-            this.TimePerFrame = 1.0 / (double)sampleRate;
+            this.TimePerTick = 1.0 / (double)sampleRate;
             this.keyVoices = new Dictionary<int, Voice>();
         }
 
@@ -77,14 +77,14 @@ namespace Composer
         public void Update(GameTime gameTime)
         {
 
-            // Determine how many samples have elapsed since last time
+            // Determine how many ticks have elapsed since last time
 
-            int numSamples = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.SampleRate);
+            int ticks = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.SampleRate);
 
 
             // Get each voice signal for the sample and push to the output
 
-            for (int s = 0; s < numSamples; s++)
+            for (int s = 0; s < ticks; s++)
             {
                 var voices = this.keyVoices.Values;
 
@@ -101,7 +101,7 @@ namespace Composer
                 this.Output.Write(this.currTime, SignalMixer.Mix(signals));
                 
 
-                this.currTime += this.TimePerFrame;
+                this.currTime += this.TimePerTick;
             }
         }
     }
