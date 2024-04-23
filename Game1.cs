@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Audio;
 using Composer.Output;
 using System.IO;
 
+using Composer.Oscillators;
 
 namespace Composer
 {
@@ -48,9 +49,9 @@ namespace Composer
             // Setup the synth
 
             synth = new Synth(SampleRate, this.output);
-            synth.SetupKey(0, Notes.C4);
-            synth.SetupKey(1, Notes.E4);
-            synth.SetupKey(2, Notes.G4);
+            //synth.SetupKey(0, Notes.C4);
+            //synth.SetupKey(1, Notes.E4);
+            //synth.SetupKey(2, Notes.G4);
 
 
             if (debugMode) 

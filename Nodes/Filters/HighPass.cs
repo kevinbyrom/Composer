@@ -1,7 +1,7 @@
-using Composer.Operators;
+/*using Composer.Operators;
 using System;
 
-namespace Composer.Effects
+namespace Composer.Nodes.Filters
 {
     public class HighPassFilter : ISignalSource
     {
@@ -11,14 +11,14 @@ namespace Composer.Effects
 
         public HighPassFilter(ISignalSource source, double max)
         {
-            this.Source = source;
-            this.Max = () => { return max; };
+            Source = source;
+            Max = () => { return max; };
         }
 
         public HighPassFilter(ISignalSource source, Func<double> max)
         {
-            this.Source = source;
-            this.Max = max;
+            Source = source;
+            Max = max;
         }
 
 
@@ -26,8 +26,8 @@ namespace Composer.Effects
         {
             var signal = Source.GetValue(time);
 
-            signal.Value = Math.Min(signal.Value, this.Max());
-            
+            signal.Value = Math.Min(signal.Value, Max());
+
             return signal;
         }
     }
@@ -44,4 +44,4 @@ namespace Composer.Effects
             return new HighPassFilter(source, max);
         }
     }
-}
+}*/

@@ -1,4 +1,4 @@
-﻿using Composer.Operators;
+﻿/*using Composer.Operators;
 using System;
 
 namespace Composer.Effects
@@ -43,4 +43,4 @@ namespace Composer.Effects
             return new CompressEffect(source, min, max);
         }
     }
-}
+}*/
