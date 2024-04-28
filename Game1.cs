@@ -58,7 +58,7 @@ namespace Composer
 
             // Setup the synth
 
-            synth = new Synth(SampleRate, this.output, true);
+            synth = new Synth(SampleRate, this.output, false);
             //synth.SetupKey(0, Notes.C4);
             //synth.SetupKey(1, Notes.E4);
             //synth.SetupKey(2, Notes.G4);
