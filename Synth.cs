@@ -32,12 +32,12 @@ namespace Composer
         
         public bool DebugMode { get; private set; }
 
-        public IEnumerable<Signal> LastSignals { get { return lastSignals; } }
+        public Signal LastSignal { get { return lastSignal; } }
 
         //private Dictionary<int, Voice> keyVoices;
         private ISignalNode rootNode;
         private double currTime = 0.0;
-        private Signal[] lastSignals;
+        private Signal lastSignal;
         private StreamWriter debugWriter;
 
         public Synth(int sampleRate, ISignalTarget output, bool debugMode = false)
@@ -50,16 +50,15 @@ namespace Composer
             //this.keyVoices = new Dictionary<int, Voice>();
 
             var key1 = new KeyNode(Keys.A);
-            var voice1 = new OscillatorNode(new SineWaveOscillator(Notes.E4), key1);
+            var voice1 = new OscillatorNode(new SquareWaveOscillator(Notes.E4), key1);
 
-            //var constant2 = new OscillatorNode(new SineWaveOscillator(Notes.C4));
-            //var voice2 = new KeyNode(Keys.S).Multiply(constant2);
+            var key2 = new KeyNode(Keys.S);
+            var voice2 = new OscillatorNode(new SineWaveOscillator(Notes.C4), key2);
 
-            //var constant3 = new OscillatorNode(new SineWaveOscillator(Notes.G4));
-            //var voice3 = new KeyNode(Keys.D).Multiply(constant3);
+            var key3 = new KeyNode(Keys.D);
+            var voice3 = new OscillatorNode(new NoiseOscillator(Notes.G4), key3);
 
-            //this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 });
-            this.rootNode = new MixerNode(new ISignalNode[] { voice1 });
+            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 });
 
             if (this.DebugMode)
                 this.debugWriter = new StreamWriter("output.txt", false);
@@ -112,41 +111,13 @@ namespace Composer
 
         public void Update(double time)
         {
+            this.rootNode.Update(time);
+            this.Output.Write(time, this.rootNode.Signal);
+            this.lastSignal = this.rootNode.Signal;
 
-            // Determine how many ticks have elapsed since last time
+            if (this.DebugMode)
+                this.debugWriter.WriteLine(this.lastSignal.ToString());
 
-            //int ticks = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.SampleRate);
-
-            //this.lastSignals = new Signal[ticks];
-
-            // Get each voice signal for the sample and push to the output
-
-            //for (int s = 0; s < ticks; s++)
-            //{
-                /*var voices = this.keyVoices.Values;
-
-                var signals = new Signal[voices.Count];
-
-                int i = 0;
-
-                foreach (var voice in this.keyVoices.Values)
-                {
-                    voice.Update(this.currTime);
-                    signals[i++] = voice.CurrSignal;
-                }
-                */
-
-                this.rootNode.Update(time);
-                var signal = this.rootNode.Signal;
-                this.Output.Write(time, signal);
-                //this.Output.Write(this.currTime, SignalMixer.Mix(signals));
-
-                if (this.DebugMode)
-                    this.debugWriter.WriteLine(signal.ToString());
-
-                //this.currTime += this.TimePerTick;
-                //this.lastSignals[s] = this.rootNode.Signal;
-            //}
         }
     }
 }

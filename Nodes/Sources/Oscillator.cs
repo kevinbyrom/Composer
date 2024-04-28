@@ -16,7 +16,7 @@ namespace Composer.Nodes.Sources
 
         public Func<double> Frequency { get; set; }
 
-        double currTime = 0.0;
+        double startTime = 0.0;
 
         public OscillatorNode() : base()
         {
@@ -41,17 +41,13 @@ namespace Composer.Nodes.Sources
 
             if (powerOn && this.Oscillator != null)
             {
-                this.Signal = this.Oscillator.GetValue(time);
-                //this.Signal = this.Oscillator.GetValue(currTime);
+                this.Signal = this.Oscillator.GetValue(time - startTime);
             }
             else
             {
-                currTime = 0.0;
+                startTime = time;
                 this.Signal = Signal.Zero;
             }
-            
-
-            currTime += time;
         }
     }
 }

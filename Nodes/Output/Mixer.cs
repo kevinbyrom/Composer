@@ -41,7 +41,8 @@ namespace Composer.Nodes.Output
 
                 Signal mixed = new Signal();
 
-                mixed.Value = val / (double)numActive;
+                if (numActive != 0)
+                    mixed.Value = val / (double)numActive;
 
                 this.Signal = mixed;
             }
