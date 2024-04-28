@@ -7,6 +7,7 @@ using Composer.Output;
 using System.IO;
 
 using Composer.Oscillators;
+using System.Text;
 
 namespace Composer
 {
@@ -14,6 +15,8 @@ namespace Composer
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        private const int ScreenWidth = 1920;
+        private const int ScreenHeight = 1080;
         private const int SampleRate = 44100;
         private const int SamplesPerBuffer = 44100;
         private DynamicSoundEffectInstance instance;
@@ -21,6 +24,10 @@ namespace Composer
         private ISignalTarget output;
         private bool debugMode = false;
         private StreamWriter debugFile;
+        private Texture2D background;
+        private SpriteFont font;
+        private double timePerTick = 1.0 / (double)SampleRate;
+        private double currTime = 0.0;
 
 
         public Game1()
@@ -32,10 +39,12 @@ namespace Composer
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
 
-            base.Initialize();
+            // Setup graphics resolution
 
+            graphics.PreferredBackBufferWidth = ScreenWidth;
+            graphics.PreferredBackBufferHeight = ScreenHeight;
+            graphics.ApplyChanges();
 
             // Setup the output
 
@@ -48,14 +57,22 @@ namespace Composer
 
             // Setup the synth
 
-            synth = new Synth(SampleRate, this.output);
+            synth = new Synth(SampleRate, this.output, true);
             //synth.SetupKey(0, Notes.C4);
             //synth.SetupKey(1, Notes.E4);
             //synth.SetupKey(2, Notes.G4);
 
 
-            if (debugMode) 
+            // Setup the background buffer and font
+
+            this.background = new Texture2D(GraphicsDevice, ScreenWidth, ScreenHeight);
+            this.font = Content.Load<SpriteFont>("Arial");
+
+            if (debugMode)
                 this.debugFile = new StreamWriter("d://temp//output.txt", true);
+
+
+            base.Initialize();            
         }
 
         protected override void LoadContent()
@@ -68,11 +85,19 @@ namespace Composer
         protected override void Update(GameTime gameTime)
         {
 
+            // Determine how many ticks have elapsed since last time
+
+            int ticks = (int)(gameTime.ElapsedGameTime.TotalSeconds * SampleRate);
+                        
             // Update the synth and outputs
 
-            this.synth.Update(gameTime);
-            this.output.Flush();
+            for (int s = 0; s < ticks; s++)
+            {
+                this.synth.Update(currTime);
+                this.currTime += this.timePerTick;
+            }
 
+            this.output.Flush();
 
             // Check for new notes that were pressed
 
@@ -88,9 +113,16 @@ namespace Composer
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
-            // TODO: Add your drawing code here
+            this.spriteBatch.Begin();
+
+            //var builder = new StringBuilder();
+            //builder.AppendJoin(" - ", this.synth.LastSignals);
+        
+            //var text = String.Format("TEST");
+            //this.spriteBatch.DrawString(this.font, builder.ToString(), new Vector2(0, 0), Color.White);
+            this.spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -10,7 +10,13 @@ namespace Composer.Nodes.Sources
 {
     public class OscillatorNode : SignalNodeBase
     {
+        ISignalNode Power { get; set; }
+
         IOscillator Oscillator { get; set; }
+
+        public Func<double> Frequency { get; set; }
+
+        double currTime = 0.0;
 
         public OscillatorNode() : base()
         {
@@ -22,10 +28,30 @@ namespace Composer.Nodes.Sources
             this.Oscillator = osc;
         }
 
+        public OscillatorNode(IOscillator osc, ISignalNode power) : this(osc)
+        {
+            this.Power = power;
+        }
+
         public override void Update(double time)
         {
-            if (this.Oscillator != null)
+            this.Power.Update(time);
+
+            bool powerOn = this.Power == null || this.Power.Signal.Value > 0;
+
+            if (powerOn && this.Oscillator != null)
+            {
                 this.Signal = this.Oscillator.GetValue(time);
+                //this.Signal = this.Oscillator.GetValue(currTime);
+            }
+            else
+            {
+                currTime = 0.0;
+                this.Signal = Signal.Zero;
+            }
+            
+
+            currTime += time;
         }
     }
 }

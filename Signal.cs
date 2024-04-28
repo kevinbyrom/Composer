@@ -10,7 +10,7 @@ namespace Composer
         static public Signal Max => new Signal(1.0);
         static public Signal Min => new Signal(-1.0);
 
-        private double val;
+        private double val = 0.0;
 
         public double Value
         {
@@ -42,7 +42,7 @@ namespace Composer
 
         public override string ToString()
         {
-            return String.Format($"{0.00}");
+            return val.ToString("0.00");
         }
 
 
