@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 namespace Composer
 {
     
-    public class SignalTracker
+    public class SignalBuffer
     {
         private Signal[] signals;
         int size;
         int pos;
 
-        public SignalTracker(int size) 
+        public SignalBuffer(int size) 
         {
             this.signals = new Signal[size];
             this.size = size;
@@ -43,36 +43,4 @@ namespace Composer
             return signals;
         }
     }
-    
-
-    /*
-    public class SignalTracker
-    {
-        private Signal[] signals;
-        int size;
-        int pos;
-
-        public SignalTracker(int size) 
-        {
-            this.signals = new Signal[size];
-            this.size = size;
-            this.pos = 0;
-        }
-
-        public void Add(Signal signal) 
-        {
-            for (int i = 0; i < size - 1; i++)
-            {
-                this.signals[i] = this.signals[i + 1];
-            }
-
-            this.signals[size - 1] = signal;
-        }
-
-        public Signal[] GetAll() 
-        {
-            return this.signals;
-        }
-    }
-    */
 }

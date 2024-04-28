@@ -29,7 +29,7 @@ namespace Composer
         private SpriteFont font;
         private double timePerTick = 1.0 / (double)SampleRate;
         private double currTime = 0.0;
-        private SignalTracker tracker;
+        private SignalBuffer recentSignals;
 
         public Game1()
         {
@@ -58,21 +58,18 @@ namespace Composer
 
             // Setup the synth
 
-            synth = new Synth(SampleRate, this.output, false);
-            //synth.SetupKey(0, Notes.C4);
-            //synth.SetupKey(1, Notes.E4);
-            //synth.SetupKey(2, Notes.G4);
+            this.synth = new Synth(SampleRate, this.output, false);
 
 
             // Setup the background buffer and font
 
             this.background = new Texture2D(GraphicsDevice, ScreenWidth, ScreenHeight);
-            //this.font = Content.Load<SpriteFont>("Arial");
+            this.font = Content.Load<SpriteFont>("Arial");
 
             if (debugMode)
                 this.debugFile = new StreamWriter("d://temp//output.txt", true);
 
-            tracker = new SignalTracker(ScreenWidth);
+            this.recentSignals = new SignalBuffer(ScreenWidth);
 
             base.Initialize();            
         }
@@ -98,7 +95,7 @@ namespace Composer
             {
                 this.synth.Update(currTime);
                 this.currTime += this.timePerTick;
-                this.tracker.Add(this.synth.LastSignal);
+                this.recentSignals.Add(this.synth.LastSignal);
             }
 
             this.output.Flush();
@@ -124,25 +121,25 @@ namespace Composer
             //var builder = new StringBuilder();
             //builder.AppendJoin(" - ", this.synth.LastSignals);
 
-            //var text = String.Format("TEST");
-            //this.spriteBatch.DrawString(this.font, builder.ToString(), new Vector2(0, 0), Color.White);
+            var text = String.Format("Time = " + this.currTime.ToString("0.00"));
+            this.spriteBatch.DrawString(this.font, text, new Vector2(0, 0), Color.White);
 
-            // Set the texture data
+            // Render the recent signals across the screen
 
             var colors = new Color[ScreenWidth * ScreenHeight];
 
-            var trackerData = this.tracker.GetAll();
+            var signals = this.recentSignals.GetAll();
 
             for (int x = 0; x < ScreenWidth; x++)
             {
-                int ylen = (int)(trackerData[x].Value * (ScreenHeight / 2));
+                int ylen = (int)(signals[x].Value * (ScreenHeight / 2));
 
                 colors[x + ((ScreenHeight / 2) * ScreenWidth)] = Color.White;
 
                 for (int i = 0; i < Math.Abs(ylen); i++)
                 {
                     int ydelta = ylen > 0 ? i : -i;
-                    colors[(ScreenWidth - 1 - x) + (((ScreenHeight / 2) + ydelta) * ScreenWidth)] = Color.White;
+                    colors[(ScreenWidth - 1 - x) + (((ScreenHeight / 2) - ydelta) * ScreenWidth)] = Color.White;
                 }
             }
 

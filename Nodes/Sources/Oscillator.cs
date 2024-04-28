@@ -46,7 +46,7 @@ namespace Composer.Nodes.Sources
             else
             {
                 startTime = time;
-                this.Signal = Signal.Zero;
+                this.Signal = Signal.None;
             }
         }
     }

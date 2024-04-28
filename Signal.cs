@@ -6,12 +6,14 @@ namespace Composer
 {
     public struct Signal
     {
-        static public Signal Zero => new Signal(0.0);
-        static public Signal Max => new Signal(1.0);
-        static public Signal Min => new Signal(-1.0);
+        static public Signal None => new Signal(0.0);
+        //static public Signal Zero => new Signal(0.0, true);
+        static public Signal Max => new Signal(1.0, true);
+        static public Signal Min => new Signal(-1.0, true);
 
         private double val = 0.0;
 
+        public bool IsActive { get; set; } = false;
         public double Value
         {
             get
@@ -27,9 +29,22 @@ namespace Composer
             }
         }
 
-        public Signal(double v)
+        public Signal()
+        {
+            this.val = Signal.None.val;
+            this.IsActive = false;
+        }
+        
+        public Signal(Signal s)
+        {
+            this.val = s.val;
+            this.IsActive = s.IsActive;
+        }
+
+        public Signal(double v, bool isActive = false)
         {
             this.val = v;
+            this.IsActive = isActive;
         }
 
         public override bool Equals(object obj)
@@ -42,7 +57,7 @@ namespace Composer
 
         public override string ToString()
         {
-            return val.ToString("0.00");
+            return String.Format($"{this.val: 0.00} - {this.IsActive}");
         }
 
 
@@ -50,42 +65,42 @@ namespace Composer
 
         public static Signal operator+ (Signal a, Signal b)
         {
-            return new Signal() { Value = a.Value + b.Value };
+            return new Signal() { Value = a.Value + b.Value, IsActive = a.IsActive || b.IsActive };
         }
 
         public static Signal operator +(Signal a, double b)
         {
-            return new Signal() { Value = a.Value + b };
+            return new Signal() { Value = a.Value + b, IsActive = a.IsActive };
         }
         
         public static Signal operator -(Signal a, Signal b)
         {
-            return new Signal() { Value = a.Value - b.Value };
+            return new Signal() { Value = a.Value - b.Value, IsActive = a.IsActive || b.IsActive };
         }
 
         public static Signal operator -(Signal a, double b)
         {
-            return new Signal() { Value = a.Value - b };
+            return new Signal() { Value = a.Value - b, IsActive = a.IsActive };
         }
 
         public static Signal operator *(Signal a, Signal b)
         {
-            return new Signal() { Value = a.Value * b.Value };
+            return new Signal() { Value = a.Value * b.Value , IsActive = a.IsActive || b.IsActive };
         }
 
         public static Signal operator *(Signal a, double b)
         {
-            return new Signal() { Value = a.Value * b };
+            return new Signal() { Value = a.Value * b, IsActive = a.IsActive };
         }
 
         public static Signal operator /(Signal a, Signal b)
         {
-            return new Signal() { Value = a.Value / b.Value };
+            return new Signal() { Value = a.Value / b.Value, IsActive = a.IsActive || b.IsActive };
         }
 
         public static Signal operator /(Signal a, double b)
         {
-            return new Signal() { Value = a.Value / b };
+            return new Signal() { Value = a.Value / b, IsActive = a.IsActive };
         }
 
         #endregion

@@ -11,6 +11,7 @@ using Composer.Nodes.Input;
 using Composer.Nodes.Operators;
 using Microsoft.Xna.Framework.Input;
 using Composer.Nodes.Output;
+using Composer.Nodes.Modifiers;
 using System.Diagnostics;
 using System.IO;
 
@@ -47,17 +48,10 @@ namespace Composer
             this.TimePerTick = 1.0 / (double)sampleRate;
             this.DebugMode = debugMode;
 
-            //this.keyVoices = new Dictionary<int, Voice>();
-
-            var key1 = new KeyNode(Keys.A);
-            var voice1 = new OscillatorNode(new SquareWaveOscillator(Notes.E4), key1);
-
-            var key2 = new KeyNode(Keys.S);
-            var voice2 = new OscillatorNode(new SineWaveOscillator(Notes.C4), key2);
-
-            var key3 = new KeyNode(Keys.D);
-            var voice3 = new OscillatorNode(new NoiseOscillator(Notes.G4), key3);
-
+            var voice1 = CreateVoice(Notes.E4, Keys.A);
+            var voice2 = CreateVoice(Notes.C4, Keys.S);
+            var voice3 = CreateVoice(Notes.G4, Keys.D);
+            
             this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 });
 
             if (this.DebugMode)
@@ -118,6 +112,25 @@ namespace Composer
             if (this.DebugMode)
                 this.debugWriter.WriteLine(this.lastSignal.ToString());
 
+        }
+
+        private ISignalNode CreateVoice(double freq, Microsoft.Xna.Framework.Input.Keys inputKey)
+        {
+            var key = new KeyNode(inputKey);
+            var env = new EnvelopeNode(key);
+            env.Settings.Attack.Level = () => { return 1; };
+            env.Settings.Attack.Duration = () => { return 0.05; };
+            env.Settings.Decay.Level = () => { return 0.75; };
+            env.Settings.Decay.Duration = () => { return 0.05; };
+            env.Settings.Sustain.Level = () => { return 0.75; };
+            env.Settings.Sustain.Duration = () => { return 0.1; };
+            env.Settings.Sustain.Latch = () => { return key.Signal.IsActive; };
+            env.Settings.Release.Level = () => { return 0; };
+            env.Settings.Release.Duration = () => { return 1; };
+
+            var pred = new PredicatedConstantNode(Signal.Max, () => { return env.Signal.IsActive; });
+            var voice = new OscillatorNode(new SineWaveOscillator(freq), pred);
+            return voice.Multiply(env);
         }
     }
 }

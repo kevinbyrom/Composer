@@ -27,7 +27,7 @@ namespace Composer.Nodes.Input
         {
             bool isKeyDown = Keyboard.GetState().IsKeyDown(this.Key);
 
-            this.Signal = isKeyDown ? Signal.Max : Signal.Zero;
+            this.Signal = isKeyDown ? Signal.Max : Signal.None;
         }
     }
 }

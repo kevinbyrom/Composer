@@ -31,7 +31,7 @@ namespace Composer.Output
         {
             if (signals.Count() == 0)
             {
-                this.target.Write(time, Signal.Zero);
+                this.target.Write(time, Signal.None);
                 return;
             }
 
