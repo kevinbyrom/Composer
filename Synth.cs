@@ -45,7 +45,7 @@ namespace Composer
             var voice2 = CreateVoice(Notes.C4, Keys.S);
             var voice3 = CreateVoice(Notes.G4, Keys.D);
             
-            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 }).Delay(0.5);
+            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 }).Delay(1, .5);
 
             if (this.DebugMode)
                 this.debugWriter = new StreamWriter("output.txt", false);
@@ -132,7 +132,7 @@ namespace Composer
             //osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
             //voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
 
-            return voice.Multiply(env).Compress(-0.5, 0.5).Noise(0.0125);
+            return voice.Multiply(env);//.Compress(-0.5, 0.5).Noise(0.0125);
         }
     }
 }
