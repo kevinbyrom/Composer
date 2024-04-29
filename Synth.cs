@@ -22,14 +22,6 @@ namespace Composer
     public class Synth 
     {
         public ISignalTarget Output { get; private set; }
-
-        //public IOscillator Oscillator { get; set; }
-        //public ISignalTarget Target { get; private set; }
-        //public List<ISignalTransform> Filters { get; set; }
-        //public List<ISignalTransform> Amplifiers { get; set; }
-        //public List<ISignalTransform> PostEffects { get; set; }
-        //public VoiceGroup Voices { get; private set; }
-
         public int SampleRate { get; private set; }
         public double TimePerTick { get; private set; }
         
@@ -37,7 +29,6 @@ namespace Composer
 
         public Signal LastSignal { get { return lastSignal; } }
 
-        //private Dictionary<int, Voice> keyVoices;
         private ISignalNode rootNode;
         private double currTime = 0.0;
         private Signal lastSignal;
@@ -54,7 +45,7 @@ namespace Composer
             var voice2 = CreateVoice(Notes.C4, Keys.S);
             var voice3 = CreateVoice(Notes.G4, Keys.D);
             
-            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 });
+            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 }).Delay(0.5);
 
             if (this.DebugMode)
                 this.debugWriter = new StreamWriter("output.txt", false);
@@ -138,10 +129,10 @@ namespace Composer
             var freqOsc = new SineWaveOscillator(.2);
             var ampOsc = new SineWaveOscillator(4);
             var voice = new OscillatorNode(osc, pred);
-            osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
-            voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
+            //osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
+            //voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
 
-            return voice.Multiply(env);//.Compress(-0.5, 0.5).Noise(0.0125);
+            return voice.Multiply(env).Compress(-0.5, 0.5).Noise(0.0125);
         }
     }
 }

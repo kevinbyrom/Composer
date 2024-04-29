@@ -1,23 +1,59 @@
-/*using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Composer.Nodes;
+using Composer.Nodes.Operators;
+using Composer.Nodes.Output;
 
-
-namespace Composer.Effects
+namespace Composer.Nodes.Effects
 {
-    public class DelayEffect : ISignalTransform
+    public class DelayNode : SignalNodeBase
     {
-        public bool CanClose { get { return true; }}
+        public ISignalNode Input { get; set; }
+        public Func<double> Time { get; set; }
+        public Func<double> Dampen { get; set; }
 
-        public DelayEffect()
+        private SignalQueue delayBuffer;
+
+        public DelayNode() : base()
         {
+            this.delayBuffer = new SignalQueue();
+            this.Dampen = () => { return 0.5; };
         }
 
-        public Signal Transform(double time, Signal sample)
+        public DelayNode(ISignalNode input) : this()
         {
-            throw new NotImplementedException();
+            this.Input = input;
         }
 
-        public void Release()
+        public override void Update(double time)
         {
+            this.Input.Update(time);
+
+            Signal signal = this.Input.Signal;
+            
+            foreach (var delayed in this.delayBuffer.GetNext(time))
+            {
+                signal += delayed;
+            }
+
+            this.delayBuffer.Add(signal * Dampen(), time + Time());
+
+            this.Signal = signal;
         }
     }
-}*/
+
+    public static class DelayNodeExtensions
+    {
+        public static ISignalNode Delay(this ISignalNode src, double time, double dampen = 0.5)
+        {
+            var node = new DelayNode(src);
+
+            node.Time = () => time; ;
+            node.Dampen = () => dampen;
+            return node;
+        }
+    }
+}

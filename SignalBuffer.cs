@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Composer
-{
-    
+{   
     public class SignalBuffer
     {
         private Signal[] signals;
