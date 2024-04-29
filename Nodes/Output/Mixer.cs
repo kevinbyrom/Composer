@@ -35,7 +35,7 @@ namespace Composer.Nodes.Output
 
                     val += s.Signal.Value;
 
-                    if (s.Signal.Value != 0)
+                    if (s.Signal.IsActive)
                         numActive++;
                 }
 

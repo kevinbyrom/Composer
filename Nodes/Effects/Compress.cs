@@ -1,46 +1,54 @@
-﻿/*using Composer.Operators;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Composer.Nodes;
+using Composer.Nodes.Operators;
+using Composer.Nodes.Output;
 
-namespace Composer.Effects
+namespace Composer.Nodes.Effects
 {
-    public class CompressEffect : EffectBase
+    public class CompressNode : SignalNodeBase
     {
+        public ISignalNode Input { get; set; }
         public Func<double> Min { get; set; }
         public Func<double> Max { get; set; }
-        
-        public CompressEffect(ISignalSource source, double min, double max) : base(source)
+        public CompressNode() :base()
         {
-            this.Min = () => { return min; };
-            this.Max = () => { return max; };
         }
 
-        public CompressEffect(ISignalSource source, Func<double> min, Func<double> max) : base(source) 
+        public CompressNode(ISignalNode input) : this()
         {
-            this.Min = min;
-            this.Max = max;
+            this.Input = input;
         }
 
-        public override Signal GetValue(double time)
+        public override void Update(double time)
         {
-            var signal = Source.GetValue(time);
+            this.Input.Update(time);
 
-            signal.Value = Math.Max(signal.Value, this.Min());
-            signal.Value = Math.Min(signal.Value, this.Max());
-            
-            return signal;
+            Signal signal = this.Input.Signal;
+
+            if (this.Min != null)
+                signal.Value = Math.Max(this.Min(), signal.Value);
+
+            if (this.Max != null)
+                signal.Value = Math.Min(this.Max(), signal.Value);
+
+            this.Signal = signal;
         }
     }
 
-    public static class CompressExtensions
+    public static class CompressNodeExtensions
     {
-        public static ISignalSource Compress(this ISignalSource source, double min, double max)
+        public static ISignalNode Compress(this ISignalNode src, double min, double max)
         {
-            return new CompressEffect(source, min, max);
-        }
+            var node = new CompressNode(src);
 
-        public static ISignalSource Compress(this ISignalSource source, Func<double> min, Func<double> max)
-        {
-            return new CompressEffect(source, min, max);
+            node.Min = () => { return min; };
+            node.Max = () => { return max; };
+
+            return node;
         }
     }
-}*/
+}
