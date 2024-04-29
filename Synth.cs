@@ -12,8 +12,10 @@ using Composer.Nodes.Operators;
 using Microsoft.Xna.Framework.Input;
 using Composer.Nodes.Output;
 using Composer.Nodes.Modifiers;
+using Composer.Nodes.Effects;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace Composer
 {
@@ -105,6 +107,7 @@ namespace Composer
 
         public void Update(double time)
         {
+            this.currTime = time;
             this.rootNode.Update(time);
             this.Output.Write(time, this.rootNode.Signal);
             this.lastSignal = this.rootNode.Signal;
@@ -128,9 +131,17 @@ namespace Composer
             env.Settings.Release.Level = () => { return 0; };
             env.Settings.Release.Duration = () => { return 1; };
 
-            var pred = new PredicatedConstantNode(Signal.Max, () => { return env.Signal.IsActive; });
-            var voice = new OscillatorNode(new SineWaveOscillator(freq), pred);
-            return voice.Multiply(env);
+            
+
+            var pred = new PredicatedConstantNode(Signal.Max * .01, () => { return env.Signal.IsActive; });
+            var osc = new SineWaveOscillator(freq);
+            var freqOsc = new SineWaveOscillator(.2);
+            var ampOsc = new SineWaveOscillator(4);
+            var voice = new OscillatorNode(osc, pred);
+            osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
+            voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
+
+            return voice.Multiply(env);//.Compress(-0.5, 0.5).Noise(0.0125);
         }
     }
 }

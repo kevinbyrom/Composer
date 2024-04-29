@@ -15,12 +15,13 @@ namespace Composer.Nodes.Sources
         IOscillator Oscillator { get; set; }
 
         public Func<double> Frequency { get; set; }
+        public Func<double> Amp { get; set; }
 
         double startTime = 0.0;
 
         public OscillatorNode() : base()
         {
-
+            this.Amp = () => 1.0;
         }
 
         public OscillatorNode(IOscillator osc) :this()
@@ -41,7 +42,7 @@ namespace Composer.Nodes.Sources
 
             if (powerOn && this.Oscillator != null)
             {
-                this.Signal = this.Oscillator.GetValue(time - startTime);
+                this.Signal = this.Oscillator.GetValue(time - startTime) * Amp();
             }
             else
             {

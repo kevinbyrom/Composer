@@ -16,8 +16,8 @@ namespace Composer
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        private const int ScreenWidth = 1000;
-        private const int ScreenHeight = 1000;
+        private const int ScreenWidth = 500;
+        private const int ScreenHeight = 500;
         private const int SampleRate = 44100;
         private const int SamplesPerBuffer = 44100;
         private DynamicSoundEffectInstance instance;
@@ -64,7 +64,7 @@ namespace Composer
             // Setup the background buffer and font
 
             this.background = new Texture2D(GraphicsDevice, ScreenWidth, ScreenHeight);
-            this.font = Content.Load<SpriteFont>("Arial");
+            //this.font = Content.Load<SpriteFont>("Arial");
 
             if (debugMode)
                 this.debugFile = new StreamWriter("d://temp//output.txt", true);
@@ -120,9 +120,9 @@ namespace Composer
 
             //var builder = new StringBuilder();
             //builder.AppendJoin(" - ", this.synth.LastSignals);
-
-            var text = String.Format("Time = " + this.currTime.ToString("0.00"));
-            this.spriteBatch.DrawString(this.font, text, new Vector2(0, 0), Color.White);
+            //
+            //var text = String.Format("Time = " + this.currTime.ToString("0.00"));
+            //this.spriteBatch.DrawString(this.font, text, new Vector2(0, 0), Color.White);
 
             // Render the recent signals across the screen
 

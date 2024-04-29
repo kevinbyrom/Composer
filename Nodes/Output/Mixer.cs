@@ -26,6 +26,7 @@ namespace Composer.Nodes.Output
         {
             if (this.Sources != null)
             {
+                
                 double val = 0;
                 int numActive = 0;
 
@@ -42,7 +43,7 @@ namespace Composer.Nodes.Output
                 Signal mixed = new Signal();
 
                 if (numActive != 0)
-                    mixed.Value = val / (double)numActive;
+                    mixed.Value = val;// / (double)numActive;
 
                 this.Signal = mixed;
             }
