@@ -25,7 +25,9 @@ namespace Composer
         public ISignalTarget Output { get; private set; }
         public int SampleRate { get; private set; }
         public double TimePerTick { get; private set; }
-        
+
+        public int RootOctave { get; set; } = 4;
+
         public bool DebugMode { get; private set; }
 
         public Signal LastSignal { get { return lastSignal; } }
@@ -42,20 +44,21 @@ namespace Composer
             this.TimePerTick = 1.0 / (double)sampleRate;
             this.DebugMode = debugMode;
 
-            ISignalNode[] voices = new ISignalNode[12];
+            ISignalNode[] voices = new ISignalNode[13];
 
-            voices[0] = CreateVoice(Notes.HZ(Notes.Key.C), Keys.A);
-            voices[1] = CreateVoice(Notes.HZ(Notes.Key.CS), Keys.W);
-            voices[2] = CreateVoice(Notes.HZ(Notes.Key.D), Keys.S);
-            voices[3] = CreateVoice(Notes.HZ(Notes.Key.DS), Keys.E);
-            voices[4] = CreateVoice(Notes.HZ(Notes.Key.E), Keys.D);
-            voices[5] = CreateVoice(Notes.HZ(Notes.Key.F), Keys.F);
-            voices[6] = CreateVoice(Notes.HZ(Notes.Key.FS), Keys.R);
-            voices[7] = CreateVoice(Notes.HZ(Notes.Key.G), Keys.G);
-            voices[8] = CreateVoice(Notes.HZ(Notes.Key.GS), Keys.T);
-            voices[9] = CreateVoice(Notes.HZ(Notes.Key.A), Keys.H);
-            voices[10] = CreateVoice(Notes.HZ(Notes.Key.AS), Keys.Y);
-            voices[11] = CreateVoice(Notes.HZ(Notes.Key.B), Keys.J);
+            voices[0] = CreateVoice(Notes.HZ(Notes.Key.C, this.RootOctave), Keys.A);
+            voices[1] = CreateVoice(Notes.HZ(Notes.Key.CS, this.RootOctave), Keys.W);
+            voices[2] = CreateVoice(Notes.HZ(Notes.Key.D, this.RootOctave), Keys.S);
+            voices[3] = CreateVoice(Notes.HZ(Notes.Key.DS, this.RootOctave), Keys.E);
+            voices[4] = CreateVoice(Notes.HZ(Notes.Key.E, this.RootOctave), Keys.D);
+            voices[5] = CreateVoice(Notes.HZ(Notes.Key.F, this.RootOctave), Keys.F);
+            voices[6] = CreateVoice(Notes.HZ(Notes.Key.FS, this.RootOctave), Keys.R);
+            voices[7] = CreateVoice(Notes.HZ(Notes.Key.G, this.RootOctave), Keys.G);
+            voices[8] = CreateVoice(Notes.HZ(Notes.Key.GS, this.RootOctave), Keys.T);
+            voices[9] = CreateVoice(Notes.HZ(Notes.Key.A, this.RootOctave), Keys.H);
+            voices[10] = CreateVoice(Notes.HZ(Notes.Key.AS, this.RootOctave), Keys.Y);
+            voices[11] = CreateVoice(Notes.HZ(Notes.Key.B, this.RootOctave), Keys.J);
+            voices[12] = CreateVoice(Notes.HZ(Notes.Key.C, this.RootOctave + 1), Keys.K);
 
             this.rootNode = new MixerNode(voices);//.Reverb(.278); //.Delay(1, .5);
 

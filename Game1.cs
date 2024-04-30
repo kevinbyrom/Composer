@@ -102,6 +102,13 @@ namespace Composer
 
             // Check for new notes that were pressed
 
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                this.synth.RootOctave = 5;             
+            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                this.synth.RootOctave = 3;
+            else
+                this.synth.RootOctave = 4;
+
             if (Keyboard.GetState().IsKeyDown(Keys.A)) { this.synth.KeyOn(0); } else { this.synth.KeyOff(0); }
             if (Keyboard.GetState().IsKeyDown(Keys.S)) { this.synth.KeyOn(1); } else { this.synth.KeyOff(1); }
             if (Keyboard.GetState().IsKeyDown(Keys.D)) { this.synth.KeyOn(2); } else { this.synth.KeyOff(2); }
