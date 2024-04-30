@@ -16,6 +16,7 @@ using Composer.Nodes.Effects;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Transactions;
 
 namespace Composer
 {
@@ -41,11 +42,22 @@ namespace Composer
             this.TimePerTick = 1.0 / (double)sampleRate;
             this.DebugMode = debugMode;
 
-            var voice1 = CreateVoice(Notes.E4, Keys.A);
-            var voice2 = CreateVoice(Notes.C4, Keys.S);
-            var voice3 = CreateVoice(Notes.G4, Keys.D);
+            ISignalNode[] voices = new ISignalNode[12];
 
-            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 }).Reverb(.25); //.Delay(1, .5);
+            voices[0] = CreateVoice(Notes.HZ(Notes.Key.C), Keys.A);
+            voices[1] = CreateVoice(Notes.HZ(Notes.Key.CS), Keys.W);
+            voices[2] = CreateVoice(Notes.HZ(Notes.Key.D), Keys.S);
+            voices[3] = CreateVoice(Notes.HZ(Notes.Key.DS), Keys.E);
+            voices[4] = CreateVoice(Notes.HZ(Notes.Key.E), Keys.D);
+            voices[5] = CreateVoice(Notes.HZ(Notes.Key.F), Keys.F);
+            voices[6] = CreateVoice(Notes.HZ(Notes.Key.FS), Keys.R);
+            voices[7] = CreateVoice(Notes.HZ(Notes.Key.G), Keys.G);
+            voices[8] = CreateVoice(Notes.HZ(Notes.Key.GS), Keys.T);
+            voices[9] = CreateVoice(Notes.HZ(Notes.Key.A), Keys.H);
+            voices[10] = CreateVoice(Notes.HZ(Notes.Key.AS), Keys.Y);
+            voices[11] = CreateVoice(Notes.HZ(Notes.Key.B), Keys.J);
+
+            this.rootNode = new MixerNode(voices);//.Reverb(.278); //.Delay(1, .5);
 
             if (this.DebugMode)
                 this.debugWriter = new StreamWriter("output.txt", false);
