@@ -1,22 +1,70 @@
-/*using System;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Composer.Nodes;
+using Composer.Nodes.Operators;
+using Composer.Nodes.Output;
 
-
-namespace Composer.Effects
+namespace Composer.Nodes.Effects
 {
-    public class ReverbEffect : ISignalTransform
+    public class ReverbNode : SignalNodeBase
     {
-        public bool CanClose { get { return true; }}
-        public ReverbEffect()
+        const int NumDelayNodes = 2;
+
+        public ISignalNode Input { get; set; }
+        public Func<double> Time { get; set; }
+        public Func<double> Dampen { get; set; }
+
+        private DelayNode[] delayNodes = new DelayNode[NumDelayNodes];
+
+        public ReverbNode() : base()
         {
+            this.Dampen = () => { return 0.5; };
+
+            for (int i = 0; i < this.delayNodes.Length; i++)
+            {
+                this.delayNodes[i] = new DelayNode();
+                this.delayNodes[i].Input = this.Input;
+                this.delayNodes[i].Time = () => { return Time() + 0.25 + (i * 0.25);  };
+                this.delayNodes[i].Dampen = this.Dampen;
+            }
         }
 
-        public Sample Transform(SampleTime time, Sample sample)
+        public ReverbNode(ISignalNode input) : this()
         {
-            throw new NotImplementedException();
+            this.Input = input;
         }
 
-        public void Release()
+        public override void Update(double time)
         {
+            this.Input.Update(time);
+
+            Signal signal = this.Input.Signal;
+
+            for (int i = 0; i < this.delayNodes.Length; i++)
+            {
+                this.delayNodes[i].Update(time);
+
+                var delaySignal = this.delayNodes[i].Signal * ((i + 1) * 0.5);
+
+                signal += delaySignal;
+            }
+
+            this.Signal = signal;
         }
     }
-}*/
+
+    public static class ReverbNodeExtensions
+    {
+        public static ISignalNode Reverb(this ISignalNode src, double time, double dampen = 0.5)
+        {
+            var node = new DelayNode(src);
+
+            node.Time = () => time; ;
+            node.Dampen = () => dampen;
+            return node;
+        }
+    }
+}

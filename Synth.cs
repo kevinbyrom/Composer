@@ -44,8 +44,8 @@ namespace Composer
             var voice1 = CreateVoice(Notes.E4, Keys.A);
             var voice2 = CreateVoice(Notes.C4, Keys.S);
             var voice3 = CreateVoice(Notes.G4, Keys.D);
-            
-            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 }).Delay(1, .5);
+
+            this.rootNode = new MixerNode(new ISignalNode[] { voice1, voice2, voice3 }).Reverb(.25); //.Delay(1, .5);
 
             if (this.DebugMode)
                 this.debugWriter = new StreamWriter("output.txt", false);
