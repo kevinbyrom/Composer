@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Composer.UI
 {
-    public abstract class UIElement 
+    public class UIElement 
     {
         public UIManager UI { get; private set; }
 
@@ -58,7 +58,7 @@ namespace Composer.UI
             this.UI.PushRenderTarget(this.RenderTarget);
             this.UI.Clear(this.Color);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             DrawContent(spriteBatch);
 
@@ -68,14 +68,14 @@ namespace Composer.UI
             foreach (var subElement in subElements)
                 spriteBatch.Draw(subElement.RenderTarget, subElement.Pos, Color.White);
 
-            spriteBatch.End();
+            //spriteBatch.End();
 
 
             this.UI.PopRenderTarget();
   
         }
 
-        protected abstract void DrawContent(SpriteBatch spriteBatch);
+        protected virtual void DrawContent(SpriteBatch spriteBatch) { }
       
     }
 }

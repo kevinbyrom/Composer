@@ -127,7 +127,7 @@ namespace Composer
         {
             var key = new KeyNode(inputKey);
             var env = new EnvelopeNode(key);
-            env.Settings.Attack.Level = () => { return 1; };
+            env.Settings.Attack.Level = () => { return 0.1; };
             env.Settings.Attack.Duration = () => { return 0.05; };
             env.Settings.Decay.Level = () => { return 0.75; };
             env.Settings.Decay.Duration = () => { return 0.05; };
@@ -135,7 +135,7 @@ namespace Composer
             env.Settings.Sustain.Duration = () => { return 0.1; };
             env.Settings.Sustain.Latch = () => { return key.Signal.IsActive; };
             env.Settings.Release.Level = () => { return 0; };
-            env.Settings.Release.Duration = () => { return 1; };
+            env.Settings.Release.Duration = () => { return 0.5; };
 
             
 
@@ -147,7 +147,7 @@ namespace Composer
             //osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
             //voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
 
-            return voice.Multiply(env).Compress(-0.5, 0.5).Noise(0.0125);
+            return voice.Multiply(env);//.AntiPop(0.5); //.Compress(-0.5, 0.5).Noise(0.0125);
         }
     }
 }

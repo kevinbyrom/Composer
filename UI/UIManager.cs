@@ -32,6 +32,11 @@ namespace Composer.UI
         public void PopRenderTarget()
         {
             this.Game.GraphicsDevice.SetRenderTarget(this.renderTargets.Pop());
+
+            if (this.renderTargets.Count > 0)
+                this.currRenderTarget = this.renderTargets.Peek();
+            else
+                this.currRenderTarget = null;
         }
 
         public void ClearRenderTargets()

@@ -9,6 +9,8 @@ using System.IO;
 using MonoGame.Extended;
 using Composer.Oscillators;
 using System.Text;
+using System.Collections.Generic;
+using Composer.UI;
 
 namespace Composer
 {
@@ -31,6 +33,8 @@ namespace Composer
         private double timePerTick = 1.0 / (double)SampleRate;
         private double currTime = 0.0;
         private SignalBuffer recentSignals;
+        private UIManager uiManager;
+        private List<UIElement> uIElements = new List<UIElement>();
 
         public Game1()
         {
@@ -47,6 +51,8 @@ namespace Composer
             graphics.PreferredBackBufferWidth = ScreenWidth;
             graphics.PreferredBackBufferHeight = ScreenHeight;
             graphics.ApplyChanges();
+
+            this.uiManager = new UIManager(this);
 
             // Setup the output
 
@@ -78,6 +84,13 @@ namespace Composer
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            this.uIElements.Add(new UIElement(this.uiManager, 0, 0, 100, 20, Color.Red));
+            this.uIElements.Add(new UIElement(this.uiManager, 10, 10, 100, 20, Color.Blue));
+
+            var subElement = new UIElement(this.uiManager, 20, 20, 100, 40, Color.Green);
+            this.uIElements.Add(subElement);
+            subElement.AddSubElement(new UIElement(this.uiManager, 10, 10, 20, 20, Color.Yellow));
 
             // TODO: use this.Content to load your game content here
         }
@@ -136,9 +149,16 @@ namespace Composer
 
                 this.spriteBatch.DrawLine(x, HalfScreenHeight, x, HalfScreenHeight - ylen, Color.White);
             }
+                      
+            
+            foreach (var uiElement in this.uIElements)
+            {
+                uiElement.Draw(spriteBatch);
+                this.spriteBatch.Draw(uiElement.RenderTarget, uiElement.Pos, Color.White);
+            }
 
             this.spriteBatch.End();
-            
+
             base.Draw(gameTime);
         }
     }
