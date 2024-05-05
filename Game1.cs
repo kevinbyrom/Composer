@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using Composer.Output;
 using System.IO;
-
+using MonoGame.Extended;
 using Composer.Oscillators;
 using System.Text;
 
@@ -18,6 +18,7 @@ namespace Composer
         SpriteBatch spriteBatch;
         private const int ScreenWidth = 500;
         private const int ScreenHeight = 500;
+        private const int HalfScreenHeight = ScreenHeight / 2;
         private const int SampleRate = 44100;
         private const int SamplesPerBuffer = 44100;
         private DynamicSoundEffectInstance instance;
@@ -125,37 +126,19 @@ namespace Composer
 
             this.spriteBatch.Begin();
 
-            //var builder = new StringBuilder();
-            //builder.AppendJoin(" - ", this.synth.LastSignals);
-            //
-            //var text = String.Format("Time = " + this.currTime.ToString("0.00"));
-            //this.spriteBatch.DrawString(this.font, text, new Vector2(0, 0), Color.White);
-
-            // Render the recent signals across the screen
-
-            var colors = new Color[ScreenWidth * ScreenHeight];
-
             var signals = this.recentSignals.GetAll();
+
+            this.spriteBatch.DrawLine(0, HalfScreenHeight, ScreenWidth, HalfScreenHeight, Color.White);
 
             for (int x = 0; x < ScreenWidth; x++)
             {
                 int ylen = (int)(signals[x].Value * (ScreenHeight / 2));
 
-                colors[x + ((ScreenHeight / 2) * ScreenWidth)] = Color.White;
-
-                for (int i = 0; i < Math.Abs(ylen); i++)
-                {
-                    int ydelta = ylen > 0 ? i : -i;
-                    colors[(ScreenWidth - 1 - x) + (((ScreenHeight / 2) - ydelta) * ScreenWidth)] = Color.White;
-                }
+                this.spriteBatch.DrawLine(x, HalfScreenHeight, x, HalfScreenHeight - ylen, Color.White);
             }
 
-            this.background.SetData(colors);
-
-            this.spriteBatch.Draw(this.background, new Vector2(0, 0), Color.White);
-
             this.spriteBatch.End();
-
+            
             base.Draw(gameTime);
         }
     }

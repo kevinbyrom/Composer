@@ -9,34 +9,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Composer.UI
 {
-   /* internal class UIElement 
+    public abstract class UIElement 
     {
         public UIManager UI { get; private set; }
 
-        public Vector2 ScreenPos;
+        public Vector2 Pos;
 
         public Vector2 Size;
 
         protected List<UIElement> subElements = new List<UIElement>();
 
-        protected RenderTarget2D renderTarget;
-
-        protected Texture2D texture;
+        public RenderTarget2D RenderTarget { get; private set; }
 
         public Color Color { get; set; }
 
         public UIElement(UIManager ui, int x, int y, int width, int height) 
         {
             this.UI = ui;
-            this.ScreenPos.X = x;
-            this.ScreenPos.Y = y;
+            this.Pos.X = x;
+            this.Pos.Y = y;
             this.Size.X = width;
             this.Size.Y = height;
             this.Color = Color.Transparent;
-            this.renderTarget = new RenderTarget2D(this.UI.Game.GraphicsDevice, texture.Width, texture.Height);
+            this.RenderTarget = new RenderTarget2D(this.UI.Game.GraphicsDevice, width, height);
         }
 
-        public UIElement(UIManager ui, int x, int y, int width, int height, Color color) : this(UIManager ui, x, y, width, height)
+        public UIElement(UIManager ui, int x, int y, int width, int height, Color color) : this(ui, x, y, width, height)
         {
             this.Color = color;
         }
@@ -46,28 +44,38 @@ namespace Composer.UI
             subElements.Add(element);
         }
 
-        public virtual void Draw(SpriteBatch spriteBatch, double time)
+        public virtual void Draw(SpriteBatch spriteBatch)
         {
-            this.UI.PushRenderTarget(this.renderTarget);
+            
+            // Ensure the sub elements update their render target
+            
+            foreach (var subElement in subElements)
+                subElement.Draw(spriteBatch);
+
+
+            // Draw this element's content to the render target
+
+            this.UI.PushRenderTarget(this.RenderTarget);
             this.UI.Clear(this.Color);
 
-
-            // Draw to the render target
-            spriteBatch.Begin();
-            spriteBatch.Draw(texture, this.ScreenPos, Color.White);
-            foreach (var subElement in subElements)
-            {
-                subElement.Draw(spriteBatch, time);
-            }
-            spriteBatch.End();
-
-            this.UI.Game.GraphicsDevice.SetRenderTarget(null);
-
-            // Draw the render target to the screen
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-            spriteBatch.Draw(renderTarget, this.ScreenPos, Color.White);
+
+            DrawContent(spriteBatch);
+
+
+            // Then draw the sub elements to the render target
+           
+            foreach (var subElement in subElements)
+                spriteBatch.Draw(subElement.RenderTarget, subElement.Pos, Color.White);
+
             spriteBatch.End();
 
+
+            this.UI.PopRenderTarget();
+  
         }
-    }*/
+
+        protected abstract void DrawContent(SpriteBatch spriteBatch);
+      
+    }
 }

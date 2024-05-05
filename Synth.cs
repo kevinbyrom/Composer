@@ -44,12 +44,12 @@ namespace Composer
             this.TimePerTick = 1.0 / (double)sampleRate;
             this.DebugMode = debugMode;
 
-            ISignalNode[] voices = new ISignalNode[13];
+            ISignalNode[] voices = new ISignalNode[3];
 
             voices[0] = CreateVoice(Notes.HZ(Notes.Key.C, this.RootOctave), Keys.A);
             voices[1] = CreateVoice(Notes.HZ(Notes.Key.CS, this.RootOctave), Keys.W);
             voices[2] = CreateVoice(Notes.HZ(Notes.Key.D, this.RootOctave), Keys.S);
-            voices[3] = CreateVoice(Notes.HZ(Notes.Key.DS, this.RootOctave), Keys.E);
+            /*voices[3] = CreateVoice(Notes.HZ(Notes.Key.DS, this.RootOctave), Keys.E);
             voices[4] = CreateVoice(Notes.HZ(Notes.Key.E, this.RootOctave), Keys.D);
             voices[5] = CreateVoice(Notes.HZ(Notes.Key.F, this.RootOctave), Keys.F);
             voices[6] = CreateVoice(Notes.HZ(Notes.Key.FS, this.RootOctave), Keys.R);
@@ -59,7 +59,7 @@ namespace Composer
             voices[10] = CreateVoice(Notes.HZ(Notes.Key.AS, this.RootOctave), Keys.Y);
             voices[11] = CreateVoice(Notes.HZ(Notes.Key.B, this.RootOctave), Keys.J);
             voices[12] = CreateVoice(Notes.HZ(Notes.Key.C, this.RootOctave + 1), Keys.K);
-
+            */
             this.rootNode = new MixerNode(voices);//.Reverb(.278); //.Delay(1, .5);
 
             if (this.DebugMode)
@@ -147,7 +147,7 @@ namespace Composer
             //osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
             //voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
 
-            return voice.Multiply(env);//.Compress(-0.5, 0.5).Noise(0.0125);
+            return voice.Multiply(env).Compress(-0.5, 0.5).Noise(0.0125);
         }
     }
 }

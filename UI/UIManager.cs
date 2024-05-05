@@ -41,7 +41,6 @@ namespace Composer.UI
             this.Game.GraphicsDevice.SetRenderTarget(null);
         }
 
-
         public void Clear(Color color)
         {
             this.Game.GraphicsDevice.Clear(color);
