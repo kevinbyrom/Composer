@@ -85,12 +85,12 @@ namespace Composer
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            this.uIElements.Add(new UIElement(this.uiManager, 0, 0, 100, 20, Color.Red));
-            this.uIElements.Add(new UIElement(this.uiManager, 10, 10, 100, 20, Color.Blue));
+            this.uIElements.Add(new UIElement(this.uiManager, null, 0, 0, 100, 20, Color.Red));
+            this.uIElements.Add(new UIElement(this.uiManager, null, 10, 10, 100, 20, Color.Blue));
 
-            var subElement = new UIElement(this.uiManager, 20, 20, 100, 40, Color.Green);
+            var subElement = new UIElement(this.uiManager, null, 20, 20, 100, 40, Color.Green);
             this.uIElements.Add(subElement);
-            subElement.AddSubElement(new UIElement(this.uiManager, 10, 10, 20, 20, Color.Yellow));
+            subElement.AddSubElement(new UIElement(this.uiManager, subElement, 10, 10, 20, 60, Color.Yellow));
 
             // TODO: use this.Content to load your game content here
         }
@@ -135,6 +135,15 @@ namespace Composer
 
         protected override void Draw(GameTime gameTime)
         {
+
+            // Render the contents of each UI element
+
+            foreach (var uiElement in this.uIElements)
+                uiElement.Draw(spriteBatch);
+
+
+            // Draw the wave form
+
             GraphicsDevice.Clear(Color.Black);
 
             this.spriteBatch.Begin();
@@ -149,13 +158,15 @@ namespace Composer
 
                 this.spriteBatch.DrawLine(x, HalfScreenHeight, x, HalfScreenHeight - ylen, Color.White);
             }
-                      
-            
+            this.spriteBatch.End();
+
+
+            // Draw the UI elements to the screen
+
+            this.spriteBatch.Begin();
+           
             foreach (var uiElement in this.uIElements)
-            {
-                uiElement.Draw(spriteBatch);
                 this.spriteBatch.Draw(uiElement.RenderTarget, uiElement.Pos, Color.White);
-            }
 
             this.spriteBatch.End();
 

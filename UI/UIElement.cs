@@ -12,6 +12,7 @@ namespace Composer.UI
     public class UIElement 
     {
         public UIManager UI { get; private set; }
+        public UIElement Parent { get; private set; }
 
         public Vector2 Pos;
 
@@ -23,9 +24,10 @@ namespace Composer.UI
 
         public Color Color { get; set; }
 
-        public UIElement(UIManager ui, int x, int y, int width, int height) 
+        public UIElement(UIManager ui, UIElement parent, int x, int y, int width, int height) 
         {
             this.UI = ui;
+            this.Parent = parent;
             this.Pos.X = x;
             this.Pos.Y = y;
             this.Size.X = width;
@@ -34,7 +36,7 @@ namespace Composer.UI
             this.RenderTarget = new RenderTarget2D(this.UI.Game.GraphicsDevice, width, height);
         }
 
-        public UIElement(UIManager ui, int x, int y, int width, int height, Color color) : this(ui, x, y, width, height)
+        public UIElement(UIManager ui, UIElement parent, int x, int y, int width, int height, Color color) : this(ui, parent, x, y, width, height)
         {
             this.Color = color;
         }
@@ -58,7 +60,7 @@ namespace Composer.UI
             this.UI.PushRenderTarget(this.RenderTarget);
             this.UI.Clear(this.Color);
 
-            //spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
             DrawContent(spriteBatch);
 
@@ -68,7 +70,7 @@ namespace Composer.UI
             foreach (var subElement in subElements)
                 spriteBatch.Draw(subElement.RenderTarget, subElement.Pos, Color.White);
 
-            //spriteBatch.End();
+            spriteBatch.End();
 
 
             this.UI.PopRenderTarget();
