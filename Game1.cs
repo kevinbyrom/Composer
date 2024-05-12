@@ -11,6 +11,7 @@ using Composer.Oscillators;
 using System.Text;
 using System.Collections.Generic;
 using Composer.UI;
+using Composer.UI.Controls;
 
 namespace Composer
 {
@@ -86,12 +87,32 @@ namespace Composer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
-            this.ui.AddElement(new UIElement(this.ui, null, 0, 0, 100, 20, Color.Red));
-            this.ui.AddElement(new UIElement(this.ui, null, 10, 10, 100, 20, Color.Blue));
+            this.ui.AddWaveView()
+                .SetSignalBuffer(this.recentSignals)
+                .SetPosition(0, 0)
+                .SetSize(ScreenWidth, ScreenHeight)
+                .SetColor(Color.BlueViolet);
 
-            var subElement = new UIElement(this.ui, null, 20, 20, 100, 40, Color.Green);
-            this.ui.AddElement(subElement);
-            subElement.AddElement(new UIElement(this.ui, subElement, 10, 10, 20, 60, Color.Yellow));
+            this.ui.AddPanel()
+                .SetPosition(0, 0)
+                .SetSize(100, 20)
+                .SetColor(Color.Red);
+
+            this.ui.AddPanel()
+                .SetPosition(10, 10)
+                .SetSize(100, 20)
+                .SetColor(Color.Blue);
+
+            var greenPanel = this.ui.AddPanel()
+                .SetPosition(20, 20)
+                .SetSize(100, 40)
+                .SetColor(Color.Green);
+
+            greenPanel.AddView(new Panel(this.ui, greenPanel)
+                                    .SetPosition(10, 10)
+                                    .SetSize(20, 60)
+                                    .SetColor(Color.Yellow));
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -146,7 +167,7 @@ namespace Composer
 
             // Draw the wave form
 
-            this.spriteBatch.Begin();
+            /*this.spriteBatch.Begin();
 
             var signals = this.recentSignals.GetAll();
 
@@ -158,7 +179,7 @@ namespace Composer
 
                 this.spriteBatch.DrawLine(x, HalfScreenHeight, x, HalfScreenHeight - ylen, Color.White);
             }
-            this.spriteBatch.End();
+            this.spriteBatch.End();*/
 
 
             base.Draw(gameTime);

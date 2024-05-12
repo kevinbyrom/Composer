@@ -8,11 +8,12 @@ using Microsoft.Xna.Framework;
 
 namespace Composer.UI
 {
-    public class UIManager
+    public class UIManager : IViewContainer
     {
         public Game Game { get; private set; }
-        private UIElement captured;
-        public UIElement Captured
+
+        private IView captured;
+        public IView Captured
         {
             get
             {
@@ -22,17 +23,17 @@ namespace Composer.UI
 
         private Stack<RenderTarget2D> renderTargets = new Stack<RenderTarget2D>();
         private RenderTarget2D currRenderTarget = null;
-        private List<UIElement> uIElements = new List<UIElement>(); 
+        private List<IView> views = new List<IView>(); 
 
         public UIManager(Game game) 
         {
             this.Game = game;
         }
 
-        public void Update(double time)
+        public void Update(GameTime time)
         {
-            foreach (var element in this.uIElements)
-                element.Update(time);
+            foreach (var view in this.views)
+                view.Update(time);
         }
 
         public void Draw(GameTime time)
@@ -40,18 +41,18 @@ namespace Composer.UI
             var spriteBatch = Game.Services.GetService<SpriteBatch>();
 
 
-            // Render the sub contents of each UI element
+            // Render the sub contents of each view
 
-            foreach (var uiElement in this.uIElements)
-                uiElement.Draw(spriteBatch);
+            foreach (var view in this.views)
+                view.Draw(time, spriteBatch);
 
 
-            // Draw the UI elements to the screen
+            // Draw the views to the screen
 
             spriteBatch.Begin();
 
-            foreach (var uiElement in this.uIElements)
-                spriteBatch.Draw(uiElement.RenderTarget, uiElement.Pos, Color.White);
+            foreach (var view in this.views)
+                spriteBatch.Draw(view.RenderTarget, view.Pos, Color.White);
 
             spriteBatch.End();
         }
@@ -88,15 +89,15 @@ namespace Composer.UI
             this.Game.GraphicsDevice.Clear(color);
         }
 
-        public void AddElement(UIElement uiElement)
+        public void AddView(IView view)
         {
-            this.uIElements.Add(uiElement);
+            this.views.Add(view);
         }
 
 
-        public void SetCapture(UIElement element)
+        public void SetCapture(IView view)
         {
-            this.captured = element;
+            this.captured = view;
         }
 
         public void ReleaseCapture()
@@ -112,9 +113,9 @@ namespace Composer.UI
             }
             else
             {
-                foreach (var element in this.uIElements)
+                foreach (var view in this.views)
                 {
-                    if (element.ProcessInput(inputState))
+                    if (view.ProcessInput(inputState))
                         return true;
                 }
             }
