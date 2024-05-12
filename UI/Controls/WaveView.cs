@@ -38,6 +38,9 @@ namespace Composer.UI.Controls
 
                 spriteBatch.DrawLine(x, halfHeight, x, halfHeight - ylen, Color.White);
             }
+
+
+            //this.UI.DrawString("Here is a test!", 0, 0, Color.White);
         }
 
     }

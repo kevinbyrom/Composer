@@ -87,12 +87,15 @@ namespace Composer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
+            this.ui.DefaultFontSprite = new FontSprite(Texture2D.FromFile(this.graphics.GraphicsDevice, "Content\\MinimalSprite.png"), 5, 7, 10, 10);
+
             this.ui.AddWaveView()
                 .SetSignalBuffer(this.recentSignals)
                 .SetPosition(0, 0)
                 .SetSize(ScreenWidth, ScreenHeight)
                 .SetColor(Color.BlueViolet);
 
+            /*
             this.ui.AddPanel()
                 .SetPosition(0, 0)
                 .SetSize(100, 20)
@@ -112,7 +115,7 @@ namespace Composer
                                     .SetPosition(10, 10)
                                     .SetSize(20, 60)
                                     .SetColor(Color.Yellow));
-            
+            */
 
             // TODO: use this.Content to load your game content here
         }

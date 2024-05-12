@@ -98,7 +98,6 @@ namespace Composer.UI
 
             spriteBatch.End();
 
-
             this.UI.PopRenderTarget();
   
         }
