@@ -34,12 +34,22 @@ namespace Composer.UI
             this.Game = game;
         }
 
+
+        /// <summary>
+        /// Update handler for the UI
+        /// </summary>
+        /// <param name="time"></param>
         public void Update(GameTime time)
         {
             foreach (var view in this.views)
                 view.Update(time);
         }
 
+
+        /// <summary>
+        /// Draws the UI and all the views
+        /// </summary>
+        /// <param name="time"></param>
         public void Draw(GameTime time)
         {
             
@@ -65,6 +75,35 @@ namespace Composer.UI
             
         }
 
+
+        /// <summary>
+        /// Adds a sub view to the UI
+        /// </summary>
+        /// <param name="view"></param>
+        public void AddView(IView view)
+        {
+            this.views.Add(view);
+        }
+
+        #region Drawing Routines
+
+        /// <summary>
+        /// Clears the UI to the specified color
+        /// </summary>
+        /// <param name="color"></param>
+        public void Clear(Color color)
+        {
+            this.Game.GraphicsDevice.Clear(color);
+        }
+
+
+        /// <summary>
+        /// Draws text at a given local
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="color"></param>
         public void DrawString(string text, int x, int y, Color color)
         {
             this.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
@@ -74,6 +113,14 @@ namespace Composer.UI
             this.SpriteBatch.End();
         }
 
+
+        /// <summary>
+        /// Draws text centered around the specified location
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="color"></param>
         public void DrawStringCentered(string text, int x, int y, Color color)
         {
             var size = this.DefaultFontSprite.MeasureString(text);
@@ -81,6 +128,15 @@ namespace Composer.UI
             DrawString(text, x - ((int)size.X / 2), y - ((int)size.Y / 2), color);
         }
 
+        #endregion
+
+
+        #region Render Target Routines
+
+        /// <summary>
+        /// Pushes a new render target to the stack
+        /// </summary>
+        /// <param name="renderTarget"></param>
         public void PushRenderTarget(RenderTarget2D renderTarget)
         {
             this.Game.GraphicsDevice.SetRenderTarget(renderTarget);
@@ -91,6 +147,10 @@ namespace Composer.UI
             this.currRenderTarget= renderTarget;
         }
 
+
+        /// <summary>
+        /// Pops a render target from the stack
+        /// </summary>
         public void PopRenderTarget()
         {
             this.Game.GraphicsDevice.SetRenderTarget(this.renderTargets.Pop());
@@ -101,29 +161,34 @@ namespace Composer.UI
                 this.currRenderTarget = null;
         }
 
+
+        /// <summary>
+        /// Clears all render targets from the stack
+        /// </summary>
         public void ClearRenderTargets()
-        { 
+        {
             this.renderTargets.Clear();
             this.currRenderTarget = null;
             this.Game.GraphicsDevice.SetRenderTarget(null);
         }
 
-        public void Clear(Color color)
-        {
-            this.Game.GraphicsDevice.Clear(color);
-        }
+        #endregion
 
-        public void AddView(IView view)
-        {
-            this.views.Add(view);
-        }
+        
+        #region Input Handling Routines
 
-
+        /// <summary>
+        /// Sets the input capture to a specified view
+        /// </summary>
+        /// <param name="view"></param>
         public void SetCapture(IView view)
         {
             this.captured = view;
         }
 
+        /// <summary>
+        /// Releases the input capture from all views
+        /// </summary>
         public void ReleaseCapture()
         { 
             this.captured = null; 
@@ -146,5 +211,8 @@ namespace Composer.UI
 
             return false;
         }
+
+        #endregion
+
     }
 }
