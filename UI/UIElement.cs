@@ -41,9 +41,14 @@ namespace Composer.UI
             this.Color = color;
         }
 
-        public void AddSubElement(UIElement element)
+        public void AddElement(UIElement element)
         {
             subElements.Add(element);
+        }
+
+        public virtual void Update(double time)
+        {
+
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
@@ -79,5 +84,15 @@ namespace Composer.UI
 
         protected virtual void DrawContent(SpriteBatch spriteBatch) { }
       
+        public virtual bool ProcessInput(InputState inputState)
+        {
+            foreach (var element in subElements)
+            {
+                if (element.ProcessInput(inputState))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

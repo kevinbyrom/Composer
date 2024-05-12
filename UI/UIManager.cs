@@ -11,12 +11,49 @@ namespace Composer.UI
     public class UIManager
     {
         public Game Game { get; private set; }
+        private UIElement captured;
+        public UIElement Captured
+        {
+            get
+            {
+                return this.captured;
+            }
+        }
+
         private Stack<RenderTarget2D> renderTargets = new Stack<RenderTarget2D>();
         private RenderTarget2D currRenderTarget = null;
+        private List<UIElement> uIElements = new List<UIElement>(); 
 
         public UIManager(Game game) 
         {
             this.Game = game;
+        }
+
+        public void Update(double time)
+        {
+            foreach (var element in this.uIElements)
+                element.Update(time);
+        }
+
+        public void Draw(GameTime time)
+        {
+            var spriteBatch = Game.Services.GetService<SpriteBatch>();
+
+
+            // Render the sub contents of each UI element
+
+            foreach (var uiElement in this.uIElements)
+                uiElement.Draw(spriteBatch);
+
+
+            // Draw the UI elements to the screen
+
+            spriteBatch.Begin();
+
+            foreach (var uiElement in this.uIElements)
+                spriteBatch.Draw(uiElement.RenderTarget, uiElement.Pos, Color.White);
+
+            spriteBatch.End();
         }
 
         public void PushRenderTarget(RenderTarget2D renderTarget)
@@ -49,6 +86,40 @@ namespace Composer.UI
         public void Clear(Color color)
         {
             this.Game.GraphicsDevice.Clear(color);
+        }
+
+        public void AddElement(UIElement uiElement)
+        {
+            this.uIElements.Add(uiElement);
+        }
+
+
+        public void SetCapture(UIElement element)
+        {
+            this.captured = element;
+        }
+
+        public void ReleaseCapture()
+        { 
+            this.captured = null; 
+        }
+
+        public bool ProcessInput(InputState inputState)
+        {
+            if (this.captured != null)
+            {
+                this.captured.ProcessInput(inputState);
+            }
+            else
+            {
+                foreach (var element in this.uIElements)
+                {
+                    if (element.ProcessInput(inputState))
+                        return true;
+                }
+            }
+
+            return false;
         }
     }
 }

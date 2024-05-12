@@ -16,13 +16,14 @@ namespace Composer
 {
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
         private const int ScreenWidth = 500;
         private const int ScreenHeight = 500;
         private const int HalfScreenHeight = ScreenHeight / 2;
         private const int SampleRate = 44100;
         private const int SamplesPerBuffer = 44100;
+
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
         private DynamicSoundEffectInstance instance;
         private Synth synth;
         private ISignalTarget output;
@@ -33,9 +34,8 @@ namespace Composer
         private double timePerTick = 1.0 / (double)SampleRate;
         private double currTime = 0.0;
         private SignalBuffer recentSignals;
-        private UIManager uiManager;
-        private List<UIElement> uIElements = new List<UIElement>();
-
+        private UIManager ui;
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -52,7 +52,7 @@ namespace Composer
             graphics.PreferredBackBufferHeight = ScreenHeight;
             graphics.ApplyChanges();
 
-            this.uiManager = new UIManager(this);
+            this.ui = new UIManager(this);
 
             // Setup the output
 
@@ -84,13 +84,14 @@ namespace Composer
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
+            this.Services.AddService<SpriteBatch>(spriteBatch);
 
-            this.uIElements.Add(new UIElement(this.uiManager, null, 0, 0, 100, 20, Color.Red));
-            this.uIElements.Add(new UIElement(this.uiManager, null, 10, 10, 100, 20, Color.Blue));
+            this.ui.AddElement(new UIElement(this.ui, null, 0, 0, 100, 20, Color.Red));
+            this.ui.AddElement(new UIElement(this.ui, null, 10, 10, 100, 20, Color.Blue));
 
-            var subElement = new UIElement(this.uiManager, null, 20, 20, 100, 40, Color.Green);
-            this.uIElements.Add(subElement);
-            subElement.AddSubElement(new UIElement(this.uiManager, subElement, 10, 10, 20, 60, Color.Yellow));
+            var subElement = new UIElement(this.ui, null, 20, 20, 100, 40, Color.Green);
+            this.ui.AddElement(subElement);
+            subElement.AddElement(new UIElement(this.ui, subElement, 10, 10, 20, 60, Color.Yellow));
 
             // TODO: use this.Content to load your game content here
         }
@@ -129,22 +130,21 @@ namespace Composer
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
 
-            // Render the contents of each UI element
+            GraphicsDevice.Clear(Color.Black);
 
-            foreach (var uiElement in this.uIElements)
-                uiElement.Draw(spriteBatch);
+
+            // Draw the UI
+
+            this.ui.Draw(gameTime);
 
 
             // Draw the wave form
-
-            GraphicsDevice.Clear(Color.Black);
 
             this.spriteBatch.Begin();
 
@@ -160,15 +160,6 @@ namespace Composer
             }
             this.spriteBatch.End();
 
-
-            // Draw the UI elements to the screen
-
-            this.spriteBatch.Begin();
-           
-            foreach (var uiElement in this.uIElements)
-                this.spriteBatch.Draw(uiElement.RenderTarget, uiElement.Pos, Color.White);
-
-            this.spriteBatch.End();
 
             base.Draw(gameTime);
         }
