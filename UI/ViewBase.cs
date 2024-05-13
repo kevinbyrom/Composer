@@ -13,19 +13,43 @@ namespace Composer.UI
     {
         public UIManager UI { get; set; }
         public IView Parent { get; set; }
-        public Vector2 Pos { get; set; }
+        
+        private Vector2 pos;
 
-        private Vector2 size;
-        public Vector2 Size
+        public Vector2 Pos 
+        { 
+            get
+            {
+                return this.pos;
+            }
+            set
+            {
+                this.pos = value;
+                UpdateScreenPos();                
+            }
+        }
+
+        private Vector2 screenPos;
+
+        public Vector2 ScreenPos
         {
             get
             {
-                return size;
+                return this.screenPos;
+            }
+        }
+
+        private Point size;
+        public Point Size
+        {
+            get
+            {
+                return this.size;
             }
             set
             {
                 this.size = value;
-                this.RenderTarget = new RenderTarget2D(this.UI.Game.GraphicsDevice, (int)this.size.X, (int)this.size.Y);
+                this.RenderTarget = new RenderTarget2D(this.UI.Game.GraphicsDevice, this.size.X, this.size.Y);
             }
         }
 
@@ -33,7 +57,7 @@ namespace Composer.UI
         {
             get
             {
-                return (int)this.size.X;
+                return this.size.X;
             }
         }
 
@@ -41,7 +65,7 @@ namespace Composer.UI
         {
             get
             {
-                return (int)this.size.Y;
+                return this.size.Y;
             }
         }
 
@@ -86,13 +110,13 @@ namespace Composer.UI
             this.UI.PushRenderTarget(this.RenderTarget);
             this.UI.Clear(this.Color);
 
-            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-
             DrawContent(spriteBatch);
 
 
             // Then draw the sub views to the render target
-           
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
             foreach (var view in this.subViews)
                 spriteBatch.Draw(view.RenderTarget, view.Pos, Color.White);
 
@@ -113,6 +137,17 @@ namespace Composer.UI
             }
 
             return false;
+        }
+
+        public void UpdateScreenPos()
+        {
+            if (this.Parent != null)
+                this.screenPos = this.Parent.ScreenPos + this.Pos;
+            else
+                this.screenPos = this.Pos;
+
+            foreach (var view in this.subViews)
+                view.UpdateScreenPos();
         }
     }
 }

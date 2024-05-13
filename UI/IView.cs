@@ -14,7 +14,9 @@ namespace Composer.UI
 
         Vector2 Pos { get; set; }
 
-        Vector2 Size { get; set; }
+        Vector2 ScreenPos { get; }
+
+        Point Size { get; set; }
 
         Color Color { get; set; }
 
@@ -25,7 +27,8 @@ namespace Composer.UI
         void Draw(GameTime time, SpriteBatch spriteBatch);
 
         bool ProcessInput(InputState inputState);
- 
+
+        void UpdateScreenPos();
     }
 
     public interface IViewContainer
@@ -44,7 +47,7 @@ namespace Composer.UI
 
         public static IView SetSize(this IView view, int width, int height)
         {
-            view.Size = new Vector2(width, height);
+            view.Size = new Point(width, height);
             return view;
         }
 

@@ -95,7 +95,7 @@ namespace Composer
                 .SetSize(ScreenWidth, ScreenHeight)
                 .SetColor(Color.BlueViolet);
 
-            /*
+            
             this.ui.AddPanel()
                 .SetPosition(0, 0)
                 .SetSize(100, 20)
@@ -108,14 +108,14 @@ namespace Composer
 
             var greenPanel = this.ui.AddPanel()
                 .SetPosition(20, 20)
-                .SetSize(100, 40)
+                .SetSize(200, 100)
                 .SetColor(Color.Green);
 
             greenPanel.AddView(new Panel(this.ui, greenPanel)
-                                    .SetPosition(10, 10)
-                                    .SetSize(20, 60)
+                                    .SetPosition(20, 30)
+                                    .SetSize(100, 50)
                                     .SetColor(Color.Yellow));
-            */
+            
 
             // TODO: use this.Content to load your game content here
         }
@@ -160,30 +160,10 @@ namespace Composer
         protected override void Draw(GameTime gameTime)
         {
 
-            GraphicsDevice.Clear(Color.Black);
-
-
             // Draw the UI
 
+            this.ui.Clear(Color.Black);
             this.ui.Draw(gameTime);
-
-
-            // Draw the wave form
-
-            /*this.spriteBatch.Begin();
-
-            var signals = this.recentSignals.GetAll();
-
-            this.spriteBatch.DrawLine(0, HalfScreenHeight, ScreenWidth, HalfScreenHeight, Color.White);
-
-            for (int x = 0; x < ScreenWidth; x++)
-            {
-                int ylen = (int)(signals[x].Value * (ScreenHeight / 2));
-
-                this.spriteBatch.DrawLine(x, HalfScreenHeight, x, HalfScreenHeight - ylen, Color.White);
-            }
-            this.spriteBatch.End();*/
-
 
             base.Draw(gameTime);
         }

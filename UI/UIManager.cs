@@ -67,11 +67,6 @@ namespace Composer.UI
                 this.SpriteBatch.Draw(view.RenderTarget, view.Pos, Color.White);
 
             this.SpriteBatch.End();
-
-
-            // Draw test text
-
-            DrawStringCentered("z{|}", 50, 50, Color.White);
             
         }
 

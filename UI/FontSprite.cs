@@ -38,7 +38,8 @@ namespace Composer.UI
 
         public FontSprite(Texture2D texture, int glyphWidth, int glyphHeight, int numX, int numY) 
         {
-            this.Scale = 2;
+            this.Scale = 1;
+            //this.Scale = 2;
             this.Texture = texture;
             this.GlyphWidth = glyphWidth;
             this.GlyphHeight = glyphHeight;
@@ -84,7 +85,7 @@ namespace Composer.UI
 
         public Vector2 MeasureString(string text)
         {
-            return new Vector2(text.Length * this.GlyphWidthScaled, text.Length * this.GlphyHeightScaled); 
+            return new Vector2(text.Length * this.GlyphWidthScaled, this.GlphyHeightScaled); 
         }
     }
 }
