@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+using Microsoft.Xna.Framework.Input;
 
 namespace Composer.UI
 {
@@ -148,6 +148,14 @@ namespace Composer.UI
 
             foreach (var view in this.subViews)
                 view.UpdateScreenPos();
+        }
+
+        public bool IsInScreenBounds(Vector2 pos)
+        {
+            var screenPos = this.ScreenPos;
+            var screenRect = new Rectangle((int)screenPos.X, (int)screenPos.Y, this.Width, this.Height);
+            
+            return screenRect.Contains(screenPos);
         }
     }
 }

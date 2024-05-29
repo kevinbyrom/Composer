@@ -13,7 +13,6 @@ namespace Composer.UI
     {
         public Game Game { get; private set; }
         public FontSprite DefaultFontSprite { get; set; }
-        
         public SpriteBatch SpriteBatch => Game.Services.GetService<SpriteBatch>();
 
         private IView captured;
