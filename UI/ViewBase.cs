@@ -9,15 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Composer.UI
 {
-    public abstract class ViewBase : IView 
+    public abstract class ViewBase : IView
     {
         public UIManager UI { get; set; }
         public IView Parent { get; set; }
-        
-        private Vector2 pos;
 
-        public Vector2 Pos 
-        { 
+        private Point pos;
+
+        public Point Pos
+        {
             get
             {
                 return this.pos;
@@ -25,17 +25,25 @@ namespace Composer.UI
             set
             {
                 this.pos = value;
-                UpdateScreenPos();                
+                UpdateScreenPos();
             }
         }
 
-        private Vector2 screenPos;
+        private Point screenPos;
 
-        public Vector2 ScreenPos
+        public Point ScreenPos
         {
             get
             {
                 return this.screenPos;
+            }
+        }
+
+        public Rectangle ScreenRect
+        {
+            get
+            {
+                return new Rectangle(this.ScreenPos, this.Size);
             }
         }
 
@@ -69,17 +77,26 @@ namespace Composer.UI
             }
         }
 
-        protected List<IView> subViews = new List<IView>();
+        private List<IView> subViews = new List<IView>();
+        public IEnumerable<IView> SubViews 
+        { 
+            get 
+            {
+                return this.subViews;
+            }
+        }
+
+        private bool hovering = false;
 
         public RenderTarget2D RenderTarget { get; private set; }
 
         public Color Color { get; set; }
 
         public ViewBase(UIManager ui) : this(ui, null)
-        {     
+        {
         }
 
-        public ViewBase(UIManager ui, IView parent) 
+        public ViewBase(UIManager ui, IView parent)
         {
             this.UI = ui;
             this.Parent = parent;
@@ -88,7 +105,7 @@ namespace Composer.UI
 
         public void AddView(IView view)
         {
-            subViews.Add(view);
+            this.subViews.Add(view);
         }
 
         public virtual void Update(GameTime time)
@@ -98,17 +115,17 @@ namespace Composer.UI
 
         public virtual void Draw(GameTime time, SpriteBatch spriteBatch)
         {
-            
+
             // Ensure the sub views update their render target
-            
-            foreach (var view in this.subViews)
+
+            foreach (var view in this.SubViews)
                 view.Draw(time, spriteBatch);
 
 
             // Draw this element's content to the render target
 
             this.UI.PushRenderTarget(this.RenderTarget);
-            this.UI.Clear(this.Color);
+            this.UI.Clear(this.hovering ? Color.White : this.Color);
 
             DrawContent(spriteBatch);
 
@@ -117,27 +134,16 @@ namespace Composer.UI
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            foreach (var view in this.subViews)
-                spriteBatch.Draw(view.RenderTarget, view.Pos, Color.White);
+            foreach (var view in this.SubViews)
+                spriteBatch.Draw(view.RenderTarget, view.Pos.ToVector2(), Color.White);
 
             spriteBatch.End();
 
             this.UI.PopRenderTarget();
-  
+
         }
 
         protected virtual void DrawContent(SpriteBatch spriteBatch) { }
-      
-        public virtual bool ProcessInput(InputState inputState)
-        {
-            foreach (var view in this.subViews)
-            {
-                if (view.ProcessInput(inputState))
-                    return true;
-            }
-
-            return false;
-        }
 
         public void UpdateScreenPos()
         {
@@ -146,16 +152,22 @@ namespace Composer.UI
             else
                 this.screenPos = this.Pos;
 
-            foreach (var view in this.subViews)
+            foreach (var view in this.SubViews)
                 view.UpdateScreenPos();
         }
 
-        public bool IsInScreenBounds(Vector2 pos)
+        public virtual void MouseEnter(Point pos)
         {
-            var screenPos = this.ScreenPos;
-            var screenRect = new Rectangle((int)screenPos.X, (int)screenPos.Y, this.Width, this.Height);
-            
-            return screenRect.Contains(screenPos);
+            this.hovering = true;
+        }
+
+        public virtual void MouseMove(Point pos)
+        {
+        }
+
+        public virtual void MouseExit(Point pos)
+        {
+            this.hovering = false;
         }
     }
 }

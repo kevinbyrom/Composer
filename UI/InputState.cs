@@ -11,7 +11,7 @@ namespace Composer.UI
 {
     public struct InputState
     {
-        KeyboardState Keyboard;
-        MouseState Mouse;
+        public KeyboardState Keyboard;
+        public MouseState Mouse;
     }
 }

@@ -17,7 +17,7 @@ namespace Composer
 {
     public class Game1 : Game
     {
-        private const int ScreenWidth = 500;
+        private const int ScreenWidth = 1100;
         private const int ScreenHeight = 500;
         private const int HalfScreenHeight = ScreenHeight / 2;
         private const int SampleRate = 44100;
@@ -153,6 +153,10 @@ namespace Composer
             if (Keyboard.GetState().IsKeyDown(Keys.D)) { this.synth.KeyOn(2); } else { this.synth.KeyOff(2); }
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            // Update the UI
+
+            this.ui.Update(gameTime);
 
             base.Update(gameTime);
         }

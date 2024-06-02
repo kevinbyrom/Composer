@@ -5,24 +5,26 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 
 namespace Composer.UI
 {
+    public struct MouseTracking
+    {
+        public IView Captured;
+        public IView LastTarget;
+    }
+
     public class UIManager : IViewContainer
     {
         public Game Game { get; private set; }
         public FontSprite DefaultFontSprite { get; set; }
         public SpriteBatch SpriteBatch => Game.Services.GetService<SpriteBatch>();
 
-        private IView captured;
-        public IView Captured
-        {
-            get
-            {
-                return this.captured;
-            }
-        }
+        private IView mouseCaptured;
+
+        public MouseTracking MouseTracking;
 
         private Stack<RenderTarget2D> renderTargets = new Stack<RenderTarget2D>();
         private RenderTarget2D currRenderTarget = null;
@@ -39,7 +41,11 @@ namespace Composer.UI
         /// </summary>
         /// <param name="time"></param>
         public void Update(GameTime time)
-        {
+        {            
+            ProcessInput();
+
+            // Update the views
+
             foreach (var view in this.views)
                 view.Update(time);
         }
@@ -63,7 +69,7 @@ namespace Composer.UI
             this.SpriteBatch.Begin();
 
             foreach (var view in this.views)
-                this.SpriteBatch.Draw(view.RenderTarget, view.Pos, Color.White);
+                this.SpriteBatch.Draw(view.RenderTarget, view.Pos.ToVector2(), Color.White);
 
             this.SpriteBatch.End();
             
@@ -175,35 +181,45 @@ namespace Composer.UI
         /// Sets the input capture to a specified view
         /// </summary>
         /// <param name="view"></param>
-        public void SetCapture(IView view)
+        public void SetMouseCapture(IView view)
         {
-            this.captured = view;
+            this.MouseTracking.Captured = view;
         }
 
         /// <summary>
         /// Releases the input capture from all views
         /// </summary>
-        public void ReleaseCapture()
+        public void ReleaseMouseCapture()
         { 
-            this.captured = null; 
+            this.MouseTracking.Captured = null; 
         }
 
-        public bool ProcessInput(InputState inputState)
+        public void ProcessInput()
         {
-            if (this.captured != null)
+            var mouseState = Mouse.GetState();
+
+            // Determine which control the pointer is over (or used captured, if set)
+                        
+            IView target = this.MouseTracking.Captured ?? this.views.FindViewAtScreenPos(mouseState.Position);
+
+            
+            // Check if we have exited last target
+
+            if (this.MouseTracking.LastTarget != null && this.MouseTracking.LastTarget != target)
+                this.MouseTracking.LastTarget.MouseExit(mouseState.Position);
+
+            
+            // Handle mouse for current target
+
+            if (target != null)
             {
-                this.captured.ProcessInput(inputState);
-            }
-            else
-            {
-                foreach (var view in this.views)
-                {
-                    if (view.ProcessInput(inputState))
-                        return true;
-                }
+                if (this.MouseTracking.LastTarget != target)
+                    target.MouseEnter(mouseState.Position);
+
+                target.MouseMove(mouseState.Position);    
             }
 
-            return false;
+            this.MouseTracking.LastTarget = target;
         }
 
         #endregion

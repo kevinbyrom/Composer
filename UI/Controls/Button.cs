@@ -17,11 +17,6 @@ namespace Composer.UI.Controls
         public Button(UIManager ui, IView parent) : base(ui, parent)
         {
         }
-
-        public override bool ProcessInput(InputState inputState)
-        {
-            return false;
-        }
     }
 
     public static class ButtonExtensions

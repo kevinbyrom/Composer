@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Composer.UI
 {
@@ -12,13 +13,21 @@ namespace Composer.UI
     {
         IView Parent { get; }
 
-        Vector2 Pos { get; set; }
-
-        Vector2 ScreenPos { get; }
+        Point Pos { get; set; }
 
         Point Size { get; set; }
 
+        int Width { get; }
+
+        int Height { get; }
+
+        Point ScreenPos { get; }
+
+        Rectangle ScreenRect { get; }
+
         Color Color { get; set; }
+
+        IEnumerable<IView> SubViews { get; }   
 
         RenderTarget2D RenderTarget { get; }
 
@@ -26,9 +35,14 @@ namespace Composer.UI
 
         void Draw(GameTime time, SpriteBatch spriteBatch);
 
-        bool ProcessInput(InputState inputState);
-
         void UpdateScreenPos();
+
+        void MouseEnter(Point pos);
+
+        void MouseMove(Point pos);
+
+        void MouseExit(Point pos);
+
     }
 
     public interface IViewContainer
@@ -41,7 +55,7 @@ namespace Composer.UI
 
         public static IView SetPosition(this IView view, int x, int y)
         {
-            view.Pos = new Vector2(x, y);
+            view.Pos = new Point(x, y);
             return view;
         }
 
@@ -55,6 +69,60 @@ namespace Composer.UI
         {
             view.Color = color;
             return view;
+        }
+
+        public static Point ScreenToRelativePos(this IView view, Point screenPos)
+        {
+            return view.ScreenPos - screenPos;
+        }
+
+        public static Point RelativeToScreenPos(this IView view, Point pos)
+        {
+            return view.ScreenPos + pos;
+        }
+
+        public static bool IsInScreenBounds(this IView view, Point screenPos)
+        {
+            return view.ScreenRect.Contains(screenPos);
+        }
+
+
+        public static IView FindViewAtScreenPos(this IView view, Point screenPos)
+        {
+            IView target = null;
+
+            if (view.ScreenRect.Contains(screenPos))
+                target = view;
+
+            foreach (var subView in view.SubViews)
+            {
+                var subTarget = subView.FindViewAtScreenPos(screenPos);
+
+                if (subTarget != null)
+                    target = subTarget;
+            }
+            return target;
+        }
+
+        public static IView FindViewAtScreenPos(this List<IView> views, Point screenPos)
+        {
+            IView target = null;
+
+            foreach (var view in views)
+            {
+                if (view.ScreenRect.Contains(screenPos))
+                    target = view;
+
+                foreach (var subView in view.SubViews)
+                {
+                    var subTarget = subView.FindViewAtScreenPos(screenPos);
+
+                    if (subTarget != null)
+                        target = subTarget;
+                }
+            }
+            
+            return target;
         }
     }
 }
