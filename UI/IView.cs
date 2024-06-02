@@ -21,7 +21,7 @@ namespace Composer.UI
 
         int Height { get; }
 
-        Point ScreenPos { get; }
+        Point ScreenPos { get; set; }
 
         Rectangle ScreenRect { get; }
 
@@ -37,11 +37,11 @@ namespace Composer.UI
 
         void UpdateScreenPos();
 
-        void MouseEnter(MouseState state);
+        void OnMouseEnter(MouseState state);
 
-        void MouseMove(MouseState state);
+        void OnMouseMove(MouseState state);
 
-        void MouseExit(MouseState state);
+        void OnMouseExit(MouseState state);
 
     }
 

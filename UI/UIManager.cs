@@ -212,7 +212,7 @@ namespace Composer.UI
             // Check if we have exited last target
 
             if (this.MouseTracking.LastTarget != null && this.MouseTracking.LastTarget != target)
-                this.MouseTracking.LastTarget.MouseExit(mouseState);
+                this.MouseTracking.LastTarget.OnMouseExit(mouseState);
 
 
             // Handle mouse for current target
@@ -220,9 +220,9 @@ namespace Composer.UI
             if (target != null)
             {
                 if (this.MouseTracking.LastTarget != target)
-                    target.MouseEnter(mouseState);
+                    target.OnMouseEnter(mouseState);
 
-                target.MouseMove(mouseState);
+                target.OnMouseMove(mouseState);
             }
 
             this.MouseTracking.LastTarget = target;

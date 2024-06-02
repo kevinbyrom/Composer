@@ -37,6 +37,15 @@ namespace Composer.UI
             {
                 return this.screenPos;
             }
+            set
+            {
+                if (this.Parent != null)
+                    this.pos = value - this.Parent.ScreenPos;
+                else
+                    this.pos = value;
+
+                UpdateScreenPos();
+            }
         }
 
         public Rectangle ScreenRect
@@ -87,6 +96,8 @@ namespace Composer.UI
         }
 
         private bool hovering = false;
+        private bool moving = false;
+        private Point movingOffset;
 
         public RenderTarget2D RenderTarget { get; private set; }
 
@@ -156,16 +167,36 @@ namespace Composer.UI
                 view.UpdateScreenPos();
         }
 
-        public virtual void MouseEnter(MouseState state)
+        public virtual void OnMouseEnter(MouseState state)
         {
             this.hovering = true;
         }
 
-        public virtual void MouseMove(MouseState state)
+        public virtual void OnMouseMove(MouseState state)
         {
+            if (!this.moving)
+            {
+                if (state.LeftButton == ButtonState.Pressed)
+                {
+                    this.UI.SetMouseCapture(this);
+                    this.movingOffset = state.Position - this.ScreenPos;
+                    this.moving = true;
+                }
+            }
+            else
+            {
+                if (state.LeftButton != ButtonState.Pressed)
+                {
+                    this.UI.ReleaseMouseCapture();
+                    this.moving = false;
+                }
+            }
+
+            if (this.moving)
+                this.ScreenPos = state.Position - movingOffset;
         }
 
-        public virtual void MouseExit(MouseState state)
+        public virtual void OnMouseExit(MouseState state)
         {
             this.hovering = false;
         }
