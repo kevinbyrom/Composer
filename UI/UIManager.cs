@@ -196,27 +196,33 @@ namespace Composer.UI
 
         public void ProcessInput()
         {
+            ProcessMouseInput();
+        }
+
+
+        private void ProcessMouseInput()
+        {
             var mouseState = Mouse.GetState();
 
             // Determine which control the pointer is over (or used captured, if set)
-                        
+
             IView target = this.MouseTracking.Captured ?? this.views.FindViewAtScreenPos(mouseState.Position);
 
-            
+
             // Check if we have exited last target
 
             if (this.MouseTracking.LastTarget != null && this.MouseTracking.LastTarget != target)
-                this.MouseTracking.LastTarget.MouseExit(mouseState.Position);
+                this.MouseTracking.LastTarget.MouseExit(mouseState);
 
-            
+
             // Handle mouse for current target
 
             if (target != null)
             {
                 if (this.MouseTracking.LastTarget != target)
-                    target.MouseEnter(mouseState.Position);
+                    target.MouseEnter(mouseState);
 
-                target.MouseMove(mouseState.Position);    
+                target.MouseMove(mouseState);
             }
 
             this.MouseTracking.LastTarget = target;

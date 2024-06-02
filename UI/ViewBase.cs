@@ -156,16 +156,16 @@ namespace Composer.UI
                 view.UpdateScreenPos();
         }
 
-        public virtual void MouseEnter(Point pos)
+        public virtual void MouseEnter(MouseState state)
         {
             this.hovering = true;
         }
 
-        public virtual void MouseMove(Point pos)
+        public virtual void MouseMove(MouseState state)
         {
         }
 
-        public virtual void MouseExit(Point pos)
+        public virtual void MouseExit(MouseState state)
         {
             this.hovering = false;
         }

@@ -37,11 +37,11 @@ namespace Composer.UI
 
         void UpdateScreenPos();
 
-        void MouseEnter(Point pos);
+        void MouseEnter(MouseState state);
 
-        void MouseMove(Point pos);
+        void MouseMove(MouseState state);
 
-        void MouseExit(Point pos);
+        void MouseExit(MouseState state);
 
     }
 
