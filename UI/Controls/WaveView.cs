@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 
 namespace Composer.UI.Controls
 {
-    public class WaveView : ViewBase
+    public class WaveView : UIElementBase
     {
         public SignalBuffer SignalBuffer { get; set; }
 
@@ -19,7 +19,7 @@ namespace Composer.UI.Controls
 
         }
 
-        public WaveView(UIManager ui, IView parent) : base(ui, parent)
+        public WaveView(UIManager ui, IUIElement parent) : base(ui, parent)
         {
 
         }
@@ -54,7 +54,7 @@ namespace Composer.UI.Controls
         {
             var view = new WaveView(ui);
 
-            ui.AddView(view);
+            ui.AddElement(view);
 
             return view;
         }

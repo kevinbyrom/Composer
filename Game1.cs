@@ -111,7 +111,7 @@ namespace Composer
                 .SetSize(200, 100)
                 .SetColor(Color.Green);
 
-            greenPanel.AddView(new Panel(this.ui, greenPanel)
+            greenPanel.AddElement(new Panel(this.ui, greenPanel)
                                     .SetPosition(20, 30)
                                     .SetSize(100, 50)
                                     .SetColor(Color.Yellow));

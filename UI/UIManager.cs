@@ -12,24 +12,26 @@ namespace Composer.UI
 {
     public struct MouseTracking
     {
-        public IView Captured;
-        public IView LastTarget;
+        public IUIElement Captured;
+        public IUIElement LastTarget;
     }
 
-    public class UIManager : IViewContainer
+    public class UIManager : IUIElementContainer
     {
         public Game Game { get; private set; }
         public FontSprite DefaultFontSprite { get; set; }
         public SpriteBatch SpriteBatch => Game.Services.GetService<SpriteBatch>();
 
-        private IView mouseCaptured;
+        private IUIElement mouseCaptured;
 
         public MouseTracking MouseTracking;
 
         private Stack<RenderTarget2D> renderTargets = new Stack<RenderTarget2D>();
         private RenderTarget2D currRenderTarget = null;
-        private List<IView> views = new List<IView>();
+        private List<IUIElement> elements = new List<IUIElement>();
         
+        public IEnumerable<IUIElement> Elements => elements;
+
         public UIManager(Game game) 
         {
             this.Game = game;
@@ -44,10 +46,10 @@ namespace Composer.UI
         {            
             ProcessInput();
 
-            // Update the views
+            // Update the elements
 
-            foreach (var view in this.views)
-                view.Update(time);
+            foreach (var element in this.elements)
+                element.Update(time);
         }
 
 
@@ -58,18 +60,18 @@ namespace Composer.UI
         public void Draw(GameTime time)
         {
             
-            // Render the sub contents of each view
+            // Render the sub contents of each element
 
-            foreach (var view in this.views)
-                view.Draw(time, this.SpriteBatch);
+            foreach (var element in this.elements)
+                element.Draw(time, this.SpriteBatch);
 
 
             // Draw the views to the screen
 
             this.SpriteBatch.Begin();
 
-            foreach (var view in this.views)
-                this.SpriteBatch.Draw(view.RenderTarget, view.Pos.ToVector2(), Color.White);
+            foreach (var element in this.elements)
+                this.SpriteBatch.Draw(element.RenderTarget, element.Pos.ToVector2(), Color.White);
 
             this.SpriteBatch.End();
             
@@ -77,12 +79,12 @@ namespace Composer.UI
 
 
         /// <summary>
-        /// Adds a sub view to the UI
+        /// Adds an element to the UI
         /// </summary>
-        /// <param name="view"></param>
-        public void AddView(IView view)
+        /// <param name="element"></param>
+        public void AddElement(IUIElement element)
         {
-            this.views.Add(view);
+            this.elements.Add(element);
         }
 
         #region Drawing Routines
@@ -178,12 +180,12 @@ namespace Composer.UI
         #region Input Handling Routines
 
         /// <summary>
-        /// Sets the input capture to a specified view
+        /// Sets the input capture to a specified element
         /// </summary>
-        /// <param name="view"></param>
-        public void SetMouseCapture(IView view)
+        /// <param name="element"></param>
+        public void SetMouseCapture(IUIElement element)
         {
-            this.MouseTracking.Captured = view;
+            this.MouseTracking.Captured = element;
         }
 
         /// <summary>
@@ -206,7 +208,7 @@ namespace Composer.UI
 
             // Determine which control the pointer is over (or used captured, if set)
 
-            IView target = this.MouseTracking.Captured ?? this.views.FindViewAtScreenPos(mouseState.Position);
+            IUIElement target = this.MouseTracking.Captured ?? this.elements.FindElementAtScreenPos(mouseState.Position);
 
 
             // Check if we have exited last target

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework;
 
 namespace Composer.UI.Controls
 {
-    public class LabelView : ViewBase
+    public class LabelView : UIElementBase
     {
         public string Text { get; set; }
 
@@ -28,17 +28,17 @@ namespace Composer.UI.Controls
     {
         public static LabelView AddLabel(this UIManager ui)
         {
-            var view = new LabelView(ui);
+            var label = new LabelView(ui);
 
-            ui.AddView(view);
+            ui.AddElement(label);
 
-            return view;
+            return label;
         }
 
-        public static LabelView SetText(this LabelView view, string text)
+        public static LabelView SetText(this LabelView label, string text)
         {
-            view.Text = text;
-            return view;
+            label.Text = text;
+            return label;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +9,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Composer.UI
 {
-    public abstract class ViewBase : IView
+    public abstract class UIElementBase : IUIElement
     {
         public UIManager UI { get; set; }
-        public IView Parent { get; set; }
+        public IUIElement Parent { get; set; }
+
+        private List<IUIElement> elements = new List<IUIElement>();
+        public IEnumerable<IUIElement> Elements => elements;
 
         private Point pos;
 
@@ -86,15 +89,6 @@ namespace Composer.UI
             }
         }
 
-        private List<IView> subViews = new List<IView>();
-        public IEnumerable<IView> SubViews 
-        { 
-            get 
-            {
-                return this.subViews;
-            }
-        }
-
         private bool hovering = false;
         private bool moving = false;
         private Point movingOffset;
@@ -103,20 +97,20 @@ namespace Composer.UI
 
         public Color Color { get; set; }
 
-        public ViewBase(UIManager ui) : this(ui, null)
+        public UIElementBase(UIManager ui) : this(ui, null)
         {
         }
 
-        public ViewBase(UIManager ui, IView parent)
+        public UIElementBase(UIManager ui, IUIElement parent)
         {
             this.UI = ui;
             this.Parent = parent;
             this.Color = Color.Transparent;
         }
 
-        public void AddView(IView view)
+        public void AddElement(IUIElement child)
         {
-            this.subViews.Add(view);
+            this.elements.Add(child);
         }
 
         public virtual void Update(GameTime time)
@@ -127,10 +121,10 @@ namespace Composer.UI
         public virtual void Draw(GameTime time, SpriteBatch spriteBatch)
         {
 
-            // Ensure the sub views update their render target
+            // Ensure the sub elements update their render target
 
-            foreach (var view in this.SubViews)
-                view.Draw(time, spriteBatch);
+            foreach (var child in this.elements)
+                child.Draw(time, spriteBatch);
 
 
             // Draw this element's content to the render target
@@ -141,12 +135,12 @@ namespace Composer.UI
             DrawContent(spriteBatch);
 
 
-            // Then draw the sub views to the render target
+            // Then draw the sub elements to the render target
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
 
-            foreach (var view in this.SubViews)
-                spriteBatch.Draw(view.RenderTarget, view.Pos.ToVector2(), Color.White);
+            foreach (var child in this.elements)
+                spriteBatch.Draw(child.RenderTarget, child.Pos.ToVector2(), Color.White);
 
             spriteBatch.End();
 
@@ -163,8 +157,8 @@ namespace Composer.UI
             else
                 this.screenPos = this.Pos;
 
-            foreach (var view in this.SubViews)
-                view.UpdateScreenPos();
+            foreach (var element in this.Elements)
+                element.UpdateScreenPos();
         }
 
         public virtual void OnMouseEnter(MouseState state)
@@ -202,4 +196,3 @@ namespace Composer.UI
         }
     }
 }
-*/

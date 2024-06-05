@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Composer.UI.Controls
 {
-    public class Button : ViewBase
+    public class Button : UIElementBase
     {
         public string Text { get; set; }
 
@@ -14,7 +14,7 @@ namespace Composer.UI.Controls
         {
         }
 
-        public Button(UIManager ui, IView parent) : base(ui, parent)
+        public Button(UIManager ui, IUIElement parent) : base(ui, parent)
         {
         }
     }
@@ -23,17 +23,17 @@ namespace Composer.UI.Controls
     {
         public static Button AddButton(this UIManager ui)
         {
-            var view = new Button(ui);
+            var button = new Button(ui);
 
-            ui.AddView(view);
+            ui.AddElement(button);
 
-            return view;
+            return button;
         }
 
-        public static Button SetText(this Button view, string text)
+        public static Button SetText(this Button button, string text)
         {
-            view.Text = text;
-            return view;
+            button.Text = text;
+            return button;
         }
     }
 }

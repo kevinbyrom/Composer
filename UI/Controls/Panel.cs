@@ -9,14 +9,14 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Composer.UI.Controls
 {
-    public class Panel : ViewBase
+    public class Panel : UIElementBase
     {
         public Panel(UIManager ui) : base(ui)
         {
 
         }
 
-        public Panel(UIManager ui, IView parent) : base(ui, parent)
+        public Panel(UIManager ui, IUIElement parent) : base(ui, parent)
         {
 
         }
@@ -36,7 +36,7 @@ namespace Composer.UI.Controls
         {
             var panel = new Panel(ui);
 
-            ui.AddView(panel);
+            ui.AddElement(panel);
 
             return panel;
         }
