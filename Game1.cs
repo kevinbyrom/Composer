@@ -96,22 +96,22 @@ namespace Composer
                 .SetColor(Color.BlueViolet);
 
             
-            this.ui.AddPanel()
+            this.ui.AddDebugPanel()
                 .SetPosition(0, 0)
                 .SetSize(100, 20)
                 .SetColor(Color.Red);
 
-            this.ui.AddPanel()
+            this.ui.AddDebugPanel()
                 .SetPosition(10, 10)
                 .SetSize(100, 20)
                 .SetColor(Color.Blue);
 
-            var greenPanel = this.ui.AddPanel()
+            var greenPanel = this.ui.AddDebugPanel()
                 .SetPosition(20, 20)
                 .SetSize(200, 100)
                 .SetColor(Color.Green);
 
-            greenPanel.AddElement(new Panel(this.ui, greenPanel)
+            greenPanel.AddElement(new DebugPanel(this.ui, greenPanel)
                                     .SetPosition(20, 30)
                                     .SetSize(100, 50)
                                     .SetColor(Color.Yellow));

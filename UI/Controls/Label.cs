@@ -16,7 +16,7 @@ namespace Composer.UI.Controls
         {
         }
 
-        protected override void DrawContent(SpriteBatch spriteBatch)
+        protected override void OnDrawContent(SpriteBatch spriteBatch)
         {
             //this.UI.DrawStringCentered(Text, this.Width / 2, this.Height / 2, Color.Transparent);
 

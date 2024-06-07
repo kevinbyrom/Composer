@@ -88,11 +88,7 @@ namespace Composer.UI
                 return this.size.Y;
             }
         }
-
-        private bool hovering = false;
-        private bool moving = false;
-        private Point movingOffset;
-
+        
         public RenderTarget2D RenderTarget { get; private set; }
 
         public Color Color { get; set; }
@@ -130,9 +126,9 @@ namespace Composer.UI
             // Draw this element's content to the render target
 
             this.UI.PushRenderTarget(this.RenderTarget);
-            this.UI.Clear(this.hovering ? Color.White : this.Color);
+            this.UI.Clear(this.Color);
 
-            DrawContent(spriteBatch);
+            OnDrawContent(spriteBatch);
 
 
             // Then draw the sub elements to the render target
@@ -148,7 +144,6 @@ namespace Composer.UI
 
         }
 
-        protected virtual void DrawContent(SpriteBatch spriteBatch) { }
 
         public void UpdateScreenPos()
         {
@@ -161,38 +156,12 @@ namespace Composer.UI
                 element.UpdateScreenPos();
         }
 
-        public virtual void OnMouseEnter(MouseState state)
-        {
-            this.hovering = true;
-        }
+        protected virtual void OnDrawContent(SpriteBatch spriteBatch) { }
 
-        public virtual void OnMouseMove(MouseState state)
-        {
-            if (!this.moving)
-            {
-                if (state.LeftButton == ButtonState.Pressed)
-                {
-                    this.UI.SetMouseCapture(this);
-                    this.movingOffset = state.Position - this.ScreenPos;
-                    this.moving = true;
-                }
-            }
-            else
-            {
-                if (state.LeftButton != ButtonState.Pressed)
-                {
-                    this.UI.ReleaseMouseCapture();
-                    this.moving = false;
-                }
-            }
-
-            if (this.moving)
-                this.ScreenPos = state.Position - movingOffset;
-        }
-
-        public virtual void OnMouseExit(MouseState state)
-        {
-            this.hovering = false;
-        }
+        public virtual void OnMouseEnter(MouseState state) { }
+        
+        public virtual void OnMouseMove(MouseState state) { }
+        
+        public virtual void OnMouseExit(MouseState state) { }
     }
 }

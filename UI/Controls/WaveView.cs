@@ -24,7 +24,7 @@ namespace Composer.UI.Controls
 
         }
 
-        protected override void DrawContent(SpriteBatch spriteBatch) 
+        protected override void OnDrawContent(SpriteBatch spriteBatch) 
         {
             spriteBatch.Begin();
 
