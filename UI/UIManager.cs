@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-
+using MonoGame.Extended;
 
 namespace Composer.UI
 {
@@ -108,11 +108,11 @@ namespace Composer.UI
         /// <param name="color"></param>
         public void DrawString(string text, int x, int y, Color color)
         {
-            this.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            //this.SpriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             this.DefaultFontSprite.DrawString(this.SpriteBatch, text, x, y, color);
 
-            this.SpriteBatch.End();
+            //this.SpriteBatch.End();
         }
 
 
@@ -128,6 +128,115 @@ namespace Composer.UI
             var size = this.DefaultFontSprite.MeasureString(text);
 
             DrawString(text, x - ((int)size.X / 2), y - ((int)size.Y / 2), color);
+        }
+
+
+        /// <summary>
+        /// Draws a line
+        /// </summary>
+        /// <param name="p1"></param>
+        /// <param name="p2"></param>
+        /// <param name="color"></param>
+        public void DrawLine(Point p1, Point p2, Color color)
+        {
+            this.DrawLine(p1.X, p1.Y, p2.X, p2.Y, color);
+        }
+
+
+        /// <summary>
+        /// Draws a line 
+        /// </summary>
+        /// <param name="x1"></param>
+        /// <param name="y1"></param>
+        /// <param name="x2"></param>
+        /// <param name="y2"></param>
+        /// <param name="color"></param>
+        public void DrawLine(int x1, int y1, int x2, int y2, Color color)
+        {
+            this.SpriteBatch.DrawLine(x1, y1, x2, y2, color);
+        }
+
+
+        /// <summary>
+        /// Draws a rectangle
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <param name="color"></param>
+        /// <param name="thickness"></param>
+        /// <param name="layerDepth"></param>
+        public void DrawRectangle(Rectangle rectangle, Color color, float thickness = 1f, float layerDepth = 0f)
+        {
+            this.DrawRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, thickness, layerDepth);
+        }
+
+
+        /// <summary>
+        /// Draws a rectangle
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        /// <param name="thickness"></param>
+        /// <param name="layerDepth"></param>
+        public void DrawRectangle(Point location, Size2 size, Color color, float thickness = 1f, float layerDepth = 0f)
+        {
+            this.DrawRectangle(location.X, location.Y, (int)size.Width, (int)size.Height, color, thickness, layerDepth);
+        }
+
+
+        /// <summary>
+        /// Draws a rectangle
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="color"></param>
+        /// <param name="thickness"></param>
+        /// <param name="layerDepth"></param>
+        public void DrawRectangle(int x, int y, int width, int height, Color color, float thickness = 1f, float layerDepth = 0f)
+        {
+            this.SpriteBatch.DrawRectangle(x, y, width, height, color, thickness, layerDepth);
+        }
+
+
+        /// <summary>
+        /// Draws a rectangle
+        /// </summary>
+        /// <param name="rectangle"></param>
+        /// <param name="color"></param>
+        /// <param name="layerDepth"></param>
+        public void DrawFilledRectangle(Rectangle rectangle, Color color, float layerDepth = 0f)
+        {
+            this.DrawFilledRectangle(rectangle.X, rectangle.Y, rectangle.Width, rectangle.Height, color, layerDepth);
+        }
+
+
+        /// <summary>
+        /// Draws a rectangle
+        /// </summary>
+        /// <param name="location"></param>
+        /// <param name="size"></param>
+        /// <param name="color"></param>
+        /// <param name="layerDepth"></param>
+        public void DrawFilledRectangle(Point location, Size2 size, Color color, float layerDepth = 0f)
+        {
+            this.DrawFilledRectangle(location.X, location.Y, (int)size.Width, (int)size.Height, color, layerDepth);
+        }
+
+
+        /// <summary>
+        /// Draws a rectangle
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="color"></param>
+        /// <param name="layerDepth"></param>
+        public void DrawFilledRectangle(int x, int y, int width, int height, Color color, float layerDepth = 0f)
+        {
+            this.SpriteBatch.FillRectangle(x, y, width, height, color, layerDepth);
         }
 
         #endregion

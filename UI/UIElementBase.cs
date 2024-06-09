@@ -126,8 +126,9 @@ namespace Composer.UI
             this.UI.PushRenderTarget(this.RenderTarget);
             this.UI.Clear(this.Color);
 
+            spriteBatch.Begin(samplerState: SamplerState.PointClamp);
             OnDrawContent(spriteBatch);
-
+            spriteBatch.End();
 
             // Then draw the sub elements to the render target
 

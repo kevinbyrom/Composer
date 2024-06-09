@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
-
+using MonoGame.Extended.Collections;
 
 namespace Composer.UI.Controls
 {
@@ -15,7 +15,14 @@ namespace Composer.UI.Controls
         double Min { get; set; } = 0.0;
         double Max { get; set; } = 1.0;
         double Val { get; set; } = 0.0;
-
+        double Percent
+        {
+            get
+            {
+                return (Max - Min) == 0.0 ? 0.0 : Val / (Max - Min);
+            }
+        }
+        
         public Slider(UIManager ui) : base(ui)
         {
             this.Color = Color.Black;
@@ -24,6 +31,8 @@ namespace Composer.UI.Controls
         protected override void OnDrawContent(SpriteBatch spriteBatch)
         {            
             var text = String.Format("{0:0.00}", this.Val);
+
+            this.UI.DrawFilledRectangle(0, 0, (int)(this.Width * this.Percent), this.Height, Color.Aqua);
 
             this.UI.DrawStringCentered(text, this.Width / 2, this.Height / 2, Color.White);
         }
