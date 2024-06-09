@@ -12,7 +12,7 @@ namespace Composer.UI
 {
     public interface IUIElement : IUIElementContainer
     {
-        IUIElement Parent { get; }
+        IUIElement Parent { get; set; }
 
         Point Pos { get; set; }
 

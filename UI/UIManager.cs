@@ -191,9 +191,10 @@ namespace Composer.UI
         /// <summary>
         /// Releases the input capture from all views
         /// </summary>
-        public void ReleaseMouseCapture()
+        public void ReleaseMouseCapture(IUIElement caller = null)
         { 
-            this.MouseTracking.Captured = null; 
+            if (caller == null || this.MouseTracking.Captured == caller)
+                this.MouseTracking.Captured = null; 
         }
 
         public void ProcessInput()

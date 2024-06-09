@@ -13,10 +13,6 @@ namespace Composer.UI.Controls
         public Button(UIManager ui) : base(ui)
         {
         }
-
-        public Button(UIManager ui, IUIElement parent) : base(ui, parent)
-        {
-        }
     }
 
     public static class ButtonExtensions

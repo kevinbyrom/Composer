@@ -19,11 +19,6 @@ namespace Composer.UI.Controls
 
         }
 
-        public WaveView(UIManager ui, IUIElement parent) : base(ui, parent)
-        {
-
-        }
-
         protected override void OnDrawContent(SpriteBatch spriteBatch) 
         {
             spriteBatch.Begin();

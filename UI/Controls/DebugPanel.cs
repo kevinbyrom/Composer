@@ -22,10 +22,6 @@ namespace Composer.UI.Controls
         {
         }
 
-        public DebugPanel(UIManager ui, IUIElement parent) : base(ui, parent)
-        {
-        }
-
         protected override void OnDrawContent(SpriteBatch spriteBatch) 
         {
             if (this.hovering)

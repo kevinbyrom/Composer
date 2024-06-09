@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -93,19 +94,16 @@ namespace Composer.UI
 
         public Color Color { get; set; }
 
-        public UIElementBase(UIManager ui) : this(ui, null)
-        {
-        }
-
-        public UIElementBase(UIManager ui, IUIElement parent)
+        public UIElementBase(UIManager ui) 
         {
             this.UI = ui;
-            this.Parent = parent;
             this.Color = Color.Transparent;
         }
 
+
         public void AddElement(IUIElement child)
         {
+            child.Parent = this;
             this.elements.Add(child);
         }
 

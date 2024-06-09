@@ -111,10 +111,14 @@ namespace Composer
                 .SetSize(200, 100)
                 .SetColor(Color.Green);
 
-            greenPanel.AddElement(new DebugPanel(this.ui, greenPanel)
+            greenPanel.AddElement(new DebugPanel(this.ui)
                                     .SetPosition(20, 30)
                                     .SetSize(100, 50)
                                     .SetColor(Color.Yellow));
+
+            this.ui.AddSlider()
+                .SetPosition(0, 0)
+                .SetSize(100, 50);
             
 
             // TODO: use this.Content to load your game content here

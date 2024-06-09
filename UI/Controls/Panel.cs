@@ -15,11 +15,6 @@ namespace Composer.UI.Controls
         {
 
         }
-
-        public Panel(UIManager ui, IUIElement parent) : base(ui, parent)
-        {
-
-        }
     }
 
     public static class PanelExtensions
