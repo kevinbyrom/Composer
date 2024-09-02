@@ -17,7 +17,7 @@ namespace Composer.UI.Controls
 
     public static class ButtonExtensions
     {
-        public static Button AddButton(this UIManager ui)
+        public static Button Button(this UIManager ui)
         {
             var button = new Button(ui);
 
@@ -26,7 +26,7 @@ namespace Composer.UI.Controls
             return button;
         }
 
-        public static Button SetText(this Button button, string text)
+        public static Button Text(this Button button, string text)
         {
             button.Text = text;
             return button;

@@ -19,7 +19,7 @@ namespace Composer.UI.Controls
 
     public static class PanelExtensions
     {
-        public static Panel AddPanel(this UIManager ui)
+        public static Panel Panel(this UIManager ui)
         {
             var panel = new Panel(ui);
 

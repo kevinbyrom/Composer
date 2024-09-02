@@ -69,7 +69,7 @@ namespace Composer.UI.Controls
 
     public static class DebugPanelExtensions
     {
-        public static DebugPanel AddDebugPanel(this UIManager ui)
+        public static DebugPanel DebugPanel(this UIManager ui)
         {
             var button = new DebugPanel(ui);
 

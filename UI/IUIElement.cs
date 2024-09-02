@@ -53,19 +53,19 @@ namespace Composer.UI
     public static class IUIElementExtensions
     {
 
-        public static IUIElement SetPosition(this IUIElement element, int x, int y)
+        public static IUIElement Position(this IUIElement element, int x, int y)
         {
             element.Pos = new Point(x, y);
             return element;
         }
 
-        public static IUIElement SetSize(this IUIElement element, int width, int height)
+        public static IUIElement Size(this IUIElement element, int width, int height)
         {
             element.Size = new Point(width, height);
             return element;
         }
 
-        public static IUIElement SetColor(this IUIElement element, Color color)
+        public static IUIElement Color(this IUIElement element, Color color)
         {
             element.Color = color;
             return element;

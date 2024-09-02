@@ -44,6 +44,10 @@ namespace Composer
             IsMouseVisible = true;
         }
 
+
+        /// <summary>
+        /// Method for initializing the game
+        /// </summary>
         protected override void Initialize()
         {
 
@@ -82,6 +86,10 @@ namespace Composer
             base.Initialize();            
         }
 
+
+        /// <summary>
+        /// Loads the content for the game
+        /// </summary>
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -89,41 +97,46 @@ namespace Composer
 
             this.ui.DefaultFontSprite = new FontSprite(Texture2D.FromFile(this.graphics.GraphicsDevice, "Content\\MinimalSprite.png"), 5, 7, 10, 10);
 
-            this.ui.AddWaveView()
+            this.ui.WaveView()
                 .SetSignalBuffer(this.recentSignals)
-                .SetPosition(0, 0)
-                .SetSize(ScreenWidth, ScreenHeight)
-                .SetColor(Color.BlueViolet);
+                .Position(0, 0)
+                .Size(ScreenWidth, ScreenHeight)
+                .Color(Color.BlueViolet);
 
             
-            this.ui.AddDebugPanel()
-                .SetPosition(0, 0)
-                .SetSize(100, 20)
-                .SetColor(Color.Red);
+            this.ui.DebugPanel()
+                .Position(0, 0)
+                .Size(100, 20)
+                .Color(Color.Red);
 
-            this.ui.AddDebugPanel()
-                .SetPosition(10, 10)
-                .SetSize(100, 20)
-                .SetColor(Color.Blue);
+            this.ui.DebugPanel()
+                .Position(10, 10)
+                .Size(100, 20)
+                .Color(Color.Blue);
 
-            var greenPanel = this.ui.AddDebugPanel()
-                .SetPosition(20, 20)
-                .SetSize(200, 100)
-                .SetColor(Color.Green);
+            var greenPanel = this.ui.DebugPanel()
+                .Position(20, 20)
+                .Size(200, 100)
+                .Color(Color.Green);
 
             greenPanel.AddElement(new DebugPanel(this.ui)
-                                    .SetPosition(20, 30)
-                                    .SetSize(100, 50)
-                                    .SetColor(Color.Yellow));
+                                    .Position(20, 30)
+                                    .Size(100, 50)
+                                    .Color(Color.Yellow));
 
-            this.ui.AddSlider()
-                .SetPosition(10, 10)
-                .SetSize(100, 50);
+            this.ui.Slider()
+                .Position(10, 10)
+                .Size(100, 50);
             
 
             // TODO: use this.Content to load your game content here
         }
 
+
+        /// <summary>
+        /// Main update method for the game
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
         {
 
@@ -165,6 +178,11 @@ namespace Composer
             base.Update(gameTime);
         }
 
+
+        /// <summary>
+        /// Main draw method for the game
+        /// </summary>
+        /// <param name="gameTime"></param>
         protected override void Draw(GameTime gameTime)
         {
 
@@ -175,5 +193,6 @@ namespace Composer
 
             base.Draw(gameTime);
         }
+
     }
 }

@@ -41,7 +41,7 @@ namespace Composer.UI.Controls
 
     public static class WaveViewExtensions
     {
-        public static WaveView AddWaveView(this UIManager ui)
+        public static WaveView WaveView(this UIManager ui)
         {
             var view = new WaveView(ui);
 

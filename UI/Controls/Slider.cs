@@ -60,7 +60,7 @@ namespace Composer.UI.Controls
 
     public static class SliderExtensions
     {
-        public static Slider AddSlider(this UIManager ui)
+        public static Slider Slider(this UIManager ui)
         {
             var slider = new Slider(ui);
 

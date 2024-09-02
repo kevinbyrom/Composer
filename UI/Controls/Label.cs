@@ -26,7 +26,7 @@ namespace Composer.UI.Controls
 
     public static class LabelViewExtensions
     {
-        public static LabelView AddLabel(this UIManager ui)
+        public static LabelView Label(this UIManager ui)
         {
             var label = new LabelView(ui);
 
@@ -35,7 +35,7 @@ namespace Composer.UI.Controls
             return label;
         }
 
-        public static LabelView SetText(this LabelView label, string text)
+        public static LabelView Text(this LabelView label, string text)
         {
             label.Text = text;
             return label;
