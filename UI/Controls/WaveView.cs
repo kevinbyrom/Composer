@@ -21,8 +21,6 @@ namespace Composer.UI.Controls
 
         protected override void OnDrawContent(SpriteBatch spriteBatch) 
         {
-            //spriteBatch.Begin();
-
             var signals = this.SignalBuffer.GetAll();
 
             int halfHeight = this.Height / 2;
@@ -35,8 +33,6 @@ namespace Composer.UI.Controls
 
                 spriteBatch.DrawLine(x, halfHeight, x, halfHeight - ylen, Color.White);
             }
-
-            //spriteBatch.End();
 
             this.UI.DrawString(String.Format("{0:0.00}", signals.Last().Value), 10, 10, Color.White);
         }

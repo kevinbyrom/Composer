@@ -117,7 +117,7 @@ namespace Composer
                                     .SetColor(Color.Yellow));
 
             this.ui.AddSlider()
-                .SetPosition(0, 0)
+                .SetPosition(10, 10)
                 .SetSize(100, 50);
             
 

@@ -285,8 +285,14 @@ namespace Composer.UI
 
         #endregion
 
-        
+
         #region Input Handling Routines
+
+        public void ProcessInput()
+        {
+            ProcessMouseInput();
+        }
+
 
         /// <summary>
         /// Sets the input capture to a specified element
@@ -306,12 +312,7 @@ namespace Composer.UI
                 this.MouseTracking.Captured = null; 
         }
 
-        public void ProcessInput()
-        {
-            ProcessMouseInput();
-        }
-
-
+        
         private void ProcessMouseInput()
         {
             var mouseState = Mouse.GetState();

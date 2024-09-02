@@ -41,9 +41,18 @@ namespace Composer.UI.Controls
         {
             if (state.LeftButton == ButtonState.Pressed)
             {
+                this.UI.SetMouseCapture(this);
+
                 var pct = (double)(state.X - this.ScreenPos.X) / this.Size.X;
 
+                pct = Math.Min(pct, 1.0);
+                pct = Math.Max(pct, 0.0);
+
                 this.Val = pct * Max; 
+            }
+            else
+            {
+                this.UI.ReleaseMouseCapture(this);
             }
         }
 
