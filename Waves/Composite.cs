@@ -2,17 +2,17 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public class CompositeOscillator : OscillatorBase
+    public class CompositeWave : WaveBase
     {
-        public OscillatorBase[] Oscillators;
+        public IWave[] Waves;
 
-        public CompositeOscillator(double freq) : base(freq)
+        public CompositeWave(double freq) : base(freq)
         {
         }
 
-        public CompositeOscillator(Func<double> freq) : base(freq)
+        public CompositeWave(Func<double> freq) : base(freq)
         {
         }
 

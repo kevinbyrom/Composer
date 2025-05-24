@@ -1,9 +1,9 @@
 ﻿using System;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public interface IOscillator : ISignalSource
+    public interface IWave : ISignalSource
     { 
         Func<double> Frequency { get; set; }
     }

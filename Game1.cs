@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Audio;
 using Composer.Output;
 using System.IO;
 using MonoGame.Extended;
-using Composer.Oscillators;
+using Composer.Waves;
 using System.Text;
 using System.Collections.Generic;
 using Composer.UI;

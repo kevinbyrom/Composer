@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public class SineWaveOscillator : OscillatorBase
+    public class SineWave : WaveBase
     {
-        public SineWaveOscillator(double freq) : base(freq)
+        public SineWave(double freq) : base(freq)
         {
         }
 
-        public SineWaveOscillator(Func<double> freq) : base(freq)
+        public SineWave(Func<double> freq) : base(freq)
         {
         }
 

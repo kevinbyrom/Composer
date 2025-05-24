@@ -2,18 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public abstract class OscillatorBase : IOscillator
+    public abstract class WaveBase : IWave
     {
         public Func<double> Frequency { get; set; }
 
         
-        public OscillatorBase(double freqVal)
+        public WaveBase(double freqVal)
         {
             this.Frequency = () => { return freqVal; };
         }
-        public OscillatorBase(Func<double> freq)
+        public WaveBase(Func<double> freq)
         {
             this.Frequency = freq;
         }

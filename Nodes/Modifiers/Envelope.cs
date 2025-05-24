@@ -1,7 +1,5 @@
 using System;
 using System.Diagnostics;
-using Composer.Nodes;
-using Composer.Oscillators;
 using Composer.Utilities;
 
 
