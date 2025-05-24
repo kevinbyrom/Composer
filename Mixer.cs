@@ -15,15 +15,20 @@ namespace Composer
 
             foreach (var s in signals)
             {
-                val += s.Value;
+                if (s.Value > val)
+                    val = s.Value;
+                else if (s.Value < val)
+                    val = s.Value;
+
+                //val += s.Value;
 
                 if (s.Value != 0)
                     numActive++;
             }
 
-            Signal mixed = new Signal();
+            Signal mixed = new Signal(val);
 
-            mixed.Value = val / (double)numActive;
+            //mixed.Value = val / (double)numActive;
 
             return mixed;
         }

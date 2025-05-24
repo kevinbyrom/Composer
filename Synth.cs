@@ -2,45 +2,82 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Composer.Oscillators;
-using Composer.Effects;
-using Composer.Modifiers;
+//using Composer.Effects;
+//using Composer.Modifiers;
 using Composer.Utilities;
-
+using Composer.Nodes;
+using Composer.Nodes.Sources;
+using Composer.Nodes.Input;
+using Composer.Nodes.Operators;
+using Microsoft.Xna.Framework.Input;
+using Composer.Nodes.Output;
+using Composer.Nodes.Modifiers;
+using Composer.Nodes.Effects;
+using System.Diagnostics;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Transactions;
 
 namespace Composer
 {
     public class Synth 
     {
         public ISignalTarget Output { get; private set; }
-
-        //public IOscillator Oscillator { get; set; }
-        //public ISignalTarget Target { get; private set; }
-        //public List<ISignalTransform> Filters { get; set; }
-        //public List<ISignalTransform> Amplifiers { get; set; }
-        //public List<ISignalTransform> PostEffects { get; set; }
-        //public VoiceGroup Voices { get; private set; }
-
         public int SampleRate { get; private set; }
         public double TimePerTick { get; private set; }
 
-        private Dictionary<int, Voice> keyVoices;
+        public int RootOctave { get; set; } = 4;
+
+        public bool DebugMode { get; private set; }
+
+        public Signal LastSignal { get { return lastSignal; } }
+
+        private ISignalNode rootNode;
         private double currTime = 0.0;
+        private Signal lastSignal;
+        private StreamWriter debugWriter;
 
-
-        public Synth(int sampleRate, ISignalTarget output)
+        public Synth(int sampleRate, ISignalTarget output, bool debugMode = false)
         {
             this.SampleRate = sampleRate;
             this.Output = output;
             this.TimePerTick = 1.0 / (double)sampleRate;
-            this.keyVoices = new Dictionary<int, Voice>();
+            this.DebugMode = debugMode;
+
+            ISignalNode[] voices = new ISignalNode[3];
+
+            voices[0] = CreateVoice(Notes.HZ(Notes.Key.C, this.RootOctave), Keys.A);
+            voices[1] = CreateVoice(Notes.HZ(Notes.Key.CS, this.RootOctave), Keys.W);
+            voices[2] = CreateVoice(Notes.HZ(Notes.Key.D, this.RootOctave), Keys.S);
+            /*voices[3] = CreateVoice(Notes.HZ(Notes.Key.DS, this.RootOctave), Keys.E);
+            voices[4] = CreateVoice(Notes.HZ(Notes.Key.E, this.RootOctave), Keys.D);
+            voices[5] = CreateVoice(Notes.HZ(Notes.Key.F, this.RootOctave), Keys.F);
+            voices[6] = CreateVoice(Notes.HZ(Notes.Key.FS, this.RootOctave), Keys.R);
+            voices[7] = CreateVoice(Notes.HZ(Notes.Key.G, this.RootOctave), Keys.G);
+            voices[8] = CreateVoice(Notes.HZ(Notes.Key.GS, this.RootOctave), Keys.T);
+            voices[9] = CreateVoice(Notes.HZ(Notes.Key.A, this.RootOctave), Keys.H);
+            voices[10] = CreateVoice(Notes.HZ(Notes.Key.AS, this.RootOctave), Keys.Y);
+            voices[11] = CreateVoice(Notes.HZ(Notes.Key.B, this.RootOctave), Keys.J);
+            voices[12] = CreateVoice(Notes.HZ(Notes.Key.C, this.RootOctave + 1), Keys.K);
+            */
+            this.rootNode = new MixerNode(voices);//.Reverb(.278); //.Delay(1, .5);
+
+            if (this.DebugMode)
+                this.debugWriter = new StreamWriter("output.txt", false);
         }
 
 
+        ~Synth()
+        {
+            if (this.DebugMode)
+                this.debugWriter.Close();
+        }
+
         public void SetupKey(int key, double freq)
         {
-            var voice = new Voice(new SineWaveOscillator(freq));
+            //var voice = new Voice(new SineWaveOscillator(freq));
 
-            this.keyVoices.Add(key, voice);
+            //this.keyVoices.Add(key, voice);
         }
 
 
@@ -49,12 +86,12 @@ namespace Composer
 
             // Get the voice associated with the key
 
-            var voice = this.keyVoices[key];
+            //var voice = this.keyVoices[key];
 
 
             // Turn the voice on
 
-            voice.On();
+            //voice.On();
 
         }
 
@@ -64,45 +101,53 @@ namespace Composer
             
             // Get the voice associated with they key
 
-            var voice = this.keyVoices[key];
+            //var voice = this.keyVoices[key];
 
 
             // Turn the voice off
 
-            voice.Off();
+            //voice.Off();
 
         }
 
 
-        public void Update(GameTime gameTime)
+        public void Update(double time)
         {
+            this.currTime = time;
+            this.rootNode.Update(time);
+            this.Output.Write(time, this.rootNode.Signal);
+            this.lastSignal = this.rootNode.Signal;
 
-            // Determine how many ticks have elapsed since last time
+            if (this.DebugMode)
+                this.debugWriter.WriteLine(this.lastSignal.ToString());
 
-            int ticks = (int)(gameTime.ElapsedGameTime.TotalSeconds * this.SampleRate);
+        }
 
+        private ISignalNode CreateVoice(double freq, Microsoft.Xna.Framework.Input.Keys inputKey)
+        {
+            var key = new KeyNode(inputKey);
+            var env = new EnvelopeNode(key);
+            env.Settings.Attack.Level = () => { return 0.1; };
+            env.Settings.Attack.Duration = () => { return 0.05; };
+            env.Settings.Decay.Level = () => { return 0.75; };
+            env.Settings.Decay.Duration = () => { return 0.05; };
+            env.Settings.Sustain.Level = () => { return 0.75; };
+            env.Settings.Sustain.Duration = () => { return 0.1; };
+            env.Settings.Sustain.Latch = () => { return key.Signal.IsActive; };
+            env.Settings.Release.Level = () => { return 0; };
+            env.Settings.Release.Duration = () => { return 0.5; };
 
-            // Get each voice signal for the sample and push to the output
+            
 
-            for (int s = 0; s < ticks; s++)
-            {
-                var voices = this.keyVoices.Values;
+            var pred = new PredicatedConstantNode(Signal.Max * .01, () => { return env.Signal.IsActive; });
+            var osc = new SineWaveOscillator(freq);
+            var freqOsc = new SineWaveOscillator(.2);
+            var ampOsc = new SineWaveOscillator(4);
+            var voice = new OscillatorNode(osc, pred);
+            //osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
+            //voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };
 
-                var signals = new Signal[voices.Count];
-
-                int i = 0;
-
-                foreach (var voice in this.keyVoices.Values)
-                {
-                    voice.Update(this.currTime);
-                    signals[i++] = voice.CurrSignal;
-                }
-
-                this.Output.Write(this.currTime, SignalMixer.Mix(signals));
-                
-
-                this.currTime += this.TimePerTick;
-            }
+            return voice.Multiply(env);//.AntiPop(0.5); //.Compress(-0.5, 0.5).Noise(0.0125);
         }
     }
 }

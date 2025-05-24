@@ -8,9 +8,9 @@ namespace Composer.Utilities
 {
     public static class NoteUtil
     {
-        public static float ToFrequency(int note)
+        public static double ToFrequency(int note, double rootHz = 440.0)
         {
-            return (float)(440.0 * Math.Pow(2, (note - 9) / 12.0f));
+            return (double)(440.0 * Math.Pow(2, (note - 9) / 12.0f));
         }
     }
 }

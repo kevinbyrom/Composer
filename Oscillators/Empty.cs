@@ -16,7 +16,7 @@ namespace Composer.Oscillators
 
         public override Signal GetValue(double time)
         {
-            return Signal.Zero;
+            return Signal.None;
         }
     }
 }

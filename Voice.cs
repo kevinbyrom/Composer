@@ -55,7 +55,7 @@ namespace Composer
 
         public void Update(double time)
         {
-            Signal signal = Signal.Zero;
+            Signal signal = Signal.None;
 
             this.currTime = time;
 
