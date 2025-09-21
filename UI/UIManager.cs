@@ -178,7 +178,7 @@ namespace Composer.UI
         /// <param name="color"></param>
         /// <param name="thickness"></param>
         /// <param name="layerDepth"></param>
-        public void DrawRectangle(Point location, Size2 size, Color color, float thickness = 1f, float layerDepth = 0f)
+        public void DrawRectangle(Point location, Size size, Color color, float thickness = 1f, float layerDepth = 0f)
         {
             this.DrawRectangle(location.X, location.Y, (int)size.Width, (int)size.Height, color, thickness, layerDepth);
         }
@@ -219,7 +219,7 @@ namespace Composer.UI
         /// <param name="size"></param>
         /// <param name="color"></param>
         /// <param name="layerDepth"></param>
-        public void DrawFilledRectangle(Point location, Size2 size, Color color, float layerDepth = 0f)
+        public void DrawFilledRectangle(Point location, Size size, Color color, float layerDepth = 0f)
         {
             this.DrawFilledRectangle(location.X, location.Y, (int)size.Width, (int)size.Height, color, layerDepth);
         }
