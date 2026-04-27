@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public class SawtoothWaveOscillator : OscillatorBase
+    public class SawtoothWave : WaveBase
     {
-        public SawtoothWaveOscillator(double freq) : base(freq)
+        public SawtoothWave(double freq) : base(freq)
         {
         }
 
-        public SawtoothWaveOscillator(Func<double> freq) : base(freq)
+        public SawtoothWave(Func<double> freq) : base(freq)
         {
         }
 

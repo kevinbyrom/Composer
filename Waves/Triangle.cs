@@ -2,15 +2,15 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public class TriangleWaveOscillator : OscillatorBase
+    public class TriangleWave : WaveBase
     {
-        public TriangleWaveOscillator(double freq) : base(freq)
+        public TriangleWave(double freq) : base(freq)
         {
         }
 
-        public TriangleWaveOscillator(Func<double> freq) : base(freq)
+        public TriangleWave(Func<double> freq) : base(freq)
         {
         }
 

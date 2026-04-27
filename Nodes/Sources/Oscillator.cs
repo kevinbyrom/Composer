@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Composer.Nodes;
-using Composer.Oscillators;
+using Composer.Waves;
 
 namespace Composer.Nodes.Sources
 {
@@ -12,7 +12,7 @@ namespace Composer.Nodes.Sources
     {
         ISignalNode Power { get; set; }
 
-        IOscillator Oscillator { get; set; }
+        IWave Wave { get; set; }
 
         public Func<double> Frequency { get; set; }
         public Func<double> Amp { get; set; }
@@ -24,12 +24,12 @@ namespace Composer.Nodes.Sources
             this.Amp = () => 1.0;
         }
 
-        public OscillatorNode(IOscillator osc) :this()
+        public OscillatorNode(IWave wave) :this()
         {
-            this.Oscillator = osc;
+            this.Wave = wave;
         }
 
-        public OscillatorNode(IOscillator osc, ISignalNode power) : this(osc)
+        public OscillatorNode(IWave wave, ISignalNode power) : this(wave)
         {
             this.Power = power;
         }
@@ -40,9 +40,9 @@ namespace Composer.Nodes.Sources
 
             bool powerOn = this.Power == null || this.Power.Signal.Value > 0;
 
-            if (powerOn && this.Oscillator != null)
+            if (powerOn && this.Wave != null)
             {
-                this.Signal = this.Oscillator.GetValue(time - startTime) * Amp();
+                this.Signal = this.Wave.GetValue(time - startTime) * Amp();
             }
             else
             {

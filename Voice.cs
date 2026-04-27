@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Composer.Oscillators;
 using Composer.Utilities;
 
 
@@ -16,11 +15,6 @@ namespace Composer
 
     public class Voice
     {        
-        //public IOscillator Oscillator { get; set; }
-        //public ISignalSource Effect { get; set; }
-
-        //public bool IsActive { get; private set; }
-
         public ISignalSource Source { get; set; }
         
         public VoiceState CurrState { get; private set; }
@@ -34,7 +28,6 @@ namespace Composer
         public Voice(ISignalSource source)
         {
             this.Source = source;
-            //Oscillator = oscillator;
             ChangeState(VoiceState.Stopped);
         }
 

@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Composer.Oscillators;
+using Composer.Waves;
 //using Composer.Effects;
 //using Composer.Modifiers;
 using Composer.Utilities;
@@ -140,9 +140,9 @@ namespace Composer
             
 
             var pred = new PredicatedConstantNode(Signal.Max * .01, () => { return env.Signal.IsActive; });
-            var osc = new SineWaveOscillator(freq);
-            var freqOsc = new SineWaveOscillator(.2);
-            var ampOsc = new SineWaveOscillator(4);
+            var osc = new SineWave(freq);
+            var freqOsc = new SineWave(.2);
+            var ampOsc = new SineWave(4);
             var voice = new OscillatorNode(osc, pred);
             //osc.Frequency = () => { return freq - (freqOsc.GetValue(this.currTime).Value * 10); };
             //voice.Amp = () => { return ampOsc.GetValue(this.currTime).Value; };

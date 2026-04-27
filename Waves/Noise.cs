@@ -3,13 +3,13 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public class NoiseOscillator: OscillatorBase
+    public class NoiseWave: WaveBase
     {
         public Random Rng = new Random();
 
-        public NoiseOscillator(double freq) : base(freq)
+        public NoiseWave(double freq) : base(freq)
         {
         }
 

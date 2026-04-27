@@ -7,16 +7,23 @@ using Microsoft.Xna.Framework.Audio;
 using Composer.Output;
 using System.IO;
 using MonoGame.Extended;
-using Composer.Oscillators;
+using MonoGame.Extended.Graphics;
+using MonoGameGum;
+using Gum.Forms;
+using Gum.Forms.Controls;
+using Composer.Waves;
 using System.Text;
 using System.Collections.Generic;
 using Composer.UI;
 using Composer.UI.Controls;
 
+
 namespace Composer
 {
     public class Game1 : Game
     {
+        GumService GumUI => GumService.Default;
+
         private const int ScreenWidth = 1100;
         private const int ScreenHeight = 500;
         private const int HalfScreenHeight = ScreenHeight / 2;
@@ -36,6 +43,7 @@ namespace Composer
         private double currTime = 0.0;
         private SignalBuffer recentSignals;
         private UIManager ui;
+        
         
         public Game1()
         {
@@ -57,6 +65,7 @@ namespace Composer
             graphics.PreferredBackBufferHeight = ScreenHeight;
             graphics.ApplyChanges();
 
+            GumUI.Initialize(this, DefaultVisualsVersion.V2);
             this.ui = new UIManager(this);
 
             // Setup the output

@@ -2,17 +2,17 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
-    public class PulseOscillator : OscillatorBase
+    public class PulseWave : WaveBase
     {
         public double DutyCycle;
 
-        public PulseOscillator(double freq) : base(freq)
+        public PulseWave(double freq) : base(freq)
         {
         }
 
-        public PulseOscillator(Func<double> freq) : base(freq)
+        public PulseWave(Func<double> freq) : base(freq)
         {
         }
 

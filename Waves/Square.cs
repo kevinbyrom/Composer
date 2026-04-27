@@ -2,16 +2,16 @@ using System;
 using System.Linq;
 
 
-namespace Composer.Oscillators
+namespace Composer.Waves
 {
 
-    public class SquareWaveOscillator : OscillatorBase
+    public class SquareWave : WaveBase
     {
-        public SquareWaveOscillator(double freq) : base(freq)
+        public SquareWave(double freq) : base(freq)
         {
         }
 
-        public SquareWaveOscillator(Func<double> freq) : base(freq)
+        public SquareWave(Func<double> freq) : base(freq)
         {
         }
 
