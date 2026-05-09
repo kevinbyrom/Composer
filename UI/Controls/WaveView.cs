@@ -1,40 +1,44 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+using Monotaur;
+using Monotaur.Graphics;
+using Monotaur.Systems;
+using Monotaur.UI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MonoGame.Extended;
-using Microsoft.Xna.Framework;
 
 
 namespace Composer.UI.Controls
 {
-    public class WaveView : UIElementBase
+    public class WaveView : UIElement
     {
         public SignalBuffer SignalBuffer { get; set; }
 
-        public WaveView(UIManager ui) : base(ui)
+        public WaveView(GameEntity parent) : base(parent)
         {
 
         }
 
-        protected override void OnDrawContent(SpriteBatch spriteBatch) 
+        protected override void OnDrawContent(IRenderer renderer)
         {
             var signals = this.SignalBuffer.GetAll();
 
             int halfHeight = this.Height / 2;
 
-            spriteBatch.DrawLine(0, halfHeight, this.Width, halfHeight, Color.White);
+            renderer.DrawLine(0, halfHeight, this.Width, halfHeight, Color.White);
 
             for (int x = 0; x < this.Width; x++)
             {
                 int ylen = (int)(signals[x].Value * (this.Height / 2));
 
-                spriteBatch.DrawLine(x, halfHeight, x, halfHeight - ylen, Color.White);
+                renderer.DrawLine(x, halfHeight, x, halfHeight - ylen, Color.White);
             }
 
-            this.UI.DrawString(String.Format("{0:0.00}", signals.Last().Value), 10, 10, Color.White);
+            renderer.DrawString(String.Format("{0:0.00}", signals.Last().Value), 10, 10, Color.White);
         }
 
     }
@@ -43,7 +47,7 @@ namespace Composer.UI.Controls
     {
         public static WaveView WaveView(this UIManager ui)
         {
-            var view = new WaveView(ui);
+            var view = new WaveView(null);
 
             ui.AddElement(view);
 

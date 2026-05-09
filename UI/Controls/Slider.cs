@@ -1,16 +1,21 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Collections;
+using Monotaur;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended.Collections;
+using Monotaur.UI;
+using Monotaur.Graphics;
+using Monotaur.Systems;
+
 
 namespace Composer.UI.Controls
 {
-    public class Slider : UIElementBase
+    public class Slider : UIElement
     {
         double Min { get; set; } = 0.0;
         double Max { get; set; } = 1.0;
@@ -22,19 +27,19 @@ namespace Composer.UI.Controls
                 return (Max - Min) == 0.0 ? 0.0 : Val / (Max - Min);
             }
         }
-        
-        public Slider(UIManager ui) : base(ui)
+
+        public Slider(GameEntity parent) : base(parent)
         {
             this.Color = Color.Black;
         }
 
-        protected override void OnDrawContent(SpriteBatch spriteBatch)
+        protected override void OnDrawContent(IRenderer renderer)
         {            
             var text = String.Format("{0:0.00}", this.Val);
 
-            this.UI.DrawFilledRectangle(0, 0, (int)(this.Width * this.Percent), this.Height, Color.Aqua);
+            renderer.DrawFilledRectangle(0, 0, (int)(this.Width * this.Percent), this.Height, Color.Aqua);
 
-            this.UI.DrawStringCentered(text, this.Width / 2, this.Height / 2, Color.White);
+            renderer.DrawStringCentered(text, this.Width / 2, this.Height / 2, Color.White);
         }
 
         public override void OnMouseMove(MouseState state)
@@ -62,7 +67,7 @@ namespace Composer.UI.Controls
     {
         public static Slider Slider(this UIManager ui)
         {
-            var slider = new Slider(ui);
+            var slider = new Slider(null);
 
             ui.AddElement(slider);
 

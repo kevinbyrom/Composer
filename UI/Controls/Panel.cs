@@ -1,17 +1,21 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Monotaur;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+using Monotaur.UI;
+using Monotaur.Graphics;
+using Monotaur.Systems;
 
 
 namespace Composer.UI.Controls
 {
-    public class Panel : UIElementBase
+    public class Panel : UIElement
     {
-        public Panel(UIManager ui) : base(ui)
+        public Panel(GameEntity parent) : base(parent)
         {
 
         }
@@ -21,7 +25,7 @@ namespace Composer.UI.Controls
     {
         public static Panel Panel(this UIManager ui)
         {
-            var panel = new Panel(ui);
+            var panel = new Panel(null);
 
             ui.AddElement(panel);
 

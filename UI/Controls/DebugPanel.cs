@@ -1,35 +1,41 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using Monotaur;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using static System.Net.Mime.MediaTypeNames;
+using Monotaur.Systems;
+using Monotaur.UI;
+using Monotaur.Graphics;
 
 
 namespace Composer.UI.Controls
 {
-    public class DebugPanel : UIElementBase
+    public class DebugPanel : UIElement
     {
         private bool hovering = false;
         private bool moving = false;
         private Point movingOffset;
 
 
-        public DebugPanel(UIManager ui) : base(ui)
+        public DebugPanel(GameEntity parent) : base(parent)
         {
         }
 
-        protected override void OnDrawContent(SpriteBatch spriteBatch) 
+        protected override void OnDrawContent(IRenderer renderer)
         {
+            base.OnDrawContent(renderer);
+
             if (this.hovering)
-                this.UI.Clear(Color.White);
-            
+                renderer.Clear(Color.White);
+
             var text = String.Format("{0} - {1}", (int)this.ScreenPos.X, (int)this.ScreenPos.Y);
-            
-            this.UI.DrawStringCentered(text, this.Width / 2, this.Height / 2, Color.Black);
+
+            renderer.DrawStringCentered(text, this.Width / 2, this.Height / 2, Color.Black);
         }
 
         public override void OnMouseEnter(MouseState state)
@@ -71,7 +77,7 @@ namespace Composer.UI.Controls
     {
         public static DebugPanel DebugPanel(this UIManager ui)
         {
-            var button = new DebugPanel(ui);
+            var button = new DebugPanel(null);
 
             ui.AddElement(button);
 

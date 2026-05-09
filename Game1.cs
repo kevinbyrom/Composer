@@ -1,26 +1,32 @@
-﻿using System;
-using System.Threading;
+﻿using Composer.Output;
+using Composer.UI;
+using Composer.UI.Controls;
+using Composer.Waves;
+using Gum.Forms;
+using Gum.Forms.Controls;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Audio;
-using Composer.Output;
-using System.IO;
 using MonoGame.Extended;
 using MonoGame.Extended.Graphics;
 using MonoGameGum;
-using Gum.Forms;
-using Gum.Forms.Controls;
-using Composer.Waves;
-using System.Text;
+using Monotaur;
+using Monotaur.Graphics;
+using Monotaur.Systems;
+using Monotaur.Utils;
+using System;
 using System.Collections.Generic;
-using Composer.UI;
-using Composer.UI.Controls;
+using System.IO;
+using System.Text;
+using System.Threading;
+using Composer.Scenes;
 
 
 namespace Composer
 {
-    public class Game1 : Game
+
+    public class SynthGame : MonotaurGame
     {
         GumService GumUI => GumService.Default;
 
@@ -30,20 +36,51 @@ namespace Composer
         private const int SampleRate = 44100;
         private const int SamplesPerBuffer = 44100;
 
+
+        public SynthGame() : base()
+        {
+        }
+
+        protected override void Initialize()
+        {
+            base.Initialize();
+
+
+            // Change screen resolution
+
+            var graphics = new GraphicsDeviceManager(this);
+
+            graphics.PreferredBackBufferWidth = ScreenWidth;
+            graphics.PreferredBackBufferHeight = ScreenHeight;
+            graphics.ApplyChanges();
+
+
+            // Setup the scenes
+
+            this.Scenes.RegisterScene("default", new MainScene(this));
+            this.Scenes.SetCurrentScene("default");
+        }
+    }
+
+   /* public class Game1 : Game
+    {
+        
+
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private DynamicSoundEffectInstance instance;
-        private Synth synth;
-        private ISignalTarget output;
-        private bool debugMode = false;
-        private StreamWriter debugFile;
-        private Texture2D background;
-        private SpriteFont font;
-        private double timePerTick = 1.0 / (double)SampleRate;
-        private double currTime = 0.0;
-        private SignalBuffer recentSignals;
-        private UIManager ui;
-        
+        //private DynamicSoundEffectInstance instance;
+        //private Synth synth;
+        //private ISignalTarget output;
+        //private bool debugMode = false;
+        //private StreamWriter debugFile;
+        //private Texture2D background;
+        //private SpriteFont font;
+        //private double timePerTick = 1.0 / (double)SampleRate;
+        //private double currTime = 0.0;
+        //private SignalBuffer recentSignals;
+        //private UIManager ui;
+        //private FontSprite fontSprite;
+
         
         public Game1()
         {
@@ -66,7 +103,7 @@ namespace Composer
             graphics.ApplyChanges();
 
             GumUI.Initialize(this, DefaultVisualsVersion.V2);
-            this.ui = new UIManager(this);
+            //this.ui = new UIManager(this);
 
             // Setup the output
 
@@ -104,7 +141,7 @@ namespace Composer
             spriteBatch = new SpriteBatch(GraphicsDevice);
             this.Services.AddService<SpriteBatch>(spriteBatch);
 
-            this.ui.DefaultFontSprite = new FontSprite(Texture2D.FromFile(this.graphics.GraphicsDevice, "Content\\MinimalSprite.png"), 5, 7, 10, 10);
+            this.fontSprite = new FontSprite(Texture2D.FromFile(this.graphics.GraphicsDevice, "Content\\MinimalSprite.png"), 5, 7, 10, 10);
 
             this.ui.WaveView()
                 .SetSignalBuffer(this.recentSignals)
@@ -186,13 +223,13 @@ namespace Composer
 
             base.Update(gameTime);
         }
-
+        
 
         /// <summary>
         /// Main draw method for the game
         /// </summary>
         /// <param name="gameTime"></param>
-        protected override void Draw(GameTime gameTime)
+        protected override void Draw(IRenderer renderer, GameTime gameTime)
         {
 
             // Draw the UI
@@ -203,5 +240,5 @@ namespace Composer
             base.Draw(gameTime);
         }
 
-    }
+    }*/
 }

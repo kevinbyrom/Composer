@@ -1,26 +1,31 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Monotaur;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+using Monotaur.UI;
+using Monotaur.Systems;
+using Monotaur.Graphics;
+
 
 namespace Composer.UI.Controls
 {
-    public class LabelView : UIElementBase
+    public class LabelView : UIElement
     {
         public string Text { get; set; }
 
-        public LabelView(UIManager ui) : base(ui)
+        public LabelView(GameEntity parent) : base(parent)
         {
         }
 
-        protected override void OnDrawContent(SpriteBatch spriteBatch)
+        protected override void OnDrawContent(IRenderer renderer)
         {
             //this.UI.DrawStringCentered(Text, this.Width / 2, this.Height / 2, Color.Transparent);
 
-            this.UI.DrawStringCentered(String.Format("{} - {}", (int)this.ScreenPos.X, (int)this.ScreenPos.Y), this.Width / 2, this.Height / 2, Color.Transparent);
+            renderer.DrawStringCentered(String.Format("{} - {}", (int)this.ScreenPos.X, (int)this.ScreenPos.Y), this.Width / 2, this.Height / 2, Color.Transparent);
         }
     }
 
@@ -28,7 +33,7 @@ namespace Composer.UI.Controls
     {
         public static LabelView Label(this UIManager ui)
         {
-            var label = new LabelView(ui);
+            var label = new LabelView(null);
 
             ui.AddElement(label);
 
