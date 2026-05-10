@@ -39,7 +39,7 @@ namespace Composer.Scenes
         private double timePerTick = 1.0 / (double)SampleRate;
         private double currTime = 0.0;
         private SignalBuffer recentSignals;
-        private UIManager ui;
+        private IUIManager ui;
         private IProjection _projection = new StandardProjection();
         private FontSprite fontSprite;
 
@@ -54,11 +54,19 @@ namespace Composer.Scenes
 
             // Setup the output
 
-            this.instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Stereo);
-            this.instance.Play();
-
-            var xnaOutput = new BufferedXnaOutput(instance);
-            this.output = new MixedOutput(xnaOutput);
+            try
+            {
+                this.instance = new DynamicSoundEffectInstance(SampleRate, AudioChannels.Stereo);
+                this.instance.Play();
+                var xnaOutput = new BufferedXnaOutput(instance);
+                this.output = new MixedOutput(xnaOutput);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Audio initialization failed: {ex.Message}. Running without audio.");
+                // Fallback to a dummy output or no output
+                this.output = new DummyOutput(); // Assuming you have or can create a dummy output
+            }
 
 
             // Setup the synth
@@ -68,14 +76,16 @@ namespace Composer.Scenes
 
             // Setup the background buffer and font
 
-            this.fontSprite = new FontSprite(Texture2D.FromFile(this.graphics.GraphicsDevice, "Content\\MinimalSprite.png"), 5, 7, 10, 10);
+            this.fontSprite = new FontSprite(Texture2D.FromFile(this.Game.GraphicsDevice, "Content/MinimalSprite.png"), 5, 7, 10, 10);
             this.background = new Texture2D(this.Game.GraphicsDevice, ScreenWidth, ScreenHeight);
             //this.font = Content.Load<SpriteFont>("Arial");
 
             if (debugMode)
-                this.debugFile = new StreamWriter("d://temp//output.txt", true);
+                this.debugFile = new StreamWriter("output.txt", true);
 
             this.recentSignals = new SignalBuffer(ScreenWidth);
+
+            this.ui = (this.Game as MonotaurGame).UI;
 
         }
 

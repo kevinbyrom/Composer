@@ -48,11 +48,11 @@ namespace Composer
 
             // Change screen resolution
 
-            var graphics = new GraphicsDeviceManager(this);
+            //var graphics = new GraphicsDeviceManager(this);
 
-            graphics.PreferredBackBufferWidth = ScreenWidth;
-            graphics.PreferredBackBufferHeight = ScreenHeight;
-            graphics.ApplyChanges();
+            //graphics.PreferredBackBufferWidth = ScreenWidth;
+            //graphics.PreferredBackBufferHeight = ScreenHeight;
+            //graphics.ApplyChanges();
 
 
             // Setup the scenes
