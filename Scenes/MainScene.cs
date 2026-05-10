@@ -13,6 +13,7 @@ using Monotaur.Components;
 using Monotaur.Graphics;
 using Monotaur.Models;
 using Monotaur.Systems;
+using Monotaur.UI;
 using System;
 using System.IO;
 
@@ -87,6 +88,7 @@ namespace Composer.Scenes
 
             this.ui = (this.Game as MonotaurGame).UI;
 
+            SetupControls();
         }
 
 
@@ -146,9 +148,9 @@ namespace Composer.Scenes
         }
 
 
-        private void SetupGui()
+        private void SetupControls()
         {
-            /*this.ui.WaveView()
+            this.ui.WaveView()
                 .SetSignalBuffer(this.recentSignals)
                 .Position(0, 0)
                 .Size(ScreenWidth, ScreenHeight)
@@ -170,14 +172,14 @@ namespace Composer.Scenes
                 .Size(200, 100)
                 .Color(Color.Green);
 
-            greenPanel.AddElement(new DebugPanel(this.ui)
+            greenPanel.AddElement(new DebugPanel(this.ui, null)
                                     .Position(20, 30)
                                     .Size(100, 50)
                                     .Color(Color.Yellow));
 
             this.ui.Slider()
                 .Position(10, 10)
-                .Size(100, 50);*/
+                .Size(100, 50);
         }
     }
 }

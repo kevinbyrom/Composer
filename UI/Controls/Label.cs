@@ -17,9 +17,15 @@ namespace Composer.UI.Controls
     {
         public string Text { get; set; }
 
+
+        public LabelView(IUIManager ui, GameEntity parent) : base(ui, parent)
+        {
+        }
+
         public LabelView(GameEntity parent) : base(parent)
         {
         }
+
 
         protected override void OnDrawContent(IRenderer renderer)
         {
@@ -31,9 +37,9 @@ namespace Composer.UI.Controls
 
     public static class LabelViewExtensions
     {
-        public static LabelView Label(this UIManager ui)
+        public static LabelView Label(this IUIManager ui)
         {
-            var label = new LabelView(null);
+            var label = new LabelView(ui, null);
 
             ui.AddElement(label);
 

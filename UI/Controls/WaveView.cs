@@ -18,10 +18,15 @@ namespace Composer.UI.Controls
     {
         public SignalBuffer SignalBuffer { get; set; }
 
+
+        public WaveView(IUIManager ui, GameEntity parent) : base(ui, parent)
+        {
+        }
+
         public WaveView(GameEntity parent) : base(parent)
         {
-
         }
+
 
         protected override void OnDrawContent(IRenderer renderer)
         {
@@ -45,9 +50,9 @@ namespace Composer.UI.Controls
 
     public static class WaveViewExtensions
     {
-        public static WaveView WaveView(this UIManager ui)
+        public static WaveView WaveView(this IUIManager ui)
         {
-            var view = new WaveView(null);
+            var view = new WaveView(ui, null);
 
             ui.AddElement(view);
 

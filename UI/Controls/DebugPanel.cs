@@ -22,9 +22,14 @@ namespace Composer.UI.Controls
         private Point movingOffset;
 
 
+        public DebugPanel(IUIManager ui, GameEntity parent) : base(ui, parent)
+        {
+        }
+
         public DebugPanel(GameEntity parent) : base(parent)
         {
         }
+
 
         protected override void OnDrawContent(IRenderer renderer)
         {
@@ -75,9 +80,9 @@ namespace Composer.UI.Controls
 
     public static class DebugPanelExtensions
     {
-        public static DebugPanel DebugPanel(this UIManager ui)
+        public static DebugPanel DebugPanel(this IUIManager ui)
         {
-            var button = new DebugPanel(null);
+            var button = new DebugPanel(ui, null);
 
             ui.AddElement(button);
 

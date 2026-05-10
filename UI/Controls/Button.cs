@@ -14,6 +14,10 @@ namespace Composer.UI.Controls
     {
         public string Text { get; set; }
 
+        public Button(IUIManager ui, GameEntity parent) : base(ui, parent)
+        {
+        }
+
         public Button(GameEntity parent) : base(parent)
         {
         }
@@ -21,9 +25,9 @@ namespace Composer.UI.Controls
 
     public static class ButtonExtensions
     {
-        public static Button Button(this UIManager ui)
+        public static Button Button(this IUIManager ui)
         {
-            var button = new Button(null);
+            var button = new Button(ui, null);
 
             ui.AddElement(button);
 

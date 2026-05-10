@@ -28,10 +28,16 @@ namespace Composer.UI.Controls
             }
         }
 
+
+        public Slider(IUIManager ui, GameEntity parent) : base(ui, parent)
+        {
+        }
+
         public Slider(GameEntity parent) : base(parent)
         {
             this.Color = Color.Black;
         }
+
 
         protected override void OnDrawContent(IRenderer renderer)
         {            
@@ -65,9 +71,9 @@ namespace Composer.UI.Controls
 
     public static class SliderExtensions
     {
-        public static Slider Slider(this UIManager ui)
+        public static Slider Slider(this IUIManager ui)
         {
-            var slider = new Slider(null);
+            var slider = new Slider(ui, null);
 
             ui.AddElement(slider);
 
