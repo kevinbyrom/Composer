@@ -144,7 +144,7 @@ namespace Composer.Scenes
             renderer.DefaultFontSprite = this.fontSprite;
 
             //this.ui.Clear(Color.Black);
-            this.ui.Draw(renderer, gameTime);
+            //this.ui.Draw(renderer, gameTime);
         }
 
 
@@ -157,15 +157,15 @@ namespace Composer.Scenes
                 .Color(Color.BlueViolet);
 
 
-            this.ui.DebugPanel()
+            /*this.ui.DebugPanel()
                 .Position(0, 0)
                 .Size(100, 20)
-                .Color(Color.Red);
+                .Color(Color.Red);*/
 
-            this.ui.DebugPanel()
+            /*this.ui.DebugPanel()
                 .Position(10, 10)
                 .Size(100, 20)
-                .Color(Color.Blue);
+                .Color(Color.Blue);*/
 
             var greenPanel = this.ui.DebugPanel()
                 .Position(20, 20)
@@ -179,7 +179,8 @@ namespace Composer.Scenes
 
             this.ui.Slider()
                 .Position(10, 10)
-                .Size(100, 50);
+                .Size(100, 50)
+                .Color(Color.Blue);
         }
     }
 }
